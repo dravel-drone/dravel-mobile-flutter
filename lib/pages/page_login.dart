@@ -2,6 +2,7 @@ import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/textField/textfield_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {
@@ -11,42 +12,45 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-  Widget _textFiledEmail() => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text('이메일'),
-      SizedBox(height: 8,),
-      MainTextField(
-        hintText: '이메일',
-        prefixIcon: Icon(
-          Icons.mail_rounded,
-          color: Colors.black45,
-        )
-      )
-    ],
-  );
-
-  Widget _textFiledPassword() => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text('비밀번호'),
-      SizedBox(height: 8,),
-      MainTextField(
-        hintText: '비밀번호',
-        prefixIcon: Icon(
-          Icons.lock_rounded,
-          color: Colors.black45,
-        )
-      )
-    ],
-  );
-
   Widget _createTextInputSection() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _textFiledEmail(),
+        Text('이메일'),
+        SizedBox(height: 8,),
+        MainTextField(
+            hintText: '이메일',
+            prefixIcon: Icon(
+              Icons.mail_rounded,
+              color: Colors.black45,
+            )
+        ),
         SizedBox(height: 24,),
-        _textFiledPassword()
+        Text('비밀번호'),
+        SizedBox(height: 8,),
+        MainTextField(
+            hintText: '비밀번호',
+            prefixIcon: Icon(
+              Icons.lock_rounded,
+              color: Colors.black45,
+            )
+        ),
+        SizedBox(height: 24,),
+        Row(
+          children: [
+            InkWell(
+              onTap: () {
+
+              },
+              child: Text(
+                '아이디/비밀번호 찾기',
+                style: TextStyle(
+                  color: Colors.black54
+                ),
+              ),
+            )
+          ],
+        )
       ],
     );
   }
