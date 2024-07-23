@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               _createTextInputSection(),
-              SizedBox(height: 36,),
+              SizedBox(height: 48,),
               SizedBox(
                 width: double.infinity,
                 height: 48,
