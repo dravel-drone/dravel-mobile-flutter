@@ -37,7 +37,34 @@ class _LoginPageState extends State<LoginPage> {
         ),
         SizedBox(height: 24,),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: Checkbox(
+                      activeColor: Color(0xFF4285F4),
+                      value: true,
+                      onChanged: (value) {
+
+                      }
+                    ),
+                  ),
+                  SizedBox(width: 8,),
+                  Text(
+                    "아이디 저장",
+                    style: TextStyle(
+                        color: Colors.black54,
+                        height: 1
+                    ),
+                  )
+                ],
+              ),
+            ),
             InkWell(
               onTap: () {
 
@@ -45,7 +72,8 @@ class _LoginPageState extends State<LoginPage> {
               child: Text(
                 '아이디/비밀번호 찾기',
                 style: TextStyle(
-                  color: Colors.black54
+                  color: Colors.black54,
+                  height: 1
                 ),
               ),
             )
