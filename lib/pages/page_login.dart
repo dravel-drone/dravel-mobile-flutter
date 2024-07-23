@@ -17,10 +17,11 @@ class _LoginPageState extends State<LoginPage> {
       Text('이메일'),
       SizedBox(height: 8,),
       MainTextField(
-          prefixIcon: Icon(
-            Icons.mail_rounded,
-            color: Colors.black45,
-          )
+        hintText: '이메일',
+        prefixIcon: Icon(
+          Icons.mail_rounded,
+          color: Colors.black45,
+        )
       )
     ],
   );
@@ -31,10 +32,11 @@ class _LoginPageState extends State<LoginPage> {
       Text('비밀번호'),
       SizedBox(height: 8,),
       MainTextField(
-          prefixIcon: Icon(
-            Icons.lock_rounded,
-            color: Colors.black45,
-          )
+        hintText: '비밀번호',
+        prefixIcon: Icon(
+          Icons.lock_rounded,
+          color: Colors.black45,
+        )
       )
     ],
   );
