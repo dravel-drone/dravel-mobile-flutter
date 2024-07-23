@@ -1,4 +1,5 @@
 import 'package:dravel/widgets/appbar/appbar_main.dart';
+import 'package:dravel/widgets/button/button_main.dart';
 import 'package:dravel/widgets/textField/textfield_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,18 @@ class _LoginPageState extends State<LoginPage> {
           width: double.infinity,
           child: Column(
             children: [
-              _createTextInputSection()
+              _createTextInputSection(),
+              SizedBox(height: 36,),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: MainButton(
+                  onPressed: () {
+
+                  },
+                  childText: '로그인',
+                ),
+              )
             ],
           ),
         )
