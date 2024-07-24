@@ -1,3 +1,4 @@
+import 'package:dravel/pages/page_signup.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
 import 'package:dravel/widgets/textField/textfield_main.dart';
@@ -77,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 1
                 ),
               ),
-            )
+            ),
           ],
         )
       ],
@@ -113,6 +114,37 @@ class _LoginPageState extends State<LoginPage> {
 
                   },
                   childText: '로그인',
+                ),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '아직 회원이 아니신가요?',
+                        style: TextStyle(
+                          color: Colors.black54
+                        ),
+                      ),
+                      SizedBox(width: 4,),
+                      InkWell(
+                        onTap: () {
+                          Get.to(() => SignUpPage());
+                        },
+                        child: Text(
+                          '회원가입',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.blue
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               )
             ],
