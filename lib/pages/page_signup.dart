@@ -1,4 +1,6 @@
+import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
+import 'package:dravel/widgets/button/button_main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -28,18 +30,37 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _createTermPage() {
     return Container(
-      child: FilledButton(
-        onPressed: () {
-          _pageController.animateToPage(
-            1,
-            duration: Duration(milliseconds: 250),
-            curve: Curves.easeIn
-          );
-          setState(() {
-            _pageIdx = 1;
-          });
-        },
-        child: Text('next'),
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(24, 0, 24, getBottomPaddingWithHeight(context, 24)),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                Text('sss'),
+                Text('sss')
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 44,
+            width: double.infinity,
+            child: MainButton(
+              onPressed: () {
+                _pageController.animateToPage(
+                    1,
+                    duration: Duration(milliseconds: 250),
+                    curve: Curves.easeIn
+                );
+                setState(() {
+                  _pageIdx = 1;
+                });
+              },
+              childText: '다음'
+            ),
+          )
+        ],
       )
     );
   }
