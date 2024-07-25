@@ -1,3 +1,7 @@
+import 'package:dravel/pages/page_favorite.dart';
+import 'package:dravel/pages/page_home.dart';
+import 'package:dravel/pages/page_map.dart';
+import 'package:dravel/pages/page_profile.dart';
 import 'package:flutter/material.dart';
 
 class MainNavigationPage extends StatefulWidget {
@@ -8,13 +12,18 @@ class MainNavigationPage extends StatefulWidget {
 class _MainNavigationPageState extends State<MainNavigationPage> {
   int _selectedPageIdx = 1;
 
+  List<Widget> _pages = [
+    MapPage(),
+    HomePage(),
+    FavoritePage(),
+    ProfilePage()
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF1F1F5),
-      body: SafeArea(
-        child: Text('메인페이지'),
-      ),
+      body: _pages[_selectedPageIdx],
       bottomNavigationBar: ClipRRect(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24),
