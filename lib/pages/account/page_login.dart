@@ -1,4 +1,4 @@
-import 'package:dravel/pages/page_signup.dart';
+import 'package:dravel/pages/account/page_signup.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
 import 'package:dravel/widgets/textField/textfield_main.dart';
