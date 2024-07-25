@@ -1,4 +1,6 @@
+import 'package:dravel/pages/account/page_term_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class TermAgreementButton extends StatefulWidget {
   TermAgreementButton({
@@ -55,7 +57,10 @@ class _TermAgreementButtonState extends State<TermAgreementButton> {
           Expanded(
             child: GestureDetector(
               onTap: () {
-
+                Get.to(() => TermContent(
+                  content: widget.content,
+                  name: widget.name,
+                ));
               },
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
