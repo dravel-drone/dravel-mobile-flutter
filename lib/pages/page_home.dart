@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dravel/utils/util_ui.dart';
+import 'package:dravel/widgets/carousel/carousel_spot_recommend.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -40,99 +41,12 @@ class HomePage extends StatelessWidget {
             SizedBox(height: 24,),
             CarouselSlider(
               items: List.generate(_recommendSpotTestData.length, (idx) =>
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(36),
-                  child: GestureDetector(
-                    onTap: () {
-
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      child: Stack(
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            height: double.infinity,
-                            child: CachedNetworkImage(
-                              imageUrl: _recommendSpotTestData[idx]['img'],
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(24),
-                            color: Color(0x40000000),
-                            width: double.infinity,
-                            height: double.infinity,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _recommendSpotTestData[idx]['name'],
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600
-                                  ),
-                                ),
-                                Text(
-                                  _recommendSpotTestData[idx]['content'],
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w600
-                                  ),
-                                ),
-                                SizedBox(height: 8,),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.favorite,
-                                          color: Colors.white,
-                                          size: 18,
-                                        ),
-                                        SizedBox(width: 4,),
-                                        Text(
-                                          '${_recommendSpotTestData[idx]['like_count']}',
-                                          style: TextStyle(
-                                            color: Colors.white
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    SizedBox(width: 12,),
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.location_on,
-                                          color: Colors.white,
-                                          size: 18,
-                                        ),
-                                        SizedBox(width: 4,),
-                                        Text(
-                                          '${_recommendSpotTestData[idx]['address']}',
-                                          style: TextStyle(
-                                            color: Colors.white
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  )
+                DroneSpotRecommendCard(
+                  name: _recommendSpotTestData[idx]['name'],
+                  content: _recommendSpotTestData[idx]['content'],
+                  imageUrl: _recommendSpotTestData[idx]['img'],
+                  address: _recommendSpotTestData[idx]['address'],
+                  like_count: _recommendSpotTestData[idx]['like_count']
                 )
               ),
               options: CarouselOptions(
@@ -140,7 +54,7 @@ class HomePage extends StatelessWidget {
                 viewportFraction: 0.9,
                 aspectRatio: 9/10
               )
-            )
+            ),
           ],
         ),
       ),
