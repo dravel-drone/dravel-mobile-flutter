@@ -23,7 +23,7 @@ class _SignUpPageState extends State<SignUpPage> {
   late final FocusNode _droneFocusNode;
 
   final List<String> _ageList = <String>[
-    '10대 미만', '10대', '20대', '30대', '40대', '50대', '60대 이상'];
+    '선택안함', '10대 미만', '10대', '20대', '30대', '40대', '50대', '60대 이상'];
 
   int _pageIdx = 0;
 
