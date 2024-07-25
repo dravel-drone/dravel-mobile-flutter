@@ -138,7 +138,7 @@ class HomePage extends StatelessWidget {
               options: CarouselOptions(
                 enlargeCenterPage: true,
                 viewportFraction: 0.9,
-                aspectRatio: 6/7
+                aspectRatio: 9/10
               )
             )
           ],
