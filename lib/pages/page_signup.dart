@@ -1,6 +1,7 @@
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
+import 'package:dravel/widgets/button/button_term.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -38,8 +39,18 @@ class _SignUpPageState extends State<SignUpPage> {
           Expanded(
             child: Column(
               children: [
-                Text('sss'),
-                Text('sss')
+                TermAgreementButton(
+                  isRequired: false,
+                  isChecked: true,
+                  name: '개인정보처리방침',
+                  content: '내용입니다.',
+                ),
+                TermAgreementButton(
+                  isRequired: true,
+                  isChecked: false,
+                  name: '푸시알림동의',
+                  content: '내용입니다.',
+                ),
               ],
             ),
           ),
