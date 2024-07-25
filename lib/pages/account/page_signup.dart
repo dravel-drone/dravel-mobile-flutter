@@ -21,6 +21,9 @@ class _SignUpPageState extends State<SignUpPage> {
   late final FocusNode _passwordReFocusNode;
   late final FocusNode _droneFocusNode;
 
+  final List<String> _ageList = <String>[
+    '10대 미만', '10대', '20대', '30대', '40대', '50대', '60대 이상'];
+
   int _pageIdx = 0;
 
   @override
@@ -186,6 +189,35 @@ class _SignUpPageState extends State<SignUpPage> {
                       FocusScope.of(context).unfocus();
                     },
                     focusNode: _droneFocusNode,
+                  ),
+                  SizedBox(height: 24,),
+                  Text('나이 (선택)'),
+                  SizedBox(height: 8,),
+                  DropdownButtonFormField<int>(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Color(0x334285F4),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(12)
+                          )
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(12)
+                          )
+                      ),
+                    ),
+                    value: 0,
+                    items: List.generate(_ageList.length, (i) => DropdownMenuItem(
+                      value: i,
+                      child: Text(_ageList[i]),
+                    )),
+                    onChanged: (value) {
+
+                    }
                   )
                 ],
               ),
