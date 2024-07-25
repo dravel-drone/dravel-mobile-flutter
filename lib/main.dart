@@ -1,4 +1,5 @@
 import 'package:dravel/pages/account/page_login.dart';
+import 'package:dravel/pages/page_main_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,31 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Pretendard'
       ),
-      home: TestPage(),
-    );
-  }
-}
-
-class TestPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SizedBox(
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                  onPressed: () {
-                    Get.to(() => LoginPage());
-                  },
-                  child: Text('로그인 페이지')
-              )
-            ],
-          ),
-        ),
-      ),
+      home: MainNavigationPage(),
     );
   }
 }
