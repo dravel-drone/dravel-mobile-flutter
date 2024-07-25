@@ -2,6 +2,7 @@ import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
 import 'package:dravel/widgets/button/button_term.dart';
+import 'package:dravel/widgets/dropdown/dropdown_main.dart';
 import 'package:dravel/widgets/textField/textfield_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -193,23 +194,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   SizedBox(height: 24,),
                   Text('나이 (선택)'),
                   SizedBox(height: 8,),
-                  DropdownButtonFormField<int>(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Color(0x334285F4),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(12)
-                          )
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(12)
-                          )
-                      ),
-                    ),
+                  MainDropDown(
                     value: 0,
                     items: List.generate(_ageList.length, (i) => DropdownMenuItem(
                       value: i,
