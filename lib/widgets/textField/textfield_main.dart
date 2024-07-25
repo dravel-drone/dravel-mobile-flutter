@@ -4,9 +4,11 @@ class MainTextField extends TextField {
   MainTextField({
     Icon? prefixIcon,
     String? hintText,
+    TextInputAction action = TextInputAction.done,
     super.controller,
     super.key
   }) : super(
+    textInputAction: action,
     decoration: InputDecoration(
       filled: true,
       fillColor: Color(0x334285F4),
