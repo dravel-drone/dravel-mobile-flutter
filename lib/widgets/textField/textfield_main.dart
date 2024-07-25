@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 class MainTextField extends TextField {
   MainTextField({
+    Function()? onEditingComplete,
+    FocusNode? focusNode,
     Icon? prefixIcon,
     String? hintText,
     TextInputAction action = TextInputAction.done,
@@ -25,7 +27,9 @@ class MainTextField extends TextField {
             Radius.circular(12)
         )
       ),
-      prefixIcon: prefixIcon
+      prefixIcon: prefixIcon,
     ),
+    onEditingComplete: onEditingComplete,
+    focusNode: focusNode
   );
 }
