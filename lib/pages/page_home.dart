@@ -96,16 +96,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 }
-                return AnimatedSwitcher(
-                  duration: Duration(milliseconds: 800),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
-                    return FadeTransition(opacity: animation, child: child);
-                  },
-                  child: Padding(
-                    key: ValueKey<int>(idx == _selectedCarouselCard ? 1 : 0),
-                    padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                    child: child,
-                  ),
+                return Padding(
+                  key: ValueKey<int>(idx == _selectedCarouselCard ? 1 : 0),
+                  padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                  child: child,
                 );
               }),
             )
