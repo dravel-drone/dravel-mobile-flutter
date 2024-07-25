@@ -69,41 +69,45 @@ class _HomePageState extends State<HomePage> {
               )
             ),
             SizedBox(height: 12,),
-            AnimatedContainer(
-              duration: Duration(milliseconds: 200),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(_recommendSpotTestData.length, (idx) {
-                  if (idx == _selectedCarouselCard) {
-                    return Padding(
-                      padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                      child: Container(
-                        height: 10,
-                        width: 34,
-                        decoration: BoxDecoration(
-                            color: Color(0xFF0075FF),
-                            borderRadius: BorderRadius.all(
-                                Radius.circular(40)
-                            )
-                        ),
-                      ),
-                    );
-                  }
-                  return Padding(
-                    padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                    child: Container(
-                      height: 10,
-                      width: 10,
-                      decoration: BoxDecoration(
-                          color: Colors.black54,
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(40)
-                          )
-                      ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(_recommendSpotTestData.length, (idx) {
+                Widget child;
+                if (idx == _selectedCarouselCard) {
+                  child = Container(
+                    height: 10,
+                    width: 34,
+                    decoration: BoxDecoration(
+                        color: Color(0xFF0075FF),
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(40)
+                        )
                     ),
                   );
-                }),
-              ),
+                } else {
+                  child = Container(
+                    height: 10,
+                    width: 10,
+                    decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(40)
+                        )
+                    ),
+                  );
+                }
+                return AnimatedSwitcher(
+                  duration: Duration(milliseconds: 800),
+                  transitionBuilder: (Widget child, Animation<double> animation) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
+                  child: Padding(
+                    key: ValueKey<int>(idx == _selectedCarouselCard ? 1 : 0),
+                    padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                    child: child,
+                  ),
+                );
+              }),
             )
           ],
         ),
