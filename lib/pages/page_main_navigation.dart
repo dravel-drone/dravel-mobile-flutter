@@ -34,7 +34,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
           showUnselectedLabels: false,
           currentIndex: _selectedPageIdx,
           unselectedItemColor: Colors.black,
-          selectedItemColor: Colors.blue,
+          selectedItemColor: Color(0xFF0075FF),
           items: [
             BottomNavigationBarItem(
                 icon: Icon(

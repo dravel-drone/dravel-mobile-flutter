@@ -4,7 +4,14 @@ import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/carousel/carousel_spot_recommend.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedCarouselCard = 0;
+
   List<dynamic> _recommendSpotTestData = [
     {
       'img': 'https://images.unsplash.com/photo-1643785005361-947c91314690?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -50,11 +57,54 @@ class HomePage extends StatelessWidget {
                 )
               ),
               options: CarouselOptions(
+                initialPage: _selectedCarouselCard,
                 enlargeCenterPage: true,
                 viewportFraction: 0.9,
-                aspectRatio: 9/10
+                aspectRatio: 9/10,
+                onPageChanged: (idx, reason) {
+                  setState(() {
+                    _selectedCarouselCard = idx;
+                  });
+                }
               )
             ),
+            SizedBox(height: 12,),
+            AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(_recommendSpotTestData.length, (idx) {
+                  if (idx == _selectedCarouselCard) {
+                    return Padding(
+                      padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                      child: Container(
+                        height: 10,
+                        width: 34,
+                        decoration: BoxDecoration(
+                            color: Color(0xFF0075FF),
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(40)
+                            )
+                        ),
+                      ),
+                    );
+                  }
+                  return Padding(
+                    padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                    child: Container(
+                      height: 10,
+                      width: 10,
+                      decoration: BoxDecoration(
+                          color: Colors.black54,
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(40)
+                          )
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            )
           ],
         ),
       ),
