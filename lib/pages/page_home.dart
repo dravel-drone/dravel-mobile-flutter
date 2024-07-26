@@ -29,6 +29,68 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
+  Widget _createDroneSpotRecommendSection() => Column(
+    children: [
+      CarouselSlider(
+          items: List.generate(_recommendSpotTestData.length, (idx) =>
+              DroneSpotRecommendCard(
+                  name: _recommendSpotTestData[idx]['name'],
+                  content: _recommendSpotTestData[idx]['content'],
+                  imageUrl: _recommendSpotTestData[idx]['img'],
+                  address: _recommendSpotTestData[idx]['address'],
+                  like_count: _recommendSpotTestData[idx]['like_count']
+              )
+          ),
+          options: CarouselOptions(
+              initialPage: _selectedCarouselCard,
+              enlargeCenterPage: true,
+              viewportFraction: 0.9,
+              aspectRatio: 9/10,
+              onPageChanged: (idx, reason) {
+                setState(() {
+                  _selectedCarouselCard = idx;
+                });
+              }
+          )
+      ),
+      SizedBox(height: 12,),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(_recommendSpotTestData.length, (idx) {
+          Widget child;
+          if (idx == _selectedCarouselCard) {
+            child = Container(
+              height: 10,
+              width: 34,
+              decoration: BoxDecoration(
+                  color: Color(0xFF0075FF),
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(40)
+                  )
+              ),
+            );
+          } else {
+            child = Container(
+              height: 10,
+              width: 10,
+              decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(40)
+                  )
+              ),
+            );
+          }
+          return Padding(
+            key: ValueKey<int>(idx == _selectedCarouselCard ? 1 : 0),
+            padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+            child: child,
+          );
+        }),
+      )
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -46,63 +108,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: 24,),
-            CarouselSlider(
-              items: List.generate(_recommendSpotTestData.length, (idx) =>
-                DroneSpotRecommendCard(
-                  name: _recommendSpotTestData[idx]['name'],
-                  content: _recommendSpotTestData[idx]['content'],
-                  imageUrl: _recommendSpotTestData[idx]['img'],
-                  address: _recommendSpotTestData[idx]['address'],
-                  like_count: _recommendSpotTestData[idx]['like_count']
-                )
-              ),
-              options: CarouselOptions(
-                initialPage: _selectedCarouselCard,
-                enlargeCenterPage: true,
-                viewportFraction: 0.9,
-                aspectRatio: 9/10,
-                onPageChanged: (idx, reason) {
-                  setState(() {
-                    _selectedCarouselCard = idx;
-                  });
-                }
-              )
-            ),
-            SizedBox(height: 12,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(_recommendSpotTestData.length, (idx) {
-                Widget child;
-                if (idx == _selectedCarouselCard) {
-                  child = Container(
-                    height: 10,
-                    width: 34,
-                    decoration: BoxDecoration(
-                        color: Color(0xFF0075FF),
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(40)
-                        )
-                    ),
-                  );
-                } else {
-                  child = Container(
-                    height: 10,
-                    width: 10,
-                    decoration: BoxDecoration(
-                        color: Colors.black54,
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(40)
-                        )
-                    ),
-                  );
-                }
-                return Padding(
-                  key: ValueKey<int>(idx == _selectedCarouselCard ? 1 : 0),
-                  padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                  child: child,
-                );
-              }),
-            )
+            _createDroneSpotRecommendSection()
           ],
         ),
       ),
