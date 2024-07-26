@@ -15,6 +15,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedCarouselCard = 0;
 
+  int _maxReviewCount = 0;
+
   List<dynamic> _recommendSpotTestData = [
     {
       'img': 'https://images.unsplash.com/photo-1643785005361-947c91314690?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -98,6 +100,14 @@ class _HomePageState extends State<HomePage> {
       'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.'
     },
   ];
+
+  @override
+  void initState() {
+    if (_recommendReviewTestData.length > 3) {
+      _maxReviewCount = 3;
+    }
+    super.initState();
+  }
 
   Widget _createDroneSpotRecommendSection() {
     return Column(
@@ -202,7 +212,32 @@ class _HomePageState extends State<HomePage> {
                   height: 14,
                 );
               },
-              itemCount: _recommendReviewTestData.length
+              itemCount: _maxReviewCount
+            ),
+            SizedBox(height: 8,),
+            if (_maxReviewCount < _recommendReviewTestData.length)
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _maxReviewCount = _recommendReviewTestData.length;
+                  });
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      '더보기',
+                      style: TextStyle(
+                        color: Colors.black54
+                      ),
+                    ),
+                    Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: Colors.black54
+                    )
+                  ],
+                ),
             )
           ],
         ),
