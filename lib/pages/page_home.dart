@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/carousel/carousel_spot_recommend.dart';
+import 'package:dravel/widgets/list/list_item_review.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -188,94 +189,12 @@ class _HomePageState extends State<HomePage> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, idx) {
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
-                  child: Container(
-                    width: double.infinity,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(18),
-                      color: Color(0xFFF1F1F5),
-                    ),
-                    child: Row(
-                      children: [
-                        CachedNetworkImage(
-                          imageUrl: _recommendReviewTestData[idx]['img'],
-                          width: 100,
-                          height: 150,
-                          fit: BoxFit.cover,
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        _recommendReviewTestData[idx]['name'],
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color(0xFF0075FF)
-                                        ),
-                                      ),
-                                    ),
-                                    _recommendReviewTestData[idx]['is_like'] ?
-                                      Icon(
-                                        Icons.favorite,
-                                        color: Color(0xFF0075FF),
-                                        size: 16,
-                                      ) : Icon(
-                                        Icons.favorite_border,
-                                        color: Colors.black54,
-                                        size: 16,
-                                      ),
-                                    SizedBox(width: 2,),
-                                    Text(
-                                      '${_recommendReviewTestData[idx]['like_count']}',
-                                      style: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 14
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                Text(
-                                  _recommendReviewTestData[idx]['place'],
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 4,
-                                ),
-                                Expanded(
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      _recommendReviewTestData[idx]['content'],
-                                      style: TextStyle(
-                                          color: Colors.black54
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                      softWrap: true,
-                                      maxLines: 3,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
+                return ReviewRecommendItem(
+                  img: _recommendReviewTestData[idx]['img'],
+                  name: _recommendReviewTestData[idx]['name'],
+                  place: _recommendReviewTestData[idx]['place'],
+                  content: _recommendReviewTestData[idx]['content'],
+                  likeCount: _recommendReviewTestData[idx]['like_count']
                 );
               },
               separatorBuilder: (context, idx) {
