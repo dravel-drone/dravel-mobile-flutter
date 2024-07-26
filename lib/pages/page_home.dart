@@ -94,7 +94,29 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _createReviewRecommendSection() {
-    return Column();
+    return Padding(
+      padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.fromLTRB(18, 12, 18, 12),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            color: Colors.white
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '인기 리뷰',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -116,6 +138,9 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 18,),
               _createDroneSpotRecommendSection(),
+              SizedBox(
+                height: 24,
+              ),
               _createReviewRecommendSection()
             ],
           ),
