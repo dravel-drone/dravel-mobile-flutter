@@ -224,6 +224,24 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                     ),
+                                    _recommendReviewTestData[idx]['is_like'] ?
+                                      Icon(
+                                        Icons.favorite,
+                                        color: Color(0xFF0075FF),
+                                        size: 16,
+                                      ) : Icon(
+                                        Icons.favorite_border,
+                                        color: Colors.black54,
+                                        size: 16,
+                                      ),
+                                    SizedBox(width: 2,),
+                                    Text(
+                                      '${_recommendReviewTestData[idx]['like_count']}',
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 14
+                                      ),
+                                    )
                                   ],
                                 ),
                                 Text(
