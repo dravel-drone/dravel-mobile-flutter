@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
       'place': '신안',
       'is_like': true,
       'like_count': 394,
-      'content': '국가는 과학기술의 혁신과 정보 및 인력의 개발을 통하여 국민경제의 발전에 노력하여야 한다. 국가는 재해를 예방하고 그 위험으로부터 국민을 보호하기 위하여 노력하여야 한다. 국군은 국가의 안전보장과 국토방위의 신성한 의무를 수행함을 사명으로 하며, 그 정치적 중립성은 준수된다. 법률안에 이의가 있을 때에는 대통령은 제1항의 기간내에 이의서를 붙여 국회로 환부하고, 그 재의를 요구할 수 있다. 국회의 폐회중에도 또한 같다.'
+      'content': '테스트'
     },
     {
       'img': 'https://images.unsplash.com/photo-1465447142348-e9952c393450?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -167,7 +167,7 @@ class _HomePageState extends State<HomePage> {
       padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.fromLTRB(18, 24, 18, 12),
+        padding: EdgeInsets.fromLTRB(18, 18, 18, 12),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             color: Colors.white
@@ -202,7 +202,7 @@ class _HomePageState extends State<HomePage> {
                         CachedNetworkImage(
                           imageUrl: _recommendReviewTestData[idx]['img'],
                           width: 100,
-                          height: double.infinity,
+                          height: 150,
                           fit: BoxFit.cover,
                         ),
                         Expanded(
@@ -237,14 +237,19 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(
                                   height: 4,
                                 ),
-                                Text(
-                                  _recommendReviewTestData[idx]['content'],
-                                  style: TextStyle(
-                                    color: Colors.black54
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      _recommendReviewTestData[idx]['content'],
+                                      style: TextStyle(
+                                          color: Colors.black54
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      maxLines: 3,
+                                    ),
                                   ),
-                                  overflow: TextOverflow.ellipsis,
-                                  softWrap: true,
-                                  maxLines: 3,
                                 )
                               ],
                             ),
