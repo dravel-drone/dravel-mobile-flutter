@@ -167,7 +167,7 @@ class _HomePageState extends State<HomePage> {
       padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.fromLTRB(18, 12, 18, 12),
+        padding: EdgeInsets.fromLTRB(18, 24, 18, 12),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             color: Colors.white
@@ -182,6 +182,85 @@ class _HomePageState extends State<HomePage> {
                 fontWeight: FontWeight.w600,
                 height: 1
               ),
+            ),
+            SizedBox(height: 12,),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, idx) {
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(18),
+                  child: Container(
+                    width: double.infinity,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(18),
+                      color: Color(0xFFF1F1F5),
+                    ),
+                    child: Row(
+                      children: [
+                        CachedNetworkImage(
+                          imageUrl: _recommendReviewTestData[idx]['img'],
+                          width: 100,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        _recommendReviewTestData[idx]['name'],
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color(0xFF0075FF)
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  _recommendReviewTestData[idx]['place'],
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                Text(
+                                  _recommendReviewTestData[idx]['content'],
+                                  style: TextStyle(
+                                    color: Colors.black54
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: true,
+                                  maxLines: 3,
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (context, idx) {
+                return const SizedBox(
+                  height: 14,
+                );
+              },
+              itemCount: _recommendReviewTestData.length
             )
           ],
         ),
@@ -212,7 +291,10 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 24,
               ),
-              _createReviewRecommendSection()
+              _createReviewRecommendSection(),
+              SizedBox(
+                height: 24,
+              ),
             ],
           ),
         ),
