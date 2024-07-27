@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/carousel/carousel_spot_recommend.dart';
+import 'package:dravel/widgets/list/list_item_course.dart';
 import 'package:dravel/widgets/list/list_item_review.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -207,81 +208,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: 12,),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(18),
-              child: GestureDetector(
-                onTap: () {
-
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 170,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(18),
-                    color: Color(0xFFF1F1F5),
-                  ),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: CachedNetworkImage(
-                          imageUrl: _courseTestData[0]['img'],
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
-                      ),
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _courseTestData[0]['name'],
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.outlined_flag_rounded,
-                                  // color: Color(0xFF0075FF),
-                                  size: 14,
-                                ),
-                                SizedBox(width: 2,),
-                                Text(
-                                  formatDistance(_courseTestData[0]['distance']),
-                                  style: TextStyle(
-                                      color: Colors.black87,
-                                      fontSize: 12
-                                  ),
-                                ),
-                                SizedBox(width: 8,),
-                                Icon(
-                                  Icons.schedule_rounded,
-                                  // color: Color(0xFF0075FF),
-                                  size: 14,
-                                ),
-                                SizedBox(width: 2,),
-                                Text(
-                                  formatTime(_courseTestData[0]['duration']),
-                                  style: TextStyle(
-                                      color: Colors.black87,
-                                      fontSize: 12
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+            CourseItem(
+              img: _courseTestData[0]['img'],
+              name: _courseTestData[0]['name'],
+              distance: _courseTestData[0]['distance'],
+              duration: _courseTestData[0]['duration']
             )
           ],
         ),
