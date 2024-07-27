@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/utils/util_ui.dart';
+import 'package:dravel/widgets/list/list_item_dronespot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -175,97 +176,14 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
     return ListView.separated(
       padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
         itemBuilder: (context, idx) {
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(18),
-            child: GestureDetector(
-              // onTap: onTap,
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(14),
-                height: 154,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
-                  color: Colors.white,
-                ),
-                child: Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: CachedNetworkImage(
-                        height: double.infinity,
-                        width: 110,
-                        fit: BoxFit.cover,
-                        imageUrl: _droneLikeTestData[idx]['img'],
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(16, 8, 4, 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    _droneLikeTestData[idx]['name'],
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black,
-                                      height: 1
-                                    ),
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.favorite,
-                                  color: Color(0xFF0075FF),
-                                  size: 16,
-                                ),
-                                SizedBox(width: 2,),
-                                Text(
-                                  '${_droneLikeTestData[idx]['like_count']}',
-                                  style: TextStyle(
-                                      color: Colors.black87,
-                                      fontSize: 14
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(height: 6,),
-                            getFlyPermitWidget(_droneLikeTestData[idx]['flight']),
-                            SizedBox(height: 2,),
-                            getPicturePermitWidget(_droneLikeTestData[idx]['camera']),
-                            SizedBox(height: 2,),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.location_on,
-                                  color: Colors.black54,
-                                  size: 18,
-                                ),
-                                SizedBox(width: 4,),
-                                Text(
-                                  _droneLikeTestData[idx]['address'],
-                                )
-                              ],
-                            ),
-                            Text(
-                              '리뷰 ${_droneLikeTestData[idx]['like_count']}',
-                              style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 14
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
+          return DroneSpotItem(
+            name: _droneLikeTestData[idx]['name'],
+            imageUrl: _droneLikeTestData[idx]['img'],
+            address: _droneLikeTestData[idx]['address'],
+            like_count: _droneLikeTestData[idx]['like_count'],
+            review_count: _droneLikeTestData[idx]['review_count'],
+            camera_level: _droneLikeTestData[idx]['camera'],
+            fly_level: _droneLikeTestData[idx]['flight']
           );
         },
         separatorBuilder: (context, idx) {
