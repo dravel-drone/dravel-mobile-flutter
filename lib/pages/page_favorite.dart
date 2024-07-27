@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -12,6 +13,33 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
   int _selectedTab = 0;
 
   List<dynamic> _droneLikeTestData = [
+    {
+      'img': 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '거제도',
+      'like_count': 234,
+      'review_count': 4354,
+      'flight': 0,
+      'camera': 2,
+      'address': '경상남도 거제시'
+    },
+    {
+      'img': 'https://images.unsplash.com/photo-1485086806232-72035a9f951c?q=80&w=1635&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '두바이',
+      'like_count': 4353,
+      'review_count': 123,
+      'flight': 1,
+      'camera': 1,
+      'address': '경상남도 두바이시'
+    },
+    {
+      'img': 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '부산항',
+      'like_count': 234,
+      'review_count': 4354,
+      'flight': 2,
+      'camera': 2,
+      'address': '경상남도 부산시'
+    },
     {
       'img': 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       'name': '거제도',
@@ -143,8 +171,79 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
   }
 
   Widget _createDroneSpotLikeSection() {
-    return Container(
-      child: Text('drone'),
+    return ListView.separated(
+      padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
+        itemBuilder: (context, idx) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(18),
+            child: GestureDetector(
+              // onTap: onTap,
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(14),
+                height: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(18),
+                  color: Colors.white,
+                ),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: CachedNetworkImage(
+                        height: double.infinity,
+                        width: 90,
+                        fit: BoxFit.cover,
+                        imageUrl: _droneLikeTestData[idx]['img'],
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(16, 4, 4, 4),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    _droneLikeTestData[idx]['name'],
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.favorite,
+                                  color: Color(0xFF0075FF),
+                                  size: 16,
+                                ),
+                                SizedBox(width: 2,),
+                                Text(
+                                  '${_droneLikeTestData[idx]['like_count']}',
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 14
+                                  ),
+                                )
+                              ],
+                            ),
+
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+        separatorBuilder: (context, idx) {
+          return SizedBox(height: 12,);
+        },
+        itemCount: _droneLikeTestData.length
     );
   }
 
@@ -171,7 +270,9 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
       child: Column(
         children: [
           _createAppbar(),
-          child!
+          Expanded(
+            child: child!,
+          )
         ],
       ),
     );
