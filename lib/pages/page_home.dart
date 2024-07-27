@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/carousel/carousel_spot_recommend.dart';
 import 'package:dravel/widgets/list/list_item_review.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -173,6 +174,33 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _createCourseRecommendSection() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.fromLTRB(18, 18, 18, 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          color: Colors.white
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '추천 코스',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  height: 1
+              ),
+            )
+          ],
+        ),
+      )
+    );
+  }
+
   Widget _createReviewRecommendSection() {
     return Padding(
       padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
@@ -265,6 +293,10 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 18,),
               _createDroneSpotRecommendSection(),
+              SizedBox(
+                height: 24,
+              ),
+              _createCourseRecommendSection(),
               SizedBox(
                 height: 24,
               ),
