@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dravel/utils/util_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -229,7 +230,7 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
                                 )
                               ],
                             ),
-
+                            getFlyPermitWidget(_droneLikeTestData[idx]['flight'])
                           ],
                         ),
                       ),
