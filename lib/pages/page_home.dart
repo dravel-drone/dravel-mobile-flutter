@@ -138,7 +138,8 @@ class _HomePageState extends State<HomePage> {
             options: CarouselOptions(
                 initialPage: _selectedCarouselCard,
                 enlargeCenterPage: true,
-                viewportFraction: 0.9,
+                viewportFraction: 0.87,
+                enlargeFactor: 0.25,
                 aspectRatio: 9/10,
                 onPageChanged: (idx, reason) {
                   setState(() {
