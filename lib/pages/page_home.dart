@@ -8,6 +8,8 @@ import 'package:dravel/widgets/list/list_item_review.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/util_map.dart';
+
 class HomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _HomePageState();
@@ -102,6 +104,15 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
+  List<dynamic> _courseTestData = [
+    {
+      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '제주 코스',
+      'distance': 2434,
+      'duration': 345
+    }
+  ];
+
   @override
   void initState() {
     if (_recommendReviewTestData.length > 3) {
@@ -179,7 +190,7 @@ class _HomePageState extends State<HomePage> {
       padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.fromLTRB(18, 18, 18, 12),
+        padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
           color: Colors.white
@@ -193,6 +204,83 @@ class _HomePageState extends State<HomePage> {
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                   height: 1
+              ),
+            ),
+            SizedBox(height: 12,),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(18),
+              child: GestureDetector(
+                onTap: () {
+
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 170,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    color: Color(0xFFF1F1F5),
+                  ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: CachedNetworkImage(
+                          imageUrl: _courseTestData[0]['img'],
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _courseTestData[0]['name'],
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.outlined_flag_rounded,
+                                  // color: Color(0xFF0075FF),
+                                  size: 14,
+                                ),
+                                SizedBox(width: 2,),
+                                Text(
+                                  formatDistance(_courseTestData[0]['distance']),
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 12
+                                  ),
+                                ),
+                                SizedBox(width: 8,),
+                                Icon(
+                                  Icons.schedule_rounded,
+                                  // color: Color(0xFF0075FF),
+                                  size: 14,
+                                ),
+                                SizedBox(width: 2,),
+                                Text(
+                                  formatTime(_courseTestData[0]['duration']),
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 12
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
             )
           ],
