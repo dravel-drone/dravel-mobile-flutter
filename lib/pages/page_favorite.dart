@@ -12,6 +12,8 @@ class FavoritePage extends StatefulWidget {
 
 class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMixin {
   late final TabController _tabController;
+  late final ScrollController _droneSpotController;
+  late final ScrollController _reviewController;
 
   int _selectedTab = 0;
 
@@ -142,7 +144,17 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
       length: 2,
       vsync: this
     );
+    _reviewController = ScrollController();
+    _droneSpotController = ScrollController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _reviewController.dispose();
+    _droneSpotController.dispose();
+    super.dispose();
   }
 
   Widget _createAppbar() {
@@ -184,11 +196,6 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
                       labelPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                       labelColor: Color(0xFF0075FF),
                       indicatorColor: Color(0xFF0075FF),
-                      onTap: (index) {
-                        setState(() {
-                          _selectedTab = index;
-                        });
-                      },
                       tabs: const [
                         Tab(text: "드론스팟"),
                         Tab(text: "리뷰"),
@@ -205,65 +212,65 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
 
   Widget _createDroneSpotLikeSection() {
     return ListView.separated(
+      key: PageStorageKey('drone'),
       padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
-        itemBuilder: (context, idx) {
-          return DroneSpotItem(
-            name: _droneLikeTestData[idx]['name'],
-            imageUrl: _droneLikeTestData[idx]['img'],
-            address: _droneLikeTestData[idx]['address'],
-            like_count: _droneLikeTestData[idx]['like_count'],
-            review_count: _droneLikeTestData[idx]['review_count'],
-            camera_level: _droneLikeTestData[idx]['camera'],
-            fly_level: _droneLikeTestData[idx]['flight']
-          );
-        },
-        separatorBuilder: (context, idx) {
-          return SizedBox(height: 12,);
-        },
-        itemCount: _droneLikeTestData.length
+      controller: _droneSpotController,
+      itemBuilder: (context, idx) {
+        return DroneSpotItem(
+          name: _droneLikeTestData[idx]['name'],
+          imageUrl: _droneLikeTestData[idx]['img'],
+          address: _droneLikeTestData[idx]['address'],
+          like_count: _droneLikeTestData[idx]['like_count'],
+          review_count: _droneLikeTestData[idx]['review_count'],
+          camera_level: _droneLikeTestData[idx]['camera'],
+          fly_level: _droneLikeTestData[idx]['flight']
+        );
+      },
+      separatorBuilder: (context, idx) {
+        return SizedBox(height: 12,);
+      },
+      itemCount: _droneLikeTestData.length
     );
   }
 
   Widget _createReviewLikeSection() {
     return ListView.separated(
-        padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
-        itemBuilder: (context, idx) {
-          return ReviewFullItem(
-              img: _reviewLikeTestData[idx]['img'],
-              name: _reviewLikeTestData[idx]['name'],
-              place: _reviewLikeTestData[idx]['place'],
-              content: _reviewLikeTestData[idx]['content'],
-              likeCount: _reviewLikeTestData[idx]['like_count'],
-              drone: _reviewLikeTestData[idx]['drone'],
-              date: _reviewLikeTestData[idx]['write_date']
-          );;
-        },
-        separatorBuilder: (context, idx) {
-          return SizedBox(height: 12,);
-        },
-        itemCount: _reviewLikeTestData.length
+      key: PageStorageKey('review'),
+      padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
+      controller: _reviewController,
+      itemBuilder: (context, idx) {
+        return ReviewFullItem(
+          img: _reviewLikeTestData[idx]['img'],
+          name: _reviewLikeTestData[idx]['name'],
+          place: _reviewLikeTestData[idx]['place'],
+          content: _reviewLikeTestData[idx]['content'],
+          likeCount: _reviewLikeTestData[idx]['like_count'],
+          drone: _reviewLikeTestData[idx]['drone'],
+          date: _reviewLikeTestData[idx]['write_date']
+        );;
+      },
+      separatorBuilder: (context, idx) {
+        return SizedBox(height: 12,);
+      },
+      itemCount: _reviewLikeTestData.length
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget? child;
-    switch(_selectedTab) {
-      case 0:
-        child = _createDroneSpotLikeSection();
-        break;
-      case 1:
-        child = _createReviewLikeSection();
-        break;
-    }
-
     return SafeArea(
       top: false,
       child: Column(
         children: [
           _createAppbar(),
           Expanded(
-            child: child!,
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _createDroneSpotLikeSection(),
+                _createReviewLikeSection()
+              ],
+            ),
           )
         ],
       ),
