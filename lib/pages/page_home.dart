@@ -200,7 +200,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '추천 코스',
+              '오늘의 추천 코스',
               style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
