@@ -51,3 +51,40 @@ Widget getFlyPermitWidget(int level) {
     ],
   );
 }
+
+Widget getPicturePermitWidget(int level) {
+  String svgPath;
+  String message;
+  switch(level) {
+    case 0: {
+      svgPath = 'assets/images/icons/ban.svg';
+      message = '촬영 불가';
+      break;
+    }
+    case 1: {
+      svgPath = 'assets/images/icons/contect.svg';
+      message = '촬영 허가 필요';
+      break;
+    }
+    default: {
+      svgPath = 'assets/images/icons/allow.svg';
+      message = '촬영 가능';
+      break;
+    }
+  }
+
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      SvgPicture.asset(
+        svgPath,
+        width: 18,
+        height: 18,
+      ),
+      SizedBox(width: 6,),
+      Text(
+        message
+      )
+    ],
+  );
+}

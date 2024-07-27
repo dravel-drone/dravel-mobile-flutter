@@ -200,7 +200,7 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
                     ),
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.fromLTRB(16, 4, 4, 4),
+                        padding: EdgeInsets.fromLTRB(16, 8, 4, 8),
                         child: Column(
                           children: [
                             Row(
@@ -209,9 +209,10 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
                                   child: Text(
                                     _droneLikeTestData[idx]['name'],
                                     style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black,
+                                      height: 1
                                     ),
                                   ),
                                 ),
@@ -230,7 +231,11 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
                                 )
                               ],
                             ),
-                            getFlyPermitWidget(_droneLikeTestData[idx]['flight'])
+                            SizedBox(height: 4,),
+                            getFlyPermitWidget(_droneLikeTestData[idx]['flight']),
+                            SizedBox(height: 2,),
+                            getPicturePermitWidget(_droneLikeTestData[idx]['camera']),
+
                           ],
                         ),
                       ),
