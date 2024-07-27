@@ -182,7 +182,7 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
               child: Container(
                 width: double.infinity,
                 padding: EdgeInsets.all(14),
-                height: 150,
+                height: 154,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(18),
                   color: Colors.white,
@@ -193,7 +193,7 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
                       borderRadius: BorderRadius.circular(6),
                       child: CachedNetworkImage(
                         height: double.infinity,
-                        width: 90,
+                        width: 110,
                         fit: BoxFit.cover,
                         imageUrl: _droneLikeTestData[idx]['img'],
                       ),
@@ -202,6 +202,7 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
                       child: Padding(
                         padding: EdgeInsets.fromLTRB(16, 8, 4, 8),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
@@ -231,11 +232,32 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
                                 )
                               ],
                             ),
-                            SizedBox(height: 4,),
+                            SizedBox(height: 6,),
                             getFlyPermitWidget(_droneLikeTestData[idx]['flight']),
                             SizedBox(height: 2,),
                             getPicturePermitWidget(_droneLikeTestData[idx]['camera']),
-
+                            SizedBox(height: 2,),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  color: Colors.black54,
+                                  size: 18,
+                                ),
+                                SizedBox(width: 4,),
+                                Text(
+                                  _droneLikeTestData[idx]['address'],
+                                )
+                              ],
+                            ),
+                            Text(
+                              '리뷰 ${_droneLikeTestData[idx]['like_count']}',
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 14
+                              ),
+                            )
                           ],
                         ),
                       ),
