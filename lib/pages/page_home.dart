@@ -4,8 +4,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/carousel/carousel_spot_recommend.dart';
+import 'package:dravel/widgets/list/list_item_course.dart';
 import 'package:dravel/widgets/list/list_item_review.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../utils/util_map.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -101,6 +105,15 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
+  List<dynamic> _courseTestData = [
+    {
+      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '제주 코스',
+      'distance': 2434,
+      'duration': 345
+    }
+  ];
+
   @override
   void initState() {
     if (_recommendReviewTestData.length > 3) {
@@ -170,6 +183,40 @@ class _HomePageState extends State<HomePage> {
           }),
         )
       ],
+    );
+  }
+
+  Widget _createCourseRecommendSection() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          color: Colors.white
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '오늘의 추천 코스',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  height: 1
+              ),
+            ),
+            SizedBox(height: 12,),
+            CourseItem(
+              img: _courseTestData[0]['img'],
+              name: _courseTestData[0]['name'],
+              distance: _courseTestData[0]['distance'],
+              duration: _courseTestData[0]['duration']
+            )
+          ],
+        ),
+      )
     );
   }
 
@@ -265,6 +312,10 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 18,),
               _createDroneSpotRecommendSection(),
+              SizedBox(
+                height: 24,
+              ),
+              _createCourseRecommendSection(),
               SizedBox(
                 height: 24,
               ),
