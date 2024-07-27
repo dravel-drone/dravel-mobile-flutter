@@ -35,7 +35,7 @@ class DroneSpotItem extends StatelessWidget {
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.all(14),
-          height: 154,
+          height: 152,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
             color: Colors.white,
@@ -104,11 +104,13 @@ class DroneSpotItem extends StatelessWidget {
                           )
                         ],
                       ),
+                      SizedBox(height: 4,),
                       Text(
                         '리뷰 $review_count',
                         style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 14
+                          color: Colors.black54,
+                          fontSize: 14,
+                          height: 1
                         ),
                       )
                     ],
