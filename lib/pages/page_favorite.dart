@@ -162,13 +162,13 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(
-            statusBarColor: Colors.grey.shade200,
+            statusBarColor: Colors.white,
             statusBarBrightness: SystemUiOverlayStyle.dark.statusBarBrightness,
             statusBarIconBrightness: SystemUiOverlayStyle.dark.statusBarIconBrightness,
             systemStatusBarContrastEnforced: SystemUiOverlayStyle.dark.systemStatusBarContrastEnforced,
           ),
           child: Material(
-            color: Colors.grey.shade200,
+            color: Colors.white,
             child: Semantics(
               explicitChildNodes: true,
               child: SafeArea(
