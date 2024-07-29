@@ -1,12 +1,29 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/pages/account/page_login.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin {
+  late final TabController _tabController;
+
+  @override
+  void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   Widget _createAppbar() {
     return PreferredSize(
@@ -173,6 +190,7 @@ class ProfilePage extends StatelessWidget {
           Row(
             children: [
               Ink(
+                height: 40,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12)
@@ -196,10 +214,40 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
               Flexible(
-                fit: FlexFit.tight,
-                child: SizedBox(),
-              ),
-
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    height: 40,
+                    width: 180,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(
+                        12,
+                      ),
+                    ),
+                    child: TabBar(
+                      controller: _tabController,
+                      indicator: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Color(0xFF0075FF),
+                      ),
+                      splashBorderRadius: BorderRadius.circular(12),
+                      dividerHeight: 0,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      labelColor: Colors.white,
+                      unselectedLabelColor: Colors.black54,
+                      tabs: [
+                        Tab(
+                            text: '게시물'
+                        ),
+                        Tab(
+                            text: '드론스팟'
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              )
             ],
           )
         ],
