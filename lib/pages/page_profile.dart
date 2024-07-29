@@ -164,6 +164,49 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
+  Widget _createPostSection() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(24, 18, 24, 0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Ink(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12)
+                ),
+                child: InkWell(
+                  onTap: () {
+
+                  },
+                  borderRadius: BorderRadius.circular(12),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(18, 10, 18, 10),
+                    child: Center(
+                      child: Text(
+                        '프로필 편집',
+                        style: TextStyle(
+                            color: Colors.black54
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Flexible(
+                fit: FlexFit.tight,
+                child: SizedBox(),
+              ),
+
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -171,7 +214,8 @@ class ProfilePage extends StatelessWidget {
       child: Column(
         children: [
           _createAppbar(),
-          _createProfileSection()
+          _createProfileSection(),
+          _createPostSection()
         ],
       ),
     );
