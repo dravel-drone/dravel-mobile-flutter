@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/pages/account/page_login.dart';
+import 'package:dravel/pages/profile/page_follow_list.dart';
 import 'package:dravel/pages/profile/page_profile_edit.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/list/list_item_dronespot.dart';
@@ -257,17 +258,31 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                         Flexible(
                             flex: 1,
                             fit: FlexFit.tight,
-                            child: _createProfileInfoText(
-                                name: '팔로워',
-                                value: '120'
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.to(() => FollowListPage(
+                                  mode: FollowListPage.FOLLOWER_MODE
+                                ));
+                              },
+                              child: _createProfileInfoText(
+                                  name: '팔로워',
+                                  value: '120'
+                              ),
                             )
                         ),
                         Flexible(
                             flex: 1,
                             fit: FlexFit.tight,
-                            child: _createProfileInfoText(
-                                name: '팔로잉',
-                                value: '390'
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.to(() => FollowListPage(
+                                    mode: FollowListPage.FOLLOWING_MODE
+                                ));
+                              },
+                              child: _createProfileInfoText(
+                                  name: '팔로잉',
+                                  value: '390'
+                              )
                             )
                         ),
                       ],
