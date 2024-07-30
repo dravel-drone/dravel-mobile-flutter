@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/pages/account/page_login.dart';
+import 'package:dravel/pages/profile/page_profile_edit.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/list/list_item_dronespot.dart';
 import 'package:dravel/widgets/list/list_item_review.dart';
@@ -308,25 +309,25 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
           SizedBox(
             height: 12,
           ),
-          Container(
-            height: 34,
-            decoration: BoxDecoration(
-              color: Color(0xFFF1F1F5),
-              borderRadius: BorderRadius.circular(12)
-            ),
-            child: GestureDetector(
-              onTap: () {
-
-              },
+          GestureDetector(
+            onTap: () {
+              Get.to(() => ProfileEditPage());
+            },
+            child: Container(
+              height: 34,
+              decoration: BoxDecoration(
+                  color: Color(0xFFF1F1F5),
+                  borderRadius: BorderRadius.circular(12)
+              ),
               child: Padding(
                 padding: EdgeInsets.fromLTRB(18, 7, 18, 7),
                 child: Center(
                   child: Text(
                     '프로필 편집',
                     style: TextStyle(
-                      color: Colors.black54,
-                      fontSize: 12,
-                      height: 1
+                        color: Colors.black54,
+                        fontSize: 12,
+                        height: 1
                     ),
                   ),
                 ),
