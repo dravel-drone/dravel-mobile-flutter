@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
+import 'package:dravel/widgets/textField/textfield_main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -59,6 +60,24 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                     ),
                   )
                 ],
+              ),
+              SizedBox(height: 24,),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text('닉네임'),
+              ),
+              SizedBox(height: 8,),
+              MainTextField(
+                hintText: '닉네임',
+                prefixIcon: Icon(
+                  Icons.person,
+                  color: Colors.black45,
+                ),
+                action: TextInputAction.done,
+                onEditingComplete: () {
+                  debugPrint("next");
+                  FocusScope.of(context).unfocus();
+                },
               )
             ],
           ),
