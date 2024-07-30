@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
@@ -5,6 +8,7 @@ import 'package:dravel/widgets/button/button_main.dart';
 import 'package:dravel/widgets/textField/textfield_main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileEditPage extends StatefulWidget {
   @override
@@ -12,6 +16,16 @@ class ProfileEditPage extends StatefulWidget {
 }
 
 class _ProfileEditPageState extends State<ProfileEditPage> {
+  XFile? _pickedImage;
+
+  Future<void> _getProfileImage() async {
+    final ImagePicker picker = ImagePicker();
+    _pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    if (_pickedImage == null) {
+      return;
+    }
+    setState(() {});
+  }
 
   Widget _createEditSection() {
     return SingleChildScrollView(
@@ -21,11 +35,17 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(200),
-                child: CachedNetworkImage(
+                child: _pickedImage == null ? CachedNetworkImage(
                   width: 120,
                   height: 120,
                   fit: BoxFit.cover,
                   imageUrl: "https://images.unsplash.com/photo-1498141321056-776a06214e24?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                ) :
+                Image.file(
+                  File(_pickedImage!.path),
+                  width: 120,
+                  height: 120,
+                  fit: BoxFit.cover,
                 ),
               ),
               Material(
@@ -39,7 +59,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(200),
                     onTap: () {
-                      debugPrint("test");
+                      _getProfileImage();
                     },
                   ),
                 ),
