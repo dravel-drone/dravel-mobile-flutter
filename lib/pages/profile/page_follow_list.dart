@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,123 +23,200 @@ class _FollowListPageState extends State<FollowListPage> {
   List<dynamic> _followerTestData = [
     {
       'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'name': 'sdjiaod',
+      'drone': 'DJI 미니 4 PRO'
+    },
+    {
+      'url': 'https://images.unsplash.com/photo-1669830239159-0c1eb0aa06a0?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'dasdwd',
+      'drone': 'DJI 매빅 2'
+    },
+    {
+      'url': 'https://images.unsplash.com/photo-1669830238873-7e75a4cf5df3?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'efdfsg',
+      'drone': 'DJI 에어 2S'
+    },
+    {
+      'url': 'https://images.unsplash.com/photo-1636892488946-d0a0149c3595?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '3434gfe',
+      'drone': 'DJI 미니 2'
     },
     {
       'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'name': 'sdjiaod',
+      'drone': 'DJI 미니 4 PRO'
+    },
+    {
+      'url': 'https://images.unsplash.com/photo-1669830239159-0c1eb0aa06a0?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'dasdwd',
+      'drone': 'DJI 매빅 2'
+    },
+    {
+      'url': 'https://images.unsplash.com/photo-1669830238873-7e75a4cf5df3?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'efdfsg',
+      'drone': 'DJI 에어 2S'
+    },
+    {
+      'url': 'https://images.unsplash.com/photo-1636892488946-d0a0149c3595?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '3434gfe',
+      'drone': 'DJI 미니 2'
     },
     {
       'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'name': 'sdjiaod',
+      'drone': 'DJI 미니 4 PRO'
     },
     {
-      'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1669830239159-0c1eb0aa06a0?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'dasdwd',
+      'drone': 'DJI 매빅 2'
     },
     {
-      'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1669830238873-7e75a4cf5df3?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'efdfsg',
+      'drone': 'DJI 에어 2S'
     },
     {
-      'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
-    },
-    {
-      'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
-    },
-    {
-      'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
-    },
-    {
-      'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
-    },
-    {
-      'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
-    },
-    {
-      'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
-    },
-    {
-      'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
-    },
-    {
-      'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
-    },
-    {
-      'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1636892488946-d0a0149c3595?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '3434gfe',
+      'drone': 'DJI 미니 2'
     },
   ];
 
   List<dynamic> _followingTestData = [
     {
-      'url': 'https://images.unsplash.com/photo-1719344340081-b6d9b7d997a9?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'jiokpw4',
+      'drone': 'DJI 미니 2'
     },
     {
-      'url': 'https://images.unsplash.com/photo-1719344340081-b6d9b7d997a9?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1669830239159-0c1eb0aa06a0?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '2rkdoapfk',
+      'drone': 'DJI 에어 2S'
     },
     {
-      'url': 'https://images.unsplash.com/photo-1719344340081-b6d9b7d997a9?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1669830238873-7e75a4cf5df3?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'g0_kopsng',
+      'drone': 'DJI 매빅 2'
     },
     {
-      'url': 'https://images.unsplash.com/photo-1719344340081-b6d9b7d997a9?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1636892488946-d0a0149c3595?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'fik3ojjgk',
+      'drone': 'DJI 미니 4 PRO'
     },
     {
-      'url': 'https://images.unsplash.com/photo-1719344340081-b6d9b7d997a9?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'jiokpw4',
+      'drone': 'DJI 미니 2'
     },
     {
-      'url': 'https://images.unsplash.com/photo-1719344340081-b6d9b7d997a9?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1669830239159-0c1eb0aa06a0?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '2rkdoapfk',
+      'drone': 'DJI 에어 2S'
     },
     {
-      'url': 'https://images.unsplash.com/photo-1719344340081-b6d9b7d997a9?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1669830238873-7e75a4cf5df3?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'g0_kopsng',
+      'drone': 'DJI 매빅 2'
     },
     {
-      'url': 'https://images.unsplash.com/photo-1719344340081-b6d9b7d997a9?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1636892488946-d0a0149c3595?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'fik3ojjgk',
+      'drone': 'DJI 미니 4 PRO'
     },
     {
-      'url': 'https://images.unsplash.com/photo-1719344340081-b6d9b7d997a9?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'jiokpw4',
+      'drone': 'DJI 미니 2'
     },
     {
-      'url': 'https://images.unsplash.com/photo-1719344340081-b6d9b7d997a9?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1669830239159-0c1eb0aa06a0?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '2rkdoapfk',
+      'drone': 'DJI 에어 2S'
     },
     {
-      'url': 'https://images.unsplash.com/photo-1719344340081-b6d9b7d997a9?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1669830238873-7e75a4cf5df3?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'g0_kopsng',
+      'drone': 'DJI 매빅 2'
     },
     {
-      'url': 'https://images.unsplash.com/photo-1719344340081-b6d9b7d997a9?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
-    },
-    {
-      'url': 'https://images.unsplash.com/photo-1719344340081-b6d9b7d997a9?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
-    },
-    {
-      'url': 'https://images.unsplash.com/photo-1719344340081-b6d9b7d997a9?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': 'sdjiaod'
+      'url': 'https://images.unsplash.com/photo-1636892488946-d0a0149c3595?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': 'fik3ojjgk',
+      'drone': 'DJI 미니 4 PRO'
     },
   ];
 
   Widget _createFollowerList() {
-    return Container();
+    return ListView.separated(
+      padding: EdgeInsets.fromLTRB(24, 24, 24, getBottomPaddingWithHeight(context, 24)),
+      itemBuilder: (context, idx) {
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(200),
+              child: CachedNetworkImage(
+                width: 48,
+                height: 48,
+                fit: BoxFit.cover,
+                imageUrl: _followerTestData[idx]['url'],
+              ),
+            ),
+            SizedBox(width: 12,),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _followerTestData[idx]['name'],
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600
+                    ),
+                  ),
+                  SizedBox(height: 2,),
+                  Text(
+                    _followerTestData[idx]['drone'],
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 14,
+                        height: 1
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Ink(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10)
+              ),
+              child: InkWell(
+                onTap: () {
+
+                },
+                borderRadius: BorderRadius.circular(10),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(14, 8, 14, 8),
+                  child: Text(
+                    '삭제',
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black54,
+                        height: 1
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        );
+      },
+      separatorBuilder: (context, idx) {
+        return SizedBox(height: 16);
+      },
+      itemCount: _followerTestData.length
+    );
   }
 
   Widget _createFollowingList() {
@@ -159,6 +238,7 @@ class _FollowListPageState extends State<FollowListPage> {
           },
         ),
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
       ),
       body: widget.mode == FollowListPage.FOLLOWER_MODE ?
         _createFollowerList() : _createFollowingList(),
