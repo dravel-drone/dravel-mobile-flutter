@@ -116,3 +116,37 @@ class _FollowerListItemState extends State<FollowerListItem> {
     );
   }
 }
+
+
+class FollowingListItem extends StatefulWidget {
+  FollowingListItem({
+    required this.url,
+    required this.name,
+    required this.drone,
+    this.isFollow = true
+  });
+
+  String url;
+  String name;
+  String drone;
+
+  bool isFollow;
+
+  @override
+  State<StatefulWidget> createState() => _FollowingListItemState();
+}
+
+class _FollowingListItemState extends State<FollowingListItem> {
+  @override
+  Widget build(BuildContext context) {
+    return _FollowListItem(
+      url: widget.url,
+      name: widget.name,
+      drone: widget.drone,
+      buttonText: widget.isFollow ? '언팔로우' : '팔로우',
+      onTap: () {
+
+      }
+    );
+  }
+}

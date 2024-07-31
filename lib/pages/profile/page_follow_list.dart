@@ -149,7 +149,7 @@ class _FollowListPageState extends State<FollowListPage> {
 
   Widget _createFollowerList() {
     return ListView.separated(
-      padding: EdgeInsets.fromLTRB(24, 24, 24, getBottomPaddingWithHeight(context, 24)),
+      padding: EdgeInsets.fromLTRB(24, 24, 24, getBottomPaddingWithSafeHeight(context, 24)),
       itemBuilder: (context, idx) {
         return FollowerListItem(
           url: _followerTestData[idx]['url'],
@@ -165,7 +165,20 @@ class _FollowListPageState extends State<FollowListPage> {
   }
 
   Widget _createFollowingList() {
-    return Container();
+    return ListView.separated(
+        padding: EdgeInsets.fromLTRB(24, 24, 24, getBottomPaddingWithSafeHeight(context, 24)),
+        itemBuilder: (context, idx) {
+          return FollowingListItem(
+              url: _followerTestData[idx]['url'],
+              name: _followerTestData[idx]['name'],
+              drone: _followerTestData[idx]['drone']
+          );
+        },
+        separatorBuilder: (context, idx) {
+          return SizedBox(height: 16);
+        },
+        itemCount: _followerTestData.length
+    );
   }
 
   @override
