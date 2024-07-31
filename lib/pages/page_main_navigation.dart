@@ -2,6 +2,7 @@ import 'package:dravel/pages/page_favorite.dart';
 import 'package:dravel/pages/page_home.dart';
 import 'package:dravel/pages/page_map.dart';
 import 'package:dravel/pages/page_profile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MainNavigationPage extends StatefulWidget {
@@ -10,6 +11,7 @@ class MainNavigationPage extends StatefulWidget {
 }
 
 class _MainNavigationPageState extends State<MainNavigationPage> {
+  late PageController _pageController;
   int _selectedPageIdx = 1;
 
   List<Widget> _pages = [
@@ -20,10 +22,29 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
   ];
 
   @override
+  void initState() {
+    _pageController = PageController(
+      initialPage: _selectedPageIdx
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF1F1F5),
-      body: _pages[_selectedPageIdx],
+      // body: _pages[_selectedPageIdx],
+      body: PageView(
+        controller: _pageController,
+        physics: NeverScrollableScrollPhysics(),
+        children: _pages,
+      ),
       bottomNavigationBar: ClipRRect(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24),
@@ -64,6 +85,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
           onTap: (value) {
             setState(() {
               _selectedPageIdx = value;
+              _pageController.jumpToPage(_selectedPageIdx);
             });
           },
         ),
