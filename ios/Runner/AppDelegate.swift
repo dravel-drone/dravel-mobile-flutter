@@ -25,6 +25,11 @@ extension Bundle {
             SDKInitializer.InitSDK(appKey: kakaoKey!)
         }
         
+        let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
+        let registrar = controller.registrar(forPlugin: "map-kakao")
+        let factory = KakaoMapFactory(messenger: registrar!.messenger())
+        registrar!.register(factory, withId: "map-kakao")
+        
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 }
