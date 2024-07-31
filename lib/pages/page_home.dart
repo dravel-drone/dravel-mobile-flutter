@@ -305,34 +305,34 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
         systemStatusBarContrastEnforced: SystemUiOverlayStyle.dark.systemStatusBarContrastEnforced,
       ),
       child: Material(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: getTopPaddingWithHeight(context, 24)
-              ),
-              Text(
-                '여행지 탐색',
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    height: 1
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 24,),
+                Text(
+                  '여행지 탐색',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      height: 1
+                  ),
                 ),
-              ),
-              SizedBox(height: 18,),
-              _createDroneSpotRecommendSection(),
-              SizedBox(
-                height: 24,
-              ),
-              _createCourseRecommendSection(),
-              SizedBox(
-                height: 24,
-              ),
-              _createReviewRecommendSection(),
-              SizedBox(
-                height: 24,
-              ),
-            ],
+                SizedBox(height: 18,),
+                _createDroneSpotRecommendSection(),
+                SizedBox(
+                  height: 24,
+                ),
+                _createCourseRecommendSection(),
+                SizedBox(
+                  height: 24,
+                ),
+                _createReviewRecommendSection(),
+                SizedBox(
+                  height: 24,
+                ),
+              ],
+            ),
           ),
         ),
       ),

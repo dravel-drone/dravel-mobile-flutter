@@ -7,11 +7,13 @@ class KakaoMapView extends StatelessWidget {
     if (defaultTargetPlatform == TargetPlatform.android) {
       return AndroidView(
         viewType: 'map-kakao',
+        layoutDirection: TextDirection.ltr,
         // onPlatformViewCreated: _onPlatformViewCreated,
       );
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
       return UiKitView(
         viewType: 'map-kakao',
+        layoutDirection: TextDirection.ltr,
         // onPlatformViewCreated: _onPlatformViewCreated,
       );
     }
