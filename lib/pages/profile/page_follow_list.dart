@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
+import 'package:dravel/widgets/list/list_item_follow.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -150,66 +151,10 @@ class _FollowListPageState extends State<FollowListPage> {
     return ListView.separated(
       padding: EdgeInsets.fromLTRB(24, 24, 24, getBottomPaddingWithHeight(context, 24)),
       itemBuilder: (context, idx) {
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(200),
-              child: CachedNetworkImage(
-                width: 48,
-                height: 48,
-                fit: BoxFit.cover,
-                imageUrl: _followerTestData[idx]['url'],
-              ),
-            ),
-            SizedBox(width: 12,),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _followerTestData[idx]['name'],
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600
-                    ),
-                  ),
-                  SizedBox(height: 2,),
-                  Text(
-                    _followerTestData[idx]['drone'],
-                    style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 14,
-                        height: 1
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Ink(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10)
-              ),
-              child: InkWell(
-                onTap: () {
-
-                },
-                borderRadius: BorderRadius.circular(10),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(14, 8, 14, 8),
-                  child: Text(
-                    '삭제',
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black54,
-                        height: 1
-                    ),
-                  ),
-                ),
-              ),
-            )
-          ],
+        return FollowerListItem(
+          url: _followerTestData[idx]['url'],
+          name: _followerTestData[idx]['name'],
+          drone: _followerTestData[idx]['drone']
         );
       },
       separatorBuilder: (context, idx) {
