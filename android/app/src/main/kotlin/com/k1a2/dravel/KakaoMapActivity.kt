@@ -3,15 +3,19 @@ package com.k1a2.dravel
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.plugin.platform.PlatformView
 
 
-class KakaoMapActivity(context: Context) : PlatformView {
+class KakaoMapActivity(context: Context) : PlatformView, DefaultLifecycleObserver {
     private val nativeView: View?
+    private var mapView: MapView? = null
 
     init {
         val inflater = LayoutInflater.from(context)
@@ -21,8 +25,8 @@ class KakaoMapActivity(context: Context) : PlatformView {
     override fun getView(): View? {
         if (nativeView == null) return null
 
-        val mapView: MapView = nativeView.findViewById<MapView>(R.id.map_kakao)
-        mapView.start(object : MapLifeCycleCallback() {
+        mapView = nativeView.findViewById<MapView>(R.id.map_kakao)
+        mapView!!.start(object : MapLifeCycleCallback() {
             override fun onMapDestroy() {
                 // 지도 API 가 정상적으로 종료될 때 호출됨
             }
@@ -40,4 +44,18 @@ class KakaoMapActivity(context: Context) : PlatformView {
     }
 
     override fun dispose() {}
+
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+        if (mapView != null) {
+            mapView!!.resume()
+        }
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
+        if (mapView != null) {
+            mapView!!.pause()
+        }
+    }
 }
