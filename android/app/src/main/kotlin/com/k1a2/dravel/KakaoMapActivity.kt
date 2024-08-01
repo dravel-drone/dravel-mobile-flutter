@@ -108,7 +108,10 @@ class KakaoMapActivity(
                     moveCamera(lat!!, lon!!, zoomLevel!!)
                     result.success(null)
                 } catch (e: Exception) {
-                    result.error("METHOD ERROR", "moveCamera error occur", null)
+                    result.error(
+                        "100",
+                        "METHOD ERROR",
+                        "moveCamera error occur")
                 }
             }
         }

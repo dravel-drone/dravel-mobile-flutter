@@ -37,6 +37,7 @@ class KakaoMapFactory : NSObject, FlutterPlatformViewFactory {
 class KakaoMapPlatform : NSObject, FlutterPlatformView {
     private var _view: UIView
     private var kakaoMapController: KakaoMapController
+    private var channel: FlutterMethodChannel
     
     init(
         frame: CGRect,
@@ -46,11 +47,38 @@ class KakaoMapPlatform : NSObject, FlutterPlatformView {
     ) {
         _view = UIView(frame: frame)
         kakaoMapController = KakaoMapController(arguments: args)
+        self.channel = FlutterMethodChannel(name: "map-kakao/\(viewId)", binaryMessenger: messenger!)
         super.init()
         _view.addSubview(kakaoMapController.view)
         kakaoMapController.view.frame = _view.bounds
+        self.channel.setMethodCallHandler(handle(call:result:))
     }
     
+    func handle(call:FlutterMethodCall, result:FlutterResult){
+        switch call.method {
+            case "moveCamera": do {
+                let args = call.arguments as! [String:Any]
+                let lat = args["lat"] as! Double
+                let lon = args["lon"] as! Double
+                let zoomLevel = args["zoomLevel"] as! Int
+                do {
+                    try kakaoMapController.moveCamera(lat: lat, lon: lon, zoomLevel: zoomLevel)
+                } catch {
+                    result(FlutterError(
+                        code: "100",
+                        message: "METHOD ERROR",
+                        details: "moveCamera error occur"))
+                }
+                result(nil)
+            }
+            default:
+                result(FlutterError(
+                    code: "50",
+                    message: "METHOD ERROR",
+                    details: "method not exist"))
+        }
+    }
+
     func view() -> UIView {
         return _view
     }
@@ -241,6 +269,21 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
 
     @objc func didBecomeActive(){
         mapController?.activateEngine() //뷰가 active 상태가 되면 렌더링 시작. 엔진은 미리 시작된 상태여야 함.
+    }
+    
+    func moveCamera(
+        lat: Double,
+        lon: Double,
+        zoomLevel: Int
+    ) throws {
+        let mapView: KakaoMap? = mapController?.getView("mapview") as? KakaoMap
+        let camera = CameraUpdate.make(cameraPosition: CameraPosition(
+            target: MapPoint(longitude: lon, latitude: lat),
+            zoomLevel: zoomLevel,
+            rotation: 0,
+            tilt: 0
+        ))
+        mapView?.moveCamera(camera)
     }
     
     func showToast(_ view: UIView, message: String, duration: TimeInterval = 2.0) {
