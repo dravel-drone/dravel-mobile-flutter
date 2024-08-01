@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:dravel/channel/channel_kakao_map.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/map/map_kakao.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +12,8 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
+  KakaoMapChannel _kakaoMapChannel = KakaoMapChannel();
+
   int _selectedDrone = -1;
 
   Widget _createChip({
@@ -45,34 +50,44 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
       padding: EdgeInsets.fromLTRB(24, getTopPaddingWithHeight(context, 20), 24, 0),
       child: Column(
         children: [
-          Material(
-            elevation: 1,
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(14, 12, 14, 12),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12)
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.manage_search,
-                    color: Colors.black54,
-                    size: 28,
-                  ),
-                  SizedBox(width: 10,),
-                  Text(
-                    '드론스팟 검색',
-                    style: TextStyle(
-                      color: Colors.black45,
-                      height: 1,
-                      fontSize: 16
+          GestureDetector(
+            onTap: () async {
+              final random = Random();
+              await _kakaoMapChannel.moveCamera(
+                lat: 33.11 + random.nextDouble() * (43.01 - 33.11),
+                lon: 124.4 + random.nextDouble() * (131.8 - 124.4),
+                zoomLevel: 12 + random.nextInt(7)
+              );
+            },
+            child: Material(
+              elevation: 1,
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.fromLTRB(14, 12, 14, 12),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12)
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.manage_search,
+                      color: Colors.black54,
+                      size: 28,
                     ),
-                  )
-                ],
+                    SizedBox(width: 10,),
+                    Text(
+                      '드론스팟 검색',
+                      style: TextStyle(
+                          color: Colors.black45,
+                          height: 1,
+                          fontSize: 16
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -104,7 +119,9 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
       height: double.infinity,
       child: Stack(
         children: [
-          KakaoMapView(),
+          KakaoMapView(
+            channel: _kakaoMapChannel,
+          ),
           _createTopSection(),
         ],
       ),
