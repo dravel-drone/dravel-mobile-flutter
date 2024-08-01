@@ -1,6 +1,10 @@
 package com.k1a2.dravel
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +17,10 @@ import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
 import com.kakao.vectormap.camera.CameraPosition
 import com.kakao.vectormap.camera.CameraUpdateFactory
+import com.kakao.vectormap.label.LabelManager
+import com.kakao.vectormap.label.LabelOptions
+import com.kakao.vectormap.label.LabelStyle
+import com.kakao.vectormap.label.LabelStyles
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.plugin.common.BinaryMessenger
@@ -33,11 +41,13 @@ class KakaoMapActivity(
     private val nativeView: View?
     private var mapView: MapView? = null
     private var kakaoMap: KakaoMap? = null
+    private val context: Context
 
     private val creationParams: Map<String?, Any?>?
 
     init {
         val inflater = LayoutInflater.from(context)
+        this.context = context
         nativeView = inflater.inflate(R.layout.layout_kakao_map, null)
         this.creationParams = creationParams
         methodChannel.setMethodCallHandler(this)
@@ -85,6 +95,11 @@ class KakaoMapActivity(
         }
     }
 
+    private fun dpToPx(dp: Int): Int {
+        val displayMetrics: DisplayMetrics = this.context.resources.displayMetrics
+        return (dp * displayMetrics.density).toInt()
+    }
+
     private fun moveCamera(
         lat: Double,
         lon: Double,
@@ -96,6 +111,40 @@ class KakaoMapActivity(
                 .setPosition(LatLng.from(lat, lon))
         )
         kakaoMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPos))
+    }
+
+    private fun addSpotLabel(
+        name: String,
+        lat: Double,
+        lng: Double,
+        id: Int
+    ) {
+        val labelManager: LabelManager = kakaoMap!!.labelManager!!
+
+        // 라벨 사진 로드
+        var bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.spot_pin)
+        // 라벨 크기 화면에 맞게 조정
+        bitmap = Bitmap.createScaledBitmap(bitmap, dpToPx(44), dpToPx(44), true)
+
+        // 라벨 스타일 지정
+        val styles = labelManager.addLabelStyles(
+            LabelStyles.from(
+                LabelStyle.from(bitmap)
+                    .setTextStyles(dpToPx(15), Color.BLACK)
+                    .setApplyDpScale(false),
+            ),
+        )
+
+        // 라벨 옵션 지정
+        val options = LabelOptions.from(LatLng.from(lat, lng))
+            .setStyles(styles)
+            .setClickable(true)
+            .setTexts(name)
+            .setTag(id)
+
+        // 라벨 추가
+        val layer = kakaoMap!!.labelManager!!.layer
+        layer!!.addLabel(options)
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -110,6 +159,20 @@ class KakaoMapActivity(
                 } catch (e: Exception) {
                     result.error(
                         "100",
+                        "METHOD ERROR",
+                        "moveCamera error occur")
+                }
+            }
+            "addSpotLabel" -> {
+                val lat = call.argument<Double>("lat")
+                val lon = call.argument<Double>("lon")
+                val name = call.argument<String>("name")
+                val id = call.argument<Int>("id")
+                try {
+                    addSpotLabel(name!!, lat!!, lon!!, id!!)
+                } catch (e: Exception) {
+                    result.error(
+                        "110",
                         "METHOD ERROR",
                         "moveCamera error occur")
                 }
