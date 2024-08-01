@@ -45,6 +45,8 @@ class KakaoMapActivity(
 
     private val creationParams: Map<String?, Any?>?
 
+    private var labelStyles: LabelStyles? = null;
+
     init {
         val inflater = LayoutInflater.from(context)
         this.context = context
@@ -68,6 +70,23 @@ class KakaoMapActivity(
         }, object : KakaoMapReadyCallback() {
             override fun onMapReady(map: KakaoMap) {
                 kakaoMap = map
+
+                val labelManager: LabelManager = kakaoMap!!.labelManager!!
+
+                // 라벨 사진 로드
+                var bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.spot_pin)
+                // 라벨 크기 화면에 맞게 조정
+                bitmap = Bitmap.createScaledBitmap(bitmap, dpToPx(18), dpToPx(18), true)
+
+                // 라벨 스타일 지정
+                labelStyles = labelManager.addLabelStyles(
+                    LabelStyles.from(
+                        LabelStyle.from(bitmap)
+                            .setTextStyles(dpToPx(12), Color.BLACK)
+                            .setApplyDpScale(false),
+                    ),
+                )
+
                 moveCamera(
                     creationParams!!["lat"].toString().toDouble(),
                     creationParams!!["lon"].toString().toDouble(),
@@ -132,25 +151,9 @@ class KakaoMapActivity(
         lng: Double,
         id: Int
     ) {
-        val labelManager: LabelManager = kakaoMap!!.labelManager!!
-
-        // 라벨 사진 로드
-        var bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.spot_pin)
-        // 라벨 크기 화면에 맞게 조정
-        bitmap = Bitmap.createScaledBitmap(bitmap, dpToPx(18), dpToPx(18), true)
-
-        // 라벨 스타일 지정
-        val styles = labelManager.addLabelStyles(
-            LabelStyles.from(
-                LabelStyle.from(bitmap)
-                    .setTextStyles(dpToPx(12), Color.BLACK)
-                    .setApplyDpScale(false),
-            ),
-        )
-
         // 라벨 옵션 지정
         val options = LabelOptions.from(LatLng.from(lat, lng))
-            .setStyles(styles)
+            .setStyles(labelStyles)
             .setClickable(true)
             .setTexts(name)
             .setTag(id)
