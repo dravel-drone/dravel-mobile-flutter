@@ -48,6 +48,11 @@ class KakaoMapPlatform : NSObject, FlutterPlatformView {
 }
 
 class KakaoMapController : UIViewController, MapControllerDelegate {
+    var mapContainer: KMViewContainer?
+    var mapController: KMController?
+    var _observerAdded: Bool
+    var _auth: Bool
+    var _appear: Bool
     
     required init?(coder aDecoder: NSCoder) {
         _observerAdded = false
@@ -80,10 +85,20 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
         //KMController 생성.
         mapController = KMController(viewContainer: mapContainer!)
         mapController!.delegate = self
+        
+        addObservers()
+        _appear = true
+        if mapController?.isEnginePrepared == false {
+            mapController?.prepareEngine()
+        }
+        
+        if mapController?.isEngineActive == false {
+            mapController?.activateEngine()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        addObservers()
+//        addObservers()
         _appear = true
         if mapController?.isEnginePrepared == false {
             mapController?.prepareEngine()
@@ -99,7 +114,12 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
         mapController?.pauseEngine()  //렌더링 중지.
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
+//    override func viewDidDisappear(_ animated: Bool) {
+//        removeObservers()
+//        mapController?.resetEngine()     //엔진 정지. 추가되었던 ViewBase들이 삭제된다.
+//    }
+    
+    func viewWillDestroyed(_ view: ViewBase) {
         removeObservers()
         mapController?.resetEngine()     //엔진 정지. 추가되었던 ViewBase들이 삭제된다.
     }
@@ -158,6 +178,7 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
         
         //KakaoMap 추가.
         mapController?.addView(mapviewInfo)
+        print("view added")
     }
     
     func viewInit(viewName: String) {
@@ -225,10 +246,4 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
                                         toastLabel.removeFromSuperview()
                                     })
     }
-    
-    var mapContainer: KMViewContainer?
-    var mapController: KMController?
-    var _observerAdded: Bool
-    var _auth: Bool
-    var _appear: Bool
 }
