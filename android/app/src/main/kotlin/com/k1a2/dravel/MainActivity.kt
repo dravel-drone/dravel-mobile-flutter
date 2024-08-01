@@ -7,6 +7,7 @@ import android.util.Log
 import com.kakao.vectormap.KakaoMapSdk
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
@@ -27,16 +28,19 @@ class MainActivity: FlutterActivity() {
         flutterEngine
             .platformViewsController
             .registry
-            .registerViewFactory("map-kakao", KakaoMapFactor())
+            .registerViewFactory("map-kakao",
+                KakaoMapFactor(flutterEngine.dartExecutor.binaryMessenger))
     }
 }
 
-class KakaoMapFactor : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
+class KakaoMapFactor(
+    private val messenger: BinaryMessenger
+) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
     override fun create(context: Context, id: Int, params: Any?): PlatformView {
         var creationParams: Map<String?, Any?>? = null
         if (params != null) {
             creationParams = params as Map<String?, Any?>?
         }
-        return KakaoMapActivity(context, creationParams)
+        return KakaoMapActivity(context, creationParams, messenger, id)
     }
 }
