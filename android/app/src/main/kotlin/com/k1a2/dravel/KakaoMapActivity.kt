@@ -7,19 +7,26 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
+import com.kakao.vectormap.camera.CameraPosition
+import com.kakao.vectormap.camera.CameraUpdateFactory
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.plugin.platform.PlatformView
 
 
-class KakaoMapActivity(context: Context) : PlatformView, DefaultLifecycleObserver {
+class KakaoMapActivity(context: Context, creationParams: Map<String?, Any?>?) : PlatformView, DefaultLifecycleObserver {
     private val nativeView: View?
     private var mapView: MapView? = null
+    private var kakaoMap: KakaoMap? = null
+
+    private val creationParams: Map<String?, Any?>?
 
     init {
         val inflater = LayoutInflater.from(context)
         nativeView = inflater.inflate(R.layout.layout_kakao_map, null)
+        this.creationParams = creationParams
     }
 
     override fun getView(): View? {
@@ -35,8 +42,16 @@ class KakaoMapActivity(context: Context) : PlatformView, DefaultLifecycleObserve
                 // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출됨
             }
         }, object : KakaoMapReadyCallback() {
-            override fun onMapReady(kakaoMap: KakaoMap) {
-                // 인증 후 API 가 정상적으로 실행될 때 호출됨
+            override fun onMapReady(map: KakaoMap) {
+                kakaoMap = map
+                val cameraPos: CameraPosition = CameraPosition.from(
+                    CameraPosition.Builder()
+                        .setZoomLevel(creationParams!!["zoomLevel"].toString().toInt())
+                        .setPosition(LatLng.from(
+                            creationParams!!["lat"].toString().toDouble(),
+                            creationParams!!["lon"].toString().toDouble()))
+                )
+                kakaoMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPos))
             }
         })
 

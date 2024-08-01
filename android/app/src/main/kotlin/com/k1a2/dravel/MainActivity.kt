@@ -33,6 +33,10 @@ class MainActivity: FlutterActivity() {
 
 class KakaoMapFactor : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
     override fun create(context: Context, id: Int, params: Any?): PlatformView {
-        return KakaoMapActivity(context)
+        var creationParams: Map<String?, Any?>? = null
+        if (params != null) {
+            creationParams = params as Map<String?, Any?>?
+        }
+        return KakaoMapActivity(context, creationParams)
     }
 }
