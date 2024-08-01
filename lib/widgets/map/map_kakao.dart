@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 class KakaoMapView extends StatelessWidget {
   KakaoMapView({
     required this.channel,
+    required this.initData,
     this.lat = 33.541130,
     this.lon = 126.669621,
     this.zoomLevel = 14,
@@ -17,12 +18,15 @@ class KakaoMapView extends StatelessWidget {
   double lon;
   int zoomLevel;
 
+  List<Map<String, dynamic>> initData = [];
+
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> creationParams = {
       'lat': lat,
       'lon': lon,
-      'zoomLevel': zoomLevel
+      'zoomLevel': zoomLevel,
+      'initData': initData
     };
 
     if (defaultTargetPlatform == TargetPlatform.android) {

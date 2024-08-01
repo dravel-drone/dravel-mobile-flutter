@@ -18,4 +18,18 @@ class KakaoMapChannel {
       'zoomLevel': zoomLevel
     });
   }
+
+  Future<void> addSpotLabel({
+    required double lat,
+    required double lon,
+    required String name,
+    required int id,
+  }) async {
+    await _channel.invokeMethod('addSpotLabel', {
+      'lat': lat,
+      'lon': lon,
+      'name': name,
+      'id': id
+    });
+  }
 }
