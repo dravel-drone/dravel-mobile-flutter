@@ -73,6 +73,19 @@ class KakaoMapActivity(
                     creationParams!!["lon"].toString().toDouble(),
                     creationParams!!["zoomLevel"].toString().toInt()
                 )
+
+                val initData = creationParams!!["initData"] as List<Map<String, Any>>
+                if (initData.isNotEmpty()) {
+                    for (data in initData) {
+                        val location = data["location"] as Map<String, Double>
+                        addSpotLabel(
+                            data["name"]!!.toString(),
+                            location["lat"]!!,
+                            location["lon"]!!,
+                            data["id"] as Int,
+                        )
+                    }
+                }
             }
         })
 
@@ -124,13 +137,13 @@ class KakaoMapActivity(
         // 라벨 사진 로드
         var bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.spot_pin)
         // 라벨 크기 화면에 맞게 조정
-        bitmap = Bitmap.createScaledBitmap(bitmap, dpToPx(44), dpToPx(44), true)
+        bitmap = Bitmap.createScaledBitmap(bitmap, dpToPx(18), dpToPx(18), true)
 
         // 라벨 스타일 지정
         val styles = labelManager.addLabelStyles(
             LabelStyles.from(
                 LabelStyle.from(bitmap)
-                    .setTextStyles(dpToPx(15), Color.BLACK)
+                    .setTextStyles(dpToPx(12), Color.BLACK)
                     .setApplyDpScale(false),
             ),
         )
