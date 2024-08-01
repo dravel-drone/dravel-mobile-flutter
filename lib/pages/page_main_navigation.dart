@@ -45,51 +45,52 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
         physics: NeverScrollableScrollPhysics(),
         children: _pages,
       ),
-      bottomNavigationBar: ClipRRect(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24)
-        ),
-        child: BottomNavigationBar(
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          currentIndex: _selectedPageIdx,
-          unselectedItemColor: Colors.black,
-          selectedItemColor: Color(0xFF0075FF),
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(
-                    Icons.map_outlined
-                ),
-                label: '지도'
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(
-                    Icons.home_outlined
-                ),
-                label: '홈'
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(
-                    Icons.favorite_border_outlined
-                ),
-                label: '관심'
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(
-                    Icons.account_circle_outlined
-                ),
-                label: '프로필'
-            ),
-          ],
-          onTap: (value) {
-            setState(() {
-              _selectedPageIdx = value;
-              _pageController.jumpToPage(_selectedPageIdx);
-            });
-          },
-        ),
+      bottomNavigationBar: BottomNavigationBar(
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        currentIndex: _selectedPageIdx,
+        unselectedItemColor: Colors.black,
+        selectedItemColor: Color(0xFF0075FF),
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(
+                  Icons.map_outlined
+              ),
+              label: '지도'
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(
+                  Icons.home_outlined
+              ),
+              label: '홈'
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(
+                  Icons.favorite_border_outlined
+              ),
+              label: '관심'
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(
+                  Icons.account_circle_outlined
+              ),
+              label: '프로필'
+          ),
+        ],
+        onTap: (value) {
+          setState(() {
+            _selectedPageIdx = value;
+            _pageController.jumpToPage(_selectedPageIdx);
+          });
+        },
       ),
+      // bottomNavigationBar: ClipRRect(
+      //   borderRadius: BorderRadius.only(
+      //     topLeft: Radius.circular(24),
+      //     topRight: Radius.circular(24)
+      //   ),
+      //   child:
+      // ),
     );
   }
 }
