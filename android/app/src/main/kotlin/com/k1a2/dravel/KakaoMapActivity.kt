@@ -190,7 +190,7 @@ class KakaoMapActivity(
                     result.error(
                         "110",
                         "METHOD ERROR",
-                        "moveCamera error occur")
+                        "add spot label error occur")
                 }
             }
         }
