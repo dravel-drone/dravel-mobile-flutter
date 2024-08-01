@@ -17,12 +17,20 @@ class KakaoMapFactory : NSObject, FlutterPlatformViewFactory {
         super.init()
     }
     
+    func createArgsCodec() -> FlutterMessageCodec & NSObjectProtocol {
+        return FlutterStandardMessageCodec.sharedInstance()
+    }
+    
     func create(
         withFrame frame: CGRect,
         viewIdentifier viewId: Int64,
         arguments args: Any?
     ) -> any FlutterPlatformView {
-        return KakaoMapPlatform(frame: frame, viewId: viewId, messenger: messenger)
+        return KakaoMapPlatform(
+            frame: frame,
+            viewId: viewId,
+            arguments: args,
+            messenger: messenger)
     }
 }
 
@@ -33,10 +41,11 @@ class KakaoMapPlatform : NSObject, FlutterPlatformView {
     init(
         frame: CGRect,
         viewId: Int64,
+        arguments args: Any?,
         messenger: FlutterBinaryMessenger?
     ) {
         _view = UIView(frame: frame)
-        kakaoMapController = KakaoMapController(nibName: nil, bundle: nil)
+        kakaoMapController = KakaoMapController(arguments: args)
         super.init()
         _view.addSubview(kakaoMapController.view)
         kakaoMapController.view.frame = _view.bounds
@@ -53,6 +62,7 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
     var _observerAdded: Bool
     var _auth: Bool
     var _appear: Bool
+    var _args: [String:Any]?
     
     required init?(coder aDecoder: NSCoder) {
         _observerAdded = false
@@ -61,11 +71,12 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
         super.init(coder: aDecoder)
     }
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    init(arguments args: Any?) {
+        _args = args as? [String:Any]
         _observerAdded = false
         _auth = false
         _appear = false
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        super.init(nibName: nil, bundle: nil)
     }
     
     deinit {
@@ -172,9 +183,16 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
     
     func addViews() {
         //여기에서 그릴 View(KakaoMap, Roadview)들을 추가한다.
-        let defaultPosition: MapPoint = MapPoint(longitude: 127.108678, latitude: 37.402001)
+        let defaultPosition: MapPoint = MapPoint(
+            longitude: _args!["lon"] as! Double,
+            latitude: _args!["lat"] as! Double
+        )
         //지도(KakaoMap)를 그리기 위한 viewInfo를 생성
-        let mapviewInfo: MapviewInfo = MapviewInfo(viewName: "mapview", viewInfoName: "map", defaultPosition: defaultPosition, defaultLevel: 7)
+        let mapviewInfo: MapviewInfo = MapviewInfo(
+            viewName: "mapview",
+            viewInfoName: "map",
+            defaultPosition: defaultPosition,
+            defaultLevel: _args!["zoomLevel"] as! Int)
         
         //KakaoMap 추가.
         mapController?.addView(mapviewInfo)
