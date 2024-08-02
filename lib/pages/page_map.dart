@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:dravel/channel/channel_kakao_map.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/map/map_kakao.dart';
+import 'package:dravel/widgets/sheet/sheet_grab.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:snapping_sheet/snapping_sheet.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -222,13 +224,28 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
             if (snapshot.hasData && snapshot.data != null) {
               data = snapshot.data!;
             }
-            return Stack(
-              children: [
-                KakaoMapView(
-                  channel: _kakaoMapChannel,
-                  initData: data,
+            return SnappingSheet(
+              child: Stack(
+                children: [
+                  KakaoMapView(
+                    channel: _kakaoMapChannel,
+                    initData: data,
+                  ),
+                  _createTopSection(),
+                ],
+              ),
+              grabbing: GrabbingWidget(),
+              grabbingHeight: 45,
+              snappingPositions: [
+                SnappingPosition.factor(
+                  positionFactor: 0.01
                 ),
-                _createTopSection(),
+                SnappingPosition.factor(
+                  positionFactor: 0.45
+                ),
+                SnappingPosition.factor(
+                  positionFactor: 0.73
+                ),
               ],
             );
           }
