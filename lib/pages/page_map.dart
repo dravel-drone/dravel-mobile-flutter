@@ -125,6 +125,20 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     _bottomSheetContentController = ScrollController();
+    _bottomSheetContentController.addListener(() {
+      double offset = _bottomSheetContentController.offset;
+
+      final double totalItemHeight = 152 + 16;
+      final double effectiveOffset = offset - 24;
+
+      int currentIndex = (effectiveOffset / totalItemHeight).floor();
+      if (currentIndex < 0) currentIndex = 0;
+
+      // if (_bottomSheetContentController.position.pixels >=
+      //     _bottomSheetContentController.position.maxScrollExtent) currentIndex = _droneSpotTestData.length - 1;
+
+      debugPrint("offset: $offset index: $currentIndex");
+    });
     WidgetsBinding.instance
         .addPostFrameCallback((_) => _fetchDataFromNetwork());
     super.initState();
