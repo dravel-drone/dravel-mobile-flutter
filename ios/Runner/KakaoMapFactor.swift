@@ -71,6 +71,22 @@ class KakaoMapPlatform : NSObject, FlutterPlatformView {
                 }
                 result(nil)
             }
+            case "addSpotLabel": do {
+                let args = call.arguments as! [String:Any]
+                let lat = args["lat"] as! Double
+                let lon = args["lon"] as! Double
+                let name = args["name"] as! String
+                let id = args["id"] as! Int
+                do {
+                    try kakaoMapController.addSpotLabel(name: name, lat: lat, lon: lon, id: id)
+                } catch {
+                    result(FlutterError(
+                        code: "110",
+                        message: "METHOD ERROR",
+                        details: "add spot label error occur"))
+                }
+                result(nil)
+            }
             default:
                 result(FlutterError(
                     code: "50",
@@ -116,6 +132,7 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("viewDidLoad")
 //        mapContainer = self.view as? KMViewContainer
         mapContainer = KMViewContainer(frame: self.view.bounds)
         mapContainer?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -138,6 +155,7 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
 //        addObservers()
+        print("viewWillAppear")
         _appear = true
         if mapController?.isEnginePrepared == false {
             mapController?.prepareEngine()
@@ -149,6 +167,7 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
     }
         
     override func viewWillDisappear(_ animated: Bool) {
+        print("viewWillDisappear")
         _appear = false
         mapController?.pauseEngine()  //렌더링 중지.
     }
@@ -159,6 +178,7 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
 //    }
     
     func viewWillDestroyed(_ view: ViewBase) {
+        print("viewWillDestroy")
         removeObservers()
         mapController?.resetEngine()     //엔진 정지. 추가되었던 ViewBase들이 삭제된다.
     }
@@ -228,7 +248,42 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
     }
     
     func viewInit(viewName: String) {
-        print("OK")
+        let mapView: KakaoMap? = mapController?.getView("mapview") as? KakaoMap
+        let labelManager: LabelManager = mapView!.getLabelManager()
+        let layerOption = LabelLayerOptions(layerID: "SpotLayer", competitionType: .none, competitionUnit: .symbolFirst, orderType: .rank, zOrder: 5000)
+        let _ = labelManager.addLabelLayer(option: layerOption)
+        
+        // PoiBadge는 스타일에도 추가될 수 있다. 이렇게 추가된 Badge는 해당 스타일이 적용될 때 함께 그려진다.
+        let iconStyle1 = PoiIconStyle(symbol: UIImage(named: "spot_pin_48"))
+    
+        // text Style 지정
+        let textStyle = TextStyle(fontSize: 20, fontColor: UIColor.black)
+
+        // PoiTextStyle 생성
+        let textStyle1 = PoiTextStyle(textLineStyles: [
+            PoiTextLineStyle(textStyle: textStyle)
+        ])
+        
+        let poiStyle = PoiStyle(styleID: "SpotStyle", styles: [
+            PerLevelPoiStyle(iconStyle: iconStyle1, textStyle: textStyle1, level: 14),
+//            PerLevelPoiStyle(iconStyle: iconStyle2, textStyle: textStyle2, level: 12)
+        ])
+        labelManager.addPoiStyle(poiStyle)
+        
+        let initData = _args!["initData"] as? [[String: Any]] ?? []
+        for data in initData {
+            let location = data["location"] as! [String:Double]
+            do {
+                try addSpotLabel(
+                    name: data["name"] as! String,
+                    lat: location["lat"]!,
+                    lon: location["lon"]!,
+                    id: data["id"] as! Int)
+            } catch {
+                
+            }
+        }
+        print("initView")
     }
     
     //addView 성공 이벤트 delegate. 추가적으로 수행할 작업을 진행한다.
@@ -271,6 +326,7 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
         mapController?.activateEngine() //뷰가 active 상태가 되면 렌더링 시작. 엔진은 미리 시작된 상태여야 함.
     }
     
+    
     func moveCamera(
         lat: Double,
         lon: Double,
@@ -284,6 +340,25 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
             tilt: 0
         ))
         mapView?.moveCamera(camera)
+    }
+    
+    func addSpotLabel(
+        name: String,
+        lat: Double,
+        lon: Double,
+        id: Int
+    ) throws {
+        let mapView: KakaoMap? = mapController?.getView("mapview") as? KakaoMap
+        let manager = mapView!.getLabelManager()
+        let layer = manager.getLabelLayer(layerID: "SpotLayer")
+        
+        let poiOption = PoiOptions(styleID: "SpotStyle", poiID: "\(id)")
+        poiOption.rank = 0
+        poiOption.clickable = true
+        
+        poiOption.addText(PoiText(text: name, styleIndex: 0))
+        let poi1 = layer?.addPoi(option: poiOption, at: MapPoint(longitude: lon, latitude: lat))
+        poi1?.show()
     }
     
     func showToast(_ view: UIView, message: String, duration: TimeInterval = 2.0) {

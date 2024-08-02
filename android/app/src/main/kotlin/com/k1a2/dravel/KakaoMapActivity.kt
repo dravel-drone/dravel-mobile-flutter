@@ -115,6 +115,7 @@ class KakaoMapActivity(
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
+        Log.d("Cycle", "resume")
         if (mapView != null) {
             mapView!!.resume()
         }
@@ -122,6 +123,7 @@ class KakaoMapActivity(
 
     override fun onPause(owner: LifecycleOwner) {
         super.onPause(owner)
+        Log.d("Cycle", "pause")
         if (mapView != null) {
             mapView!!.pause()
         }
