@@ -1,12 +1,14 @@
 import 'dart:math';
 
 import 'package:dravel/channel/channel_kakao_map.dart';
+import 'package:dravel/pages/search/page_dronespot_search.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/list/list_item_dronespot.dart';
 import 'package:dravel/widgets/map/map_kakao.dart';
 import 'package:dravel/widgets/sheet/sheet_grab.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:snapping_sheet/snapping_sheet.dart';
 
 class MapPage extends StatefulWidget {
@@ -203,12 +205,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
         children: [
           GestureDetector(
             onTap: () async {
-              // final random = Random();
-              // await _kakaoMapChannel.moveCamera(
-              //   lat: 33.11 + random.nextDouble() * (43.01 - 33.11),
-              //   lon: 124.4 + random.nextDouble() * (131.8 - 124.4),
-              //   zoomLevel: 12 + random.nextInt(7)
-              // );
+              Get.to(() => DroneSpotSearchPage());
             },
             child: Material(
               elevation: 1,
