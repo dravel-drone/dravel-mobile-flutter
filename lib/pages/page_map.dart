@@ -20,101 +20,113 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
 
   int _selectedDrone = -1;
 
-  List<Map<String, dynamic>> _droneSpotTestData = [
-    {
-      'id': 0,
-      'img': 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '거제도',
-      'like_count': 234,
-      'review_count': 4354,
-      'location': {
-        'lat': 33.539206,
-        'lon': 126.667611
-      },
-      'flight': 0,
-      'camera': 2,
-      'address': '경상남도 거제시'
-    },
-    {
-      'id': 1,
-      'img': 'https://images.unsplash.com/photo-1485086806232-72035a9f951c?q=80&w=1635&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '두바이',
-      'like_count': 4353,
-      'review_count': 123,
-      'location': {
-        'lat': 33.549862,
-        'lon': 126.678342
-      },
-      'flight': 1,
-      'camera': 1,
-      'address': '경상남도 두바이시'
-    },
-    {
-      'id': 2,
-      'img': 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '부산항',
-      'like_count': 234,
-      'review_count': 4354,
-      'location': {
-        'lat': 33.546361,
-        'lon': 126.659556
-      },
-      'flight': 2,
-      'camera': 2,
-      'address': '경상남도 부산시'
-    },
-    {
-      'id': 3,
-      'img': 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '거제도',
-      'like_count': 234,
-      'review_count': 4354,
-      'location': {
-        'lat': 33.532850,
-        'lon': 126.674042
-      },
-      'flight': 0,
-      'camera': 2,
-      'address': '경상남도 거제시'
-    },
-    {
-      'id': 4,
-      'img': 'https://images.unsplash.com/photo-1485086806232-72035a9f951c?q=80&w=1635&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '두바이',
-      'like_count': 4353,
-      'review_count': 123,
-      'location': {
-        'lat': 33.539337,
-        'lon': 126.659079
-      },
-      'flight': 1,
-      'camera': 1,
-      'address': '경상남도 두바이시'
-    },
-    {
-      'id': 5,
-      'img': 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '부산항',
-      'like_count': 234,
-      'review_count': 4354,
-      'location': {
-        'lat': 33.538301,
-        'lon': 126.654998
-      },
-      'flight': 2,
-      'camera': 2,
-      'address': '경상남도 부산시'
-    },
-  ];
+  List<Map<String, dynamic>> _droneSpotTestData = [];
 
-  Future<List<Map<String, dynamic>>> _fetchDataFromNetwork() async {
+  Future<void> _fetchDataFromNetwork() async {
     await Future.delayed(Duration(milliseconds: 600));
-    return _droneSpotTestData;
+    _droneSpotTestData = [
+      {
+        'id': 0,
+        'img': 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'name': '거제도',
+        'like_count': 234,
+        'review_count': 4354,
+        'location': {
+          'lat': 33.539206,
+          'lon': 126.667611
+        },
+        'flight': 0,
+        'camera': 2,
+        'address': '경상남도 거제시'
+      },
+      {
+        'id': 1,
+        'img': 'https://images.unsplash.com/photo-1485086806232-72035a9f951c?q=80&w=1635&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'name': '두바이',
+        'like_count': 4353,
+        'review_count': 123,
+        'location': {
+          'lat': 33.549862,
+          'lon': 126.678342
+        },
+        'flight': 1,
+        'camera': 1,
+        'address': '경상남도 두바이시'
+      },
+      {
+        'id': 2,
+        'img': 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'name': '부산항',
+        'like_count': 234,
+        'review_count': 4354,
+        'location': {
+          'lat': 33.546361,
+          'lon': 126.659556
+        },
+        'flight': 2,
+        'camera': 2,
+        'address': '경상남도 부산시'
+      },
+      {
+        'id': 3,
+        'img': 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'name': '거제도',
+        'like_count': 234,
+        'review_count': 4354,
+        'location': {
+          'lat': 33.532850,
+          'lon': 126.674042
+        },
+        'flight': 0,
+        'camera': 2,
+        'address': '경상남도 거제시'
+      },
+      {
+        'id': 4,
+        'img': 'https://images.unsplash.com/photo-1485086806232-72035a9f951c?q=80&w=1635&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'name': '두바이',
+        'like_count': 4353,
+        'review_count': 123,
+        'location': {
+          'lat': 33.539337,
+          'lon': 126.659079
+        },
+        'flight': 1,
+        'camera': 1,
+        'address': '경상남도 두바이시'
+      },
+      {
+        'id': 5,
+        'img': 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'name': '부산항',
+        'like_count': 234,
+        'review_count': 4354,
+        'location': {
+          'lat': 33.538301,
+          'lon': 126.654998
+        },
+        'flight': 2,
+        'camera': 2,
+        'address': '경상남도 부산시'
+      },
+    ];
+    setState(() {
+      for (var i in _droneSpotTestData) {
+        _kakaoMapChannel.addSpotLabel(
+          lat: i['location']['lat'],
+          lon: i['location']['lon'],
+          name: i['name'],
+          id: i['id']
+        );
+      }
+    });
   }
 
   @override
   void initState() {
     _bottomSheetContentController = ScrollController();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _fetchDataFromNetwork());
     super.initState();
   }
 
@@ -254,52 +266,37 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      child: FutureBuilder<List<Map<String, dynamic>>>(
-        future: _fetchDataFromNetwork(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            List<Map<String, dynamic>> data = [];
-            if (snapshot.hasData && snapshot.data != null) {
-              data = snapshot.data!;
-            }
-            return SnappingSheet(
-              child: Stack(
-                children: [
-                  KakaoMapView(
-                    channel: _kakaoMapChannel,
-                    initData: data,
-                  ),
-                  _createTopSection(),
-                ],
-              ),
-              grabbing: GrabbingWidget(),
-              grabbingHeight: 45,
-              snappingPositions: [
-                SnappingPosition.factor(
-                  positionFactor: 0,
-                  grabbingContentOffset: GrabbingContentOffset.top,
-                ),
-                SnappingPosition.factor(
-                  positionFactor: 0.45
-                ),
-                SnappingPosition.factor(
-                  positionFactor: 0.73
-                ),
-              ],
-              lockOverflowDrag: true,
-              sheetAbove: null,
-              sheetBelow: SnappingSheetContent(
-                draggable: false,
-                // childScrollController: _bottomSheetContentController,
-                child: _createBottomSheetContent()
-              ),
-            );
-          }
-        },
+      child: SnappingSheet(
+        child: Stack(
+          children: [
+            KakaoMapView(
+              channel: _kakaoMapChannel,
+              initData: [],
+            ),
+            _createTopSection(),
+          ],
+        ),
+        grabbing: GrabbingWidget(),
+        grabbingHeight: 45,
+        snappingPositions: [
+          SnappingPosition.factor(
+            positionFactor: 0,
+            grabbingContentOffset: GrabbingContentOffset.top,
+          ),
+          SnappingPosition.factor(
+              positionFactor: 0.45
+          ),
+          SnappingPosition.factor(
+              positionFactor: 0.73
+          ),
+        ],
+        lockOverflowDrag: true,
+        sheetAbove: null,
+        sheetBelow: SnappingSheetContent(
+            draggable: false,
+            // childScrollController: _bottomSheetContentController,
+            child: _createBottomSheetContent()
+        ),
       ),
     );
   }
