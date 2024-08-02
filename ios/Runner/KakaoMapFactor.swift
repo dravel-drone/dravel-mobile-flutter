@@ -46,8 +46,8 @@ class KakaoMapPlatform : NSObject, FlutterPlatformView {
         messenger: FlutterBinaryMessenger?
     ) {
         _view = UIView(frame: frame)
-        kakaoMapController = KakaoMapController(arguments: args)
         self.channel = FlutterMethodChannel(name: "map-kakao/\(viewId)", binaryMessenger: messenger!)
+        kakaoMapController = KakaoMapController(arguments: args, channel: self.channel)
         super.init()
         _view.addSubview(kakaoMapController.view)
         kakaoMapController.view.frame = _view.bounds
@@ -103,6 +103,7 @@ class KakaoMapPlatform : NSObject, FlutterPlatformView {
 class KakaoMapController : UIViewController, MapControllerDelegate {
     var mapContainer: KMViewContainer?
     var mapController: KMController?
+    var channel: FlutterMethodChannel?
     var _observerAdded: Bool
     var _auth: Bool
     var _appear: Bool
@@ -115,11 +116,15 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
         super.init(coder: aDecoder)
     }
     
-    init(arguments args: Any?) {
+    init(
+        arguments args: Any?,
+        channel: FlutterMethodChannel
+    ) {
         _args = args as? [String:Any]
         _observerAdded = false
         _auth = false
         _appear = false
+        self.channel = channel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -358,7 +363,17 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
         
         poiOption.addText(PoiText(text: name, styleIndex: 0))
         let poi1 = layer?.addPoi(option: poiOption, at: MapPoint(longitude: lon, latitude: lat))
+        poi1?.addPoiTappedEventHandler(target: self, handler: KakaoMapController.poiTappedHandler)
         poi1?.show()
+    }
+    
+    func poiTappedHandler(_ param: PoiInteractionEventParam) {
+        let poiId = param.poiItem.itemID
+        debugPrint("poiId : \(poiId)")
+        
+        var data: [String: Int] = [:]
+        data["id"] = Int(poiId)
+        channel?.invokeMethod("onLabelTabbed", arguments: data)
     }
     
     func showToast(_ view: UIView, message: String, duration: TimeInterval = 2.0) {
