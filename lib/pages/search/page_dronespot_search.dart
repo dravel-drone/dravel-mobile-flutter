@@ -1,4 +1,5 @@
 import 'package:dravel/utils/util_ui.dart';
+import 'package:dravel/widgets/list/list_item_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,6 +9,18 @@ class DroneSpotSearchPage extends StatefulWidget {
 }
 
 class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
+
+  List<Map<String, dynamic>> _recentKeyword = [
+    {
+      "name": "성산일출봉",
+    },
+    {
+      "name": "한라산",
+    },
+    {
+      "name": "우도",
+    },
+  ];
 
   Widget _createSearchBar() {
     return Container(
@@ -54,6 +67,49 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
       ),
     );
   }
+  
+  Widget _createRecentKeywordSection() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          color: Colors.white
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '최근 검색어',
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                height: 1
+            ),
+          ),
+          SizedBox(height: 12,),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemBuilder: (context, idx) {
+              return SearchKeywordListItem(
+                mode: SearchKeywordListItem.MODE_RECENT_KEYWORD,
+                name: _recentKeyword[idx]['name'],
+                onTap: () {
+
+                },
+              );
+            },
+            separatorBuilder: (context, idx) {
+              return SizedBox(height: 12,);
+            },
+            itemCount: _recentKeyword.length
+          )
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +120,17 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
         padding: EdgeInsets.fromLTRB(24, getTopPaddingWithHeight(context, 24), 24, 0),
         child: Column(
           children: [
-            _createSearchBar()
+            _createSearchBar(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(height: 24,),
+                    _createRecentKeywordSection()
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
