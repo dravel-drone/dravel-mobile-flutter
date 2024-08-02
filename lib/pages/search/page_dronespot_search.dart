@@ -111,6 +111,50 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
     );
   }
 
+  Widget _createTrendKeywordSection() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          color: Colors.white
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '가장 많이 검색하고 있어요',
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                height: 1
+            ),
+          ),
+          SizedBox(height: 12,),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemBuilder: (context, idx) {
+              return SearchKeywordListItem(
+                mode: SearchKeywordListItem.MODE_TEAND_KEYWORD,
+                name: _recentKeyword[idx]['name'],
+                num: idx + 1,
+                onTap: () {
+
+                },
+              );
+            },
+            separatorBuilder: (context, idx) {
+              return SizedBox(height: 12,);
+            },
+            itemCount: _recentKeyword.length
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,7 +170,9 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
                 child: Column(
                   children: [
                     SizedBox(height: 24,),
-                    _createRecentKeywordSection()
+                    _createRecentKeywordSection(),
+                    SizedBox(height: 24,),
+                    _createTrendKeywordSection()
                   ],
                 ),
               ),

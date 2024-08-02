@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class SearchKeywordListItem extends StatelessWidget {
   static const bool MODE_RECENT_KEYWORD = false;
-  static const bool MODE_TEAND_KEYWORD = false;
+  static const bool MODE_TEAND_KEYWORD = true;
 
   SearchKeywordListItem({
     required this.mode,
@@ -40,10 +40,21 @@ class SearchKeywordListItem extends StatelessWidget {
               width: 24,
               height: 24,
               child: Center(
-                child: Icon(
+                child: mode == MODE_RECENT_KEYWORD ?
+                Icon(
                   Icons.location_on,
                   color: Colors.white,
                   size: 20,
+                ) :
+                Text(
+                  '$num',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    height: 1,
+                    fontWeight: FontWeight.w600,
+                    textBaseline: TextBaseline.alphabetic
+                  ),
                 ),
               ),
             ),
@@ -52,8 +63,9 @@ class SearchKeywordListItem extends StatelessWidget {
               child: Text(
                 name,
                 style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 14
+                  color: Colors.black54,
+                  fontSize: 14,
+                  height: 1
                 ),
               ),
             )
