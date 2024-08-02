@@ -19,7 +19,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   int _selectedDrone = -1;
 
   Future<List<Map<String, dynamic>>> _fetchDataFromNetwork() async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(milliseconds: 600));
     return [
       {
         'id': 0,

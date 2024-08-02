@@ -8,7 +8,7 @@ class GrabbingWidget extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: [
-          BoxShadow(blurRadius: 25, color: Colors.black.withOpacity(0.2)),
+          BoxShadow(blurRadius: 25, color: Colors.black.withOpacity(0.1)),
         ],
       ),
       child: Column(
