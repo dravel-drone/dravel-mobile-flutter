@@ -10,7 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.kakao.vectormap.GestureType
 import com.kakao.vectormap.KakaoMap
+import com.kakao.vectormap.KakaoMap.OnCameraMoveEndListener
 import com.kakao.vectormap.KakaoMap.OnLabelClickListener
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -48,8 +50,8 @@ class KakaoMapActivity(
     private val context: Context
 
     private val creationParams: Map<String?, Any?>?
-
-    private var labelStyles: LabelStyles? = null;
+    private var labelStyles: LabelStyles? = null
+    private var prevCameraPos: CameraPosition? = null
 
     init {
         val inflater = LayoutInflater.from(context)
@@ -74,6 +76,7 @@ class KakaoMapActivity(
         }, object : KakaoMapReadyCallback() {
             override fun onMapReady(map: KakaoMap) {
                 kakaoMap = map
+                Log.d("Map Callback", "ready")
 
                 val labelManager: LabelManager = kakaoMap!!.labelManager!!
 
@@ -91,11 +94,16 @@ class KakaoMapActivity(
                     ),
                 )
 
-                moveCamera(
-                    creationParams!!["lat"].toString().toDouble(),
-                    creationParams!!["lon"].toString().toDouble(),
-                    creationParams!!["zoomLevel"].toString().toInt()
-                )
+
+                if (prevCameraPos == null) {
+                    moveCamera(
+                        creationParams!!["lat"].toString().toDouble(),
+                        creationParams!!["lon"].toString().toDouble(),
+                        creationParams!!["zoomLevel"].toString().toInt()
+                    )
+                } else {
+                    kakaoMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(prevCameraPos!!))
+                }
 
                 val initData = creationParams!!["initData"] as List<Map<String, Any>>
                 if (initData.isNotEmpty()) {
@@ -117,6 +125,18 @@ class KakaoMapActivity(
                         methodChannel.invokeMethod("onLabelTabbed", mapOf<String, Any>("id" to tagId))
                     }
                 })
+
+                kakaoMap!!.setOnCameraMoveEndListener(object : OnCameraMoveEndListener {
+                    override fun onCameraMoveEnd(
+                        p0: KakaoMap,
+                        p1: CameraPosition,
+                        p2: GestureType
+                    ) {
+                        prevCameraPos = p1
+                    }
+                })
+
+                methodChannel.invokeMethod("onMapInit", null)
             }
         })
 

@@ -10,7 +10,8 @@ class KakaoMapView extends StatelessWidget {
     this.lat = 33.541130,
     this.lon = 126.669621,
     this.zoomLevel = 14,
-    this.onLabelTab
+    this.onLabelTab,
+    this.onMapInit
   });
 
   final KakaoMapChannel channel;
@@ -22,6 +23,7 @@ class KakaoMapView extends StatelessWidget {
   List<Map<String, dynamic>> initData = [];
   
   Function(int id)? onLabelTab;
+  Function()? onMapInit;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +66,10 @@ class KakaoMapView extends StatelessWidget {
 
           if (onLabelTab == null) break;
           onLabelTab!(dataId);
+          break;
+        }
+        case "onMapInit": {
+          if (onMapInit != null) onMapInit!();
           break;
         }
       }

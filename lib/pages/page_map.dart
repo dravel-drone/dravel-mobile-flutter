@@ -157,7 +157,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   }
 
   void _moveListViewTo(int idx) {
-    final double totalItemHeight = 152 + 16;
+    const double totalItemHeight = 152 + 16;
     double itemIdx = totalItemHeight * idx;
     itemIdx += 24;
     _bottomSheetContentController.animateTo(
@@ -170,7 +170,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   Widget _createChip({
     required int index,
     required String name
-  }){
+  }) {
     return Material(
       borderRadius: BorderRadius.circular(12),
       elevation: 1,
@@ -209,9 +209,6 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
               //   lon: 124.4 + random.nextDouble() * (131.8 - 124.4),
               //   zoomLevel: 12 + random.nextInt(7)
               // );
-              setState(() {
-
-              });
             },
             child: Material(
               elevation: 1,
@@ -301,7 +298,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
         controller: _snappingSheetController,
         grabbing: GrabbingWidget(),
         grabbingHeight: 45,
-        snappingPositions: [
+        snappingPositions: const [
           SnappingPosition.factor(
             positionFactor: 0,
             grabbingContentOffset: GrabbingContentOffset.top,
@@ -324,7 +321,11 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
           children: [
             KakaoMapView(
               channel: _kakaoMapChannel,
-              initData: [],
+              initData: _droneSpotTestData,
+              onMapInit: () {
+                print("initMap");
+                _fetchDataFromNetwork();
+              },
               onLabelTab: (labelId) {
                 int idx = -1;
                 for (var i = 0;i < _droneSpotTestData.length;i++) {
@@ -335,8 +336,8 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
                 }
                 if (idx == -1) return;
                 _snappingSheetController.snapToPosition(
-                  SnappingPosition.factor(
-                      positionFactor: 0.45
+                  const SnappingPosition.factor(
+                    positionFactor: 0.45
                   )
                 );
                 _moveListViewTo(idx);
