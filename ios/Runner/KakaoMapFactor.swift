@@ -100,10 +100,12 @@ class KakaoMapPlatform : NSObject, FlutterPlatformView {
     }
 }
 
-class KakaoMapController : UIViewController, MapControllerDelegate {
+class KakaoMapController : UIViewController, MapControllerDelegate, KakaoMapEventDelegate {
     var mapContainer: KMViewContainer?
     var mapController: KMController?
     var channel: FlutterMethodChannel?
+    
+    var _preCameraPos: MapPoint?
     var _observerAdded: Bool
     var _auth: Bool
     var _appear: Bool
@@ -236,10 +238,17 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
     
     func addViews() {
         //여기에서 그릴 View(KakaoMap, Roadview)들을 추가한다.
-        let defaultPosition: MapPoint = MapPoint(
-            longitude: _args!["lon"] as! Double,
-            latitude: _args!["lat"] as! Double
-        )
+        let defaultPosition: MapPoint = if _preCameraPos == nil {
+            MapPoint(
+                longitude: _args!["lon"] as! Double,
+                latitude: _args!["lat"] as! Double
+            )
+        } else {
+            MapPoint(
+                longitude: _preCameraPos!.wgsCoord.longitude,
+                latitude: _preCameraPos!.wgsCoord.latitude
+            )
+        }
         //지도(KakaoMap)를 그리기 위한 viewInfo를 생성
         let mapviewInfo: MapviewInfo = MapviewInfo(
             viewName: "mapview",
@@ -288,7 +297,17 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
                 
             }
         }
+        
+        mapView?.addCameraStoppedEventHandler(target: self, handler: KakaoMapController.cameraStopped)
         print("initView")
+    }
+    
+    func cameraStopped(event: CameraActionEventParam) {
+        let mapView: KakaoMap = mapController?.getView("mapview") as! KakaoMap
+        let x = mapView.viewRect.width / 2
+        let y = mapView.viewRect.height / 2
+        _preCameraPos = mapView.getPosition(CGPoint(x: x, y: y))
+        print("cameraStopped \(_preCameraPos!.wgsCoord)")
     }
     
     //addView 성공 이벤트 delegate. 추가적으로 수행할 작업을 진행한다.
@@ -330,6 +349,13 @@ class KakaoMapController : UIViewController, MapControllerDelegate {
     @objc func didBecomeActive(){
         mapController?.activateEngine() //뷰가 active 상태가 되면 렌더링 시작. 엔진은 미리 시작된 상태여야 함.
     }
+    
+//    func cameraDidStopped(kakaoMap: KakaoMap, by: MoveBy) {
+//        let mapView: KakaoMap = mapController?.getView("mapview") as! KakaoMap
+//        let x = mapView.viewRect.width / 2
+//        let y = mapView.viewRect.height / 2
+//        print("cameraStopped")
+//    }
     
     
     func moveCamera(
