@@ -10,6 +10,7 @@ class KakaoMapView extends StatelessWidget {
     this.lat = 33.541130,
     this.lon = 126.669621,
     this.zoomLevel = 14,
+    this.onLabelTab
   });
 
   final KakaoMapChannel channel;
@@ -19,6 +20,8 @@ class KakaoMapView extends StatelessWidget {
   int zoomLevel;
 
   List<Map<String, dynamic>> initData = [];
+  
+  Function(int id)? onLabelTab;
 
   @override
   Widget build(BuildContext context) {
@@ -53,5 +56,17 @@ class KakaoMapView extends StatelessWidget {
 
   void _onPlatformViewCreated(int id) {
     channel.initChannel(id);
+    channel.channel.setMethodCallHandler((call) async {
+      switch (call.method) {
+        case "onLabelTabbed": {
+          final args = call.arguments;
+          int dataId = args["id"]!;
+
+          if (onLabelTab == null) break;
+          onLabelTab!(dataId);
+          break;
+        }
+      }
+    });
   }
 }

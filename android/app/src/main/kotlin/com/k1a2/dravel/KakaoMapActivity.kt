@@ -11,12 +11,15 @@ import android.view.View
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.kakao.vectormap.KakaoMap
+import com.kakao.vectormap.KakaoMap.OnLabelClickListener
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
 import com.kakao.vectormap.camera.CameraPosition
 import com.kakao.vectormap.camera.CameraUpdateFactory
+import com.kakao.vectormap.label.Label
+import com.kakao.vectormap.label.LabelLayer
 import com.kakao.vectormap.label.LabelManager
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
@@ -28,6 +31,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.platform.PlatformView
+import java.util.Objects
 
 
 class KakaoMapActivity(
@@ -105,6 +109,14 @@ class KakaoMapActivity(
                         )
                     }
                 }
+
+                kakaoMap!!.setOnLabelClickListener(object : OnLabelClickListener {
+                    override fun onLabelClicked(p0: KakaoMap?, p1: LabelLayer?, p2: Label?) {
+                        val tagId = p2!!.tag as Int
+                        Log.d("Tag Clicked", "$tagId")
+                        methodChannel.invokeMethod("onLabelTabbed", mapOf<String, Any>("id" to tagId))
+                    }
+                })
             }
         })
 

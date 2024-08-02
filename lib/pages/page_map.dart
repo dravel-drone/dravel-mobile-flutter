@@ -17,6 +17,7 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   KakaoMapChannel _kakaoMapChannel = KakaoMapChannel();
   late final ScrollController _bottomSheetContentController;
+  late final SnappingSheetController _snappingSheetController;
 
   int _selectedDrone = -1;
 
@@ -125,19 +126,9 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     _bottomSheetContentController = ScrollController();
+    _snappingSheetController = SnappingSheetController();
     _bottomSheetContentController.addListener(() {
-      double offset = _bottomSheetContentController.offset;
-
-      final double totalItemHeight = 152 + 16;
-      final double effectiveOffset = offset - 24;
-
-      int currentIndex = (effectiveOffset / totalItemHeight).floor();
-      if (currentIndex < 0) currentIndex = 0;
-
-      // if (_bottomSheetContentController.position.pixels >=
-      //     _bottomSheetContentController.position.maxScrollExtent) currentIndex = _droneSpotTestData.length - 1;
-
-      debugPrint("offset: $offset index: $currentIndex");
+      _detectListViewIdx();
     });
     WidgetsBinding.instance
         .addPostFrameCallback((_) => _fetchDataFromNetwork());
@@ -148,6 +139,32 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   void dispose() {
     _bottomSheetContentController.dispose();
     super.dispose();
+  }
+
+  void _detectListViewIdx() {
+    double offset = _bottomSheetContentController.offset;
+
+    final double totalItemHeight = 152 + 16;
+    final double effectiveOffset = offset - 24;
+
+    int currentIndex = (effectiveOffset / totalItemHeight).floor();
+    if (currentIndex < 0) currentIndex = 0;
+
+    // if (_bottomSheetContentController.position.pixels >=
+    //     _bottomSheetContentController.position.maxScrollExtent) currentIndex = _droneSpotTestData.length - 1;
+
+    debugPrint("offset: $offset index: $currentIndex");
+  }
+
+  void _moveListViewTo(int idx) {
+    final double totalItemHeight = 152 + 16;
+    double itemIdx = totalItemHeight * idx;
+    itemIdx += 24;
+    _bottomSheetContentController.animateTo(
+      itemIdx,
+      duration: Duration(milliseconds: 350),
+      curve: Curves.ease
+    );
   }
 
   Widget _createChip({
@@ -281,15 +298,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
       width: double.infinity,
       height: double.infinity,
       child: SnappingSheet(
-        child: Stack(
-          children: [
-            KakaoMapView(
-              channel: _kakaoMapChannel,
-              initData: [],
-            ),
-            _createTopSection(),
-          ],
-        ),
+        controller: _snappingSheetController,
         grabbing: GrabbingWidget(),
         grabbingHeight: 45,
         snappingPositions: [
@@ -310,6 +319,31 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
             draggable: false,
             // childScrollController: _bottomSheetContentController,
             child: _createBottomSheetContent()
+        ),
+        child: Stack(
+          children: [
+            KakaoMapView(
+              channel: _kakaoMapChannel,
+              initData: [],
+              onLabelTab: (labelId) {
+                int idx = -1;
+                for (var i = 0;i < _droneSpotTestData.length;i++) {
+                  if (_droneSpotTestData[i]['id'] == labelId) {
+                    idx = i;
+                    break;
+                  }
+                }
+                if (idx == -1) return;
+                _snappingSheetController.snapToPosition(
+                  SnappingPosition.factor(
+                      positionFactor: 0.45
+                  )
+                );
+                _moveListViewTo(idx);
+              },
+            ),
+            _createTopSection(),
+          ],
         ),
       ),
     );

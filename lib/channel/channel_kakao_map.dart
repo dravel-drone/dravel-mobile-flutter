@@ -7,6 +7,8 @@ class KakaoMapChannel {
     _channel = MethodChannel('map-kakao/$id');
   }
 
+  MethodChannel get channel => _channel;
+
   Future<void> moveCamera({
     required double lat,
     required double lon,
