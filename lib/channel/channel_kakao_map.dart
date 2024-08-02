@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 
 class KakaoMapChannel {
-  late final MethodChannel _channel;
+  late MethodChannel _channel;
 
   void initChannel(int id) {
     _channel = MethodChannel('map-kakao/$id');
