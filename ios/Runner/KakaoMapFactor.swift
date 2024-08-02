@@ -258,6 +258,7 @@ class KakaoMapController : UIViewController, MapControllerDelegate, KakaoMapEven
         
         //KakaoMap 추가.
         mapController?.addView(mapviewInfo)
+        channel?.invokeMethod("onMapInit", arguments: nil)
         print("view added")
     }
     
@@ -279,7 +280,7 @@ class KakaoMapController : UIViewController, MapControllerDelegate, KakaoMapEven
         ])
         
         let poiStyle = PoiStyle(styleID: "SpotStyle", styles: [
-            PerLevelPoiStyle(iconStyle: iconStyle1, textStyle: textStyle1, level: 14),
+            PerLevelPoiStyle(iconStyle: iconStyle1, textStyle: textStyle1, level: 5),
 //            PerLevelPoiStyle(iconStyle: iconStyle2, textStyle: textStyle2, level: 12)
         ])
         labelManager.addPoiStyle(poiStyle)
