@@ -17,7 +17,7 @@ double getBottomPaddingWithSafeHeight(BuildContext context, double bottomPadding
 
 double getTopPaddingWithHeight(BuildContext context, double topPadding) {
   double topHeight = MediaQuery.of(context).padding.top;
-  debugPrint('$topHeight');
+  // debugPrint('$topHeight');
   return topHeight + topPadding;
 }
 
