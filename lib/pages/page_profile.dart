@@ -15,7 +15,7 @@ class ProfilePage extends StatefulWidget {
   State<StatefulWidget> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin {
+class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late final TabController _tabController;
   late final ScrollController _droneSpotController;
   late final ScrollController _reviewController;
@@ -460,6 +460,9 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
       )
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _SliverAppBarTabDelegate extends SliverPersistentHeaderDelegate {

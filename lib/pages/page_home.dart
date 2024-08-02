@@ -3,11 +3,13 @@ import 'dart:collection';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dravel/utils/util_ui.dart';
+import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/carousel/carousel_spot_recommend.dart';
 import 'package:dravel/widgets/list/list_item_course.dart';
 import 'package:dravel/widgets/list/list_item_review.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../utils/util_map.dart';
 
@@ -16,7 +18,7 @@ class HomePage extends StatefulWidget {
   State<StatefulWidget> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   int _selectedCarouselCard = 0;
 
   int _maxReviewCount = 0;
@@ -295,39 +297,48 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        width: double.infinity,
-        height: double.infinity,
-        padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Text(
-                '여행지 탐색',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  height: 1
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: SystemUiOverlayStyle.dark.statusBarBrightness,
+        statusBarIconBrightness: SystemUiOverlayStyle.dark.statusBarIconBrightness,
+        systemStatusBarContrastEnforced: SystemUiOverlayStyle.dark.systemStatusBarContrastEnforced,
+      ),
+      child: Material(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 24,),
+                Text(
+                  '여행지 탐색',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      height: 1
+                  ),
                 ),
-              ),
-              SizedBox(height: 18,),
-              _createDroneSpotRecommendSection(),
-              SizedBox(
-                height: 24,
-              ),
-              _createCourseRecommendSection(),
-              SizedBox(
-                height: 24,
-              ),
-              _createReviewRecommendSection(),
-              SizedBox(
-                height: 24,
-              ),
-            ],
+                SizedBox(height: 18,),
+                _createDroneSpotRecommendSection(),
+                SizedBox(
+                  height: 24,
+                ),
+                _createCourseRecommendSection(),
+                SizedBox(
+                  height: 24,
+                ),
+                _createReviewRecommendSection(),
+                SizedBox(
+                  height: 24,
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -23,6 +23,8 @@ if (flutterVersionName == null) {
     flutterVersionName = "1.0"
 }
 
+def kakaoKey = localProperties.getProperty('kakao.key')
+
 android {
     namespace = "com.k1a2.dravel"
     compileSdk = flutter.compileSdkVersion
@@ -38,10 +40,13 @@ android {
         applicationId = "com.k1a2.dravel"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdk = flutter.minSdkVersion
+//        minSdk = flutter.minSdkVersion
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
+
+        resValue "string", "kakao_key", kakaoKey
     }
 
     buildTypes {
@@ -51,6 +56,10 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
+}
+
+dependencies {
+    implementation 'com.kakao.maps.open:android:2.9.5'
 }
 
 flutter {

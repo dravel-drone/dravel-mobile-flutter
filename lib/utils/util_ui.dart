@@ -18,8 +18,7 @@ double getBottomPaddingWithSafeHeight(BuildContext context, double bottomPadding
 double getTopPaddingWithHeight(BuildContext context, double topPadding) {
   double topHeight = MediaQuery.of(context).padding.top;
   debugPrint('$topHeight');
-  if (topHeight == 0) return topPadding;
-  return 0;
+  return topHeight + topPadding;
 }
 
 Widget getFlyPermitWidget(int level) {

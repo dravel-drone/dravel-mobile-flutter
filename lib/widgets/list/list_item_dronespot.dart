@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +14,7 @@ class DroneSpotItem extends StatelessWidget {
     required this.review_count,
     required this.camera_level,
     required this.fly_level,
+    this.backgroundColor = Colors.white,
     this.onTap,
   });
 
@@ -23,6 +26,8 @@ class DroneSpotItem extends StatelessWidget {
   int review_count;
   int camera_level;
   int fly_level;
+
+  Color backgroundColor;
 
   Function()? onTap;
 
@@ -38,7 +43,7 @@ class DroneSpotItem extends StatelessWidget {
           height: 152,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
-            color: Colors.white,
+            color: backgroundColor,
           ),
           child: Row(
             children: [

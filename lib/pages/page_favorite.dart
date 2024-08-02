@@ -10,7 +10,7 @@ class FavoritePage extends StatefulWidget {
   State<StatefulWidget> createState() => _FavoritePageState();
 }
 
-class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMixin {
+class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late final TabController _tabController;
   late final ScrollController _droneSpotController;
   late final ScrollController _reviewController;
@@ -162,7 +162,7 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(
-            statusBarColor: Colors.white,
+            statusBarColor: Colors.transparent,
             statusBarBrightness: SystemUiOverlayStyle.dark.statusBarBrightness,
             statusBarIconBrightness: SystemUiOverlayStyle.dark.statusBarIconBrightness,
             systemStatusBarContrastEnforced: SystemUiOverlayStyle.dark.systemStatusBarContrastEnforced,
@@ -276,4 +276,7 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
