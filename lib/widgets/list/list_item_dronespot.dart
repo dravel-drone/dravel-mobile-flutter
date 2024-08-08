@@ -36,7 +36,7 @@ class DroneSpotItem extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(18),
       child: GestureDetector(
-        // onTap: onTap,
+        onTap: onTap,
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.all(14),
