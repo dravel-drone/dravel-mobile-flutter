@@ -15,14 +15,91 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
     return Row(
       children: [
         ClipRRect(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           child: CachedNetworkImage(
-            height: 110,
-            width: 110,
+            height: 120,
+            width: 120,
             fit: BoxFit.cover,
             imageUrl: 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
           ),
         ),
+        SizedBox(width: 14,),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '센서드론',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.favorite,
+                    color: Color(0xFF0075FF),
+                    size: 16,
+                  ),
+                  SizedBox(width: 2,),
+                  Text(
+                    '54',
+                    style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 14
+                    ),
+                  )
+                ],
+              ),
+              Text(
+                '사전합의구역',
+                style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+              getFlyPermitWidget(0,
+              style: TextStyle(
+                color: Colors.black54
+              )),
+              SizedBox(height: 2,),
+              getPicturePermitWidget(2,
+              style: TextStyle(
+                  color: Colors.black54
+              )),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.location_on,
+                    color: Colors.black54,
+                    size: 18,
+                  ),
+                  SizedBox(width: 4,),
+                  Text(
+                    '서귀포시 안덕면 사계리',
+                    style: TextStyle(
+                      color: Colors.black54
+                    ),
+                  )
+                ],
+              ),
+              Text(
+                '현재 12도 / 맑음',
+                style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 14,
+                    height: 1
+                ),
+              )
+            ],
+          ),
+        )
       ],
     );
   }
