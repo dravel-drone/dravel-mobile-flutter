@@ -149,6 +149,7 @@ class _FollowListPageState extends State<FollowListPage> {
 
   Widget _createFollowerList() {
     return ListView.separated(
+      physics: ClampingScrollPhysics(),
       padding: EdgeInsets.fromLTRB(24, 24, 24, getBottomPaddingWithSafeHeight(context, 24)),
       itemBuilder: (context, idx) {
         return FollowerListItem(
@@ -166,6 +167,7 @@ class _FollowListPageState extends State<FollowListPage> {
 
   Widget _createFollowingList() {
     return ListView.separated(
+        physics: ClampingScrollPhysics(),
         padding: EdgeInsets.fromLTRB(24, 24, 24, getBottomPaddingWithSafeHeight(context, 24)),
         itemBuilder: (context, idx) {
           return FollowingListItem(
