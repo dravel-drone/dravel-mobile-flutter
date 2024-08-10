@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:dravel/channel/channel_kakao_map.dart';
+import 'package:dravel/pages/detail/page_dronespot_detail.dart';
 import 'package:dravel/pages/search/page_dronespot_search.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/list/list_item_dronespot.dart';
@@ -276,6 +277,9 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
             camera_level: _droneSpotTestData[idx]['camera'],
             fly_level: _droneSpotTestData[idx]['flight'],
             backgroundColor: Color(0xFFF1F1F5),
+            onTap: () {
+              Get.to(() => DroneSpotDetailPage());
+            },
           );
         },
         separatorBuilder: (context, idx) {

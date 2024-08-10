@@ -21,7 +21,9 @@ double getTopPaddingWithHeight(BuildContext context, double topPadding) {
   return topHeight + topPadding;
 }
 
-Widget getFlyPermitWidget(int level) {
+Widget getFlyPermitWidget(int level, {
+  TextStyle style = const TextStyle()
+}) {
   String svgPath;
   String message;
   switch(level) {
@@ -52,13 +54,16 @@ Widget getFlyPermitWidget(int level) {
       ),
       SizedBox(width: 6,),
       Text(
-        message
+        message,
+        style: style
       )
     ],
   );
 }
 
-Widget getPicturePermitWidget(int level) {
+Widget getPicturePermitWidget(int level, {
+  TextStyle style = const TextStyle()
+}) {
   String svgPath;
   String message;
   switch(level) {
@@ -89,7 +94,8 @@ Widget getPicturePermitWidget(int level) {
       ),
       SizedBox(width: 6,),
       Text(
-        message
+        message,
+        style: style,
       )
     ],
   );
