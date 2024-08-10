@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
+import 'package:dravel/widgets/list/list_item_course.dart';
 import 'package:dravel/widgets/list/list_item_review.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -43,6 +44,27 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
       'write_date': '2024-02-17',
       'drone': '매빅 에어3'
     },
+  ];
+
+  List<dynamic> _courseTestData = [
+    {
+      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '제주 코스',
+      'distance': 2434,
+      'duration': 345
+    },
+    {
+      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '제주 코스',
+      'distance': 2434,
+      'duration': 345
+    },
+    {
+      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '제주 코스',
+      'distance': 2434,
+      'duration': 345
+    }
   ];
 
   Widget _createInfoSection() {
@@ -205,6 +227,61 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
     );
   }
 
+  Widget _createCourseSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Text(
+                '추천 코스',
+                style: TextStyle(
+                    height: 1,
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+            ),
+            // GestureDetector(
+            //   onTap: () {
+            //
+            //   },
+            //   child: Text(
+            //     '더보기 >',
+            //     style: TextStyle(
+            //         color: Colors.black38,
+            //         height: 1
+            //     ),
+            //   ),
+            // )
+          ],
+        ),
+        SizedBox(height: 12,),
+        ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemBuilder: (context, idx) {
+              return CourseItem(
+                img: _courseTestData[idx]['img'],
+                name: _courseTestData[idx]['name'],
+                distance: _courseTestData[idx]['distance'],
+                duration: _courseTestData[idx]['duration'],
+                sectionColor: Colors.white
+              );
+            },
+            separatorBuilder: (context, idx) {
+              return SizedBox(height: 12,);
+            },
+            itemCount: _courseTestData.length
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -230,6 +307,8 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
               _createInfoSection(),
               SizedBox(height: 24,),
               _createReviewSection(),
+              SizedBox(height: 24,),
+              _createCourseSection(),
               SizedBox(
                 height: getBottomPaddingWithSafeHeight(context, 24),
               )

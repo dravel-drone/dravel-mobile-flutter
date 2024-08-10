@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +11,7 @@ class CourseItem extends StatelessWidget {
     required this.name,
     required this.distance,
     required this.duration,
+    this.sectionColor = const Color(0xFFF1F1F5),
     this.onTap
   });
 
@@ -17,6 +20,8 @@ class CourseItem extends StatelessWidget {
 
   int distance;
   int duration;
+
+  Color sectionColor;
 
   Function()? onTap;
 
@@ -31,7 +36,7 @@ class CourseItem extends StatelessWidget {
           height: 170,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
-            color: Color(0xFFF1F1F5),
+            color: sectionColor,
           ),
           child: Column(
             children: [
