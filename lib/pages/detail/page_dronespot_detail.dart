@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
+import 'package:dravel/widgets/button/button_switch.dart';
 import 'package:dravel/widgets/list/list_item_course.dart';
 import 'package:dravel/widgets/list/list_item_review.dart';
 import 'package:flutter/material.dart';
@@ -282,6 +283,57 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
     );
   }
 
+  Widget _createPlaceSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Text(
+                '근처 추천 장소',
+                style: TextStyle(
+                    height: 1,
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600
+                ),
+              ),
+            ),
+            SwitchButton(
+              items: [
+                "숙소", "맛집"
+              ],
+              onChange: (value) {
+                print(value);
+              },
+            )
+          ],
+        ),
+        SizedBox(height: 12,),
+        ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemBuilder: (context, idx) {
+              return CourseItem(
+                img: _courseTestData[idx]['img'],
+                name: _courseTestData[idx]['name'],
+                distance: _courseTestData[idx]['distance'],
+                duration: _courseTestData[idx]['duration'],
+                sectionColor: Colors.white
+              );
+            },
+            separatorBuilder: (context, idx) {
+              return SizedBox(height: 12,);
+            },
+            itemCount: _courseTestData.length
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -309,6 +361,8 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
               _createReviewSection(),
               SizedBox(height: 24,),
               _createCourseSection(),
+              SizedBox(height: 24,),
+              _createPlaceSection(),
               SizedBox(
                 height: getBottomPaddingWithSafeHeight(context, 24),
               )
