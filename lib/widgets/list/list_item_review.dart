@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class ReviewRecommendItem extends StatelessWidget {
+class ReviewRecommendItem extends StatefulWidget {
   ReviewRecommendItem({
     required this.img,
     required this.name,
@@ -21,14 +21,50 @@ class ReviewRecommendItem extends StatelessWidget {
   Function()? onTap;
 
   @override
+  State<StatefulWidget> createState() => _ReviewRecommendItemState();
+}
+
+class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
+  final GlobalKey _secondChildKey = GlobalKey();
+  double _secondChildHeight = 0;
+
+  bool mode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _afterLayout();
+    });
+  }
+
+  void _afterLayout() {
+    final RenderBox renderBox = _secondChildKey.currentContext?.findRenderObject() as RenderBox;
+    if (renderBox != null) {
+      final height = renderBox.size.height;
+      print(height);
+      setState(() {
+        _secondChildHeight = height + 100;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(18),
       child: GestureDetector(
-        onTap: onTap,
+        onTap: () {
+          setState(() {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _afterLayout();
+            });
+            mode = !mode;
+          });
+        },
         child: Container(
           width: double.infinity,
-          height: 150,
+          height: _secondChildHeight > 0 ? _secondChildHeight : null,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
             color: Color(0xFFF1F1F5),
@@ -36,9 +72,9 @@ class ReviewRecommendItem extends StatelessWidget {
           child: Row(
             children: [
               CachedNetworkImage(
-                imageUrl: img,
+                imageUrl: widget.img,
                 width: 100,
-                height: 150,
+                height: _secondChildHeight > 0 ? _secondChildHeight : null,
                 fit: BoxFit.cover,
               ),
               Expanded(
@@ -52,11 +88,11 @@ class ReviewRecommendItem extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              name,
+                              widget.name,
                               style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xFF0075FF)
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF0075FF)
                               ),
                             ),
                           ),
@@ -77,7 +113,7 @@ class ReviewRecommendItem extends StatelessWidget {
                           ),
                           SizedBox(width: 2,),
                           Text(
-                            '$likeCount',
+                            '${widget.likeCount}',
                             style: TextStyle(
                                 color: Colors.black87,
                                 fontSize: 14
@@ -86,7 +122,7 @@ class ReviewRecommendItem extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        place,
+                        widget.place,
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -96,20 +132,16 @@ class ReviewRecommendItem extends StatelessWidget {
                       SizedBox(
                         height: 4,
                       ),
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            content,
-                            style: TextStyle(
-                                color: Colors.black54
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            softWrap: true,
-                            maxLines: 3,
-                          ),
+                      Text(
+                        widget.content,
+                        key: _secondChildKey,
+                        style: TextStyle(
+                            color: Colors.black54
                         ),
-                      )
+                        overflow: mode ? null : TextOverflow.ellipsis,
+                        softWrap: true,
+                        maxLines: mode ? null : 3,
+                      ),
                     ],
                   ),
                 ),
