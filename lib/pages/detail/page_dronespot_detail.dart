@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
+import 'package:dravel/widgets/button/button_main.dart';
 import 'package:dravel/widgets/list/list_item_review.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -173,6 +174,7 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
         ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
           itemBuilder: (context, idx) {
             return ReviewFullItem(
                 img: _reviewTestData[idx]['img'],
@@ -188,6 +190,16 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
             return SizedBox(height: 12,);
           },
           itemCount: _reviewTestData.length
+        ),
+        SizedBox(height: 12,),
+        SizedBox(
+          width: double.infinity,
+          child: MainButton(
+              onPressed: () {
+
+              },
+              childText: '리뷰 작성하기'
+          ),
         )
       ],
     );
@@ -219,7 +231,7 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
               SizedBox(height: 24,),
               _createReviewSection(),
               SizedBox(
-                height: getBottomPaddingWithHeight(context, 24),
+                height: getBottomPaddingWithSafeHeight(context, 24),
               )
             ],
           ),
