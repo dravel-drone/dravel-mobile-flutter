@@ -381,6 +381,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
     return ListView.separated(
         key: PageStorageKey('review_profile'),
         padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
+        physics: ClampingScrollPhysics(),
         // controller: _reviewController,
         itemBuilder: (context, idx) {
           return ReviewFullItem(
@@ -404,6 +405,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
     return ListView.separated(
         key: PageStorageKey('drone_profile'),
         padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
+        physics: ClampingScrollPhysics(),
         // controller: _droneSpotController,
         itemBuilder: (context, idx) {
           return DroneSpotItem(

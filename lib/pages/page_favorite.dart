@@ -394,6 +394,7 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
     return ListView.separated(
       key: PageStorageKey('drone'),
       padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
+      physics: ClampingScrollPhysics(),
       controller: _droneSpotController,
       itemBuilder: (context, idx) {
         return DroneSpotItem(

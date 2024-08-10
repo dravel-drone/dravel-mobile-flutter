@@ -266,6 +266,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
       color: Colors.white,
       child: ListView.separated(
         padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
+        physics: ClampingScrollPhysics(),
         controller: _bottomSheetContentController,
         itemBuilder: (context, idx) {
           return DroneSpotItem(
