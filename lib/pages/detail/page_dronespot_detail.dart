@@ -104,6 +104,42 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
     );
   }
 
+  Widget _createReviewSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Text(
+                '최근 리뷰',
+                style: TextStyle(
+                  height: 1,
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+
+              },
+              child: Text(
+                '더보기 >',
+                style: TextStyle(
+                  color: Colors.black38,
+                  height: 1
+                ),
+              ),
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,7 +162,9 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _createInfoSection()
+              _createInfoSection(),
+              SizedBox(height: 24,),
+              _createReviewSection()
             ],
           ),
         ),
