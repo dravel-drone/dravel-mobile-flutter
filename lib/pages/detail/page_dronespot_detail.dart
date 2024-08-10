@@ -4,6 +4,7 @@ import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
 import 'package:dravel/widgets/button/button_switch.dart';
 import 'package:dravel/widgets/list/list_item_course.dart';
+import 'package:dravel/widgets/list/list_item_place.dart';
 import 'package:dravel/widgets/list/list_item_review.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -67,6 +68,57 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
       'duration': 345
     }
   ];
+
+  Map<String, dynamic> _placeTestData = {
+    'accommodation': [
+      {
+        'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'name': '성산일출봉',
+        'message': '친절한 서비스와 오션뷰룸이 인기',
+        'location': '서귀포시 한다리',
+        'distance': 2434,
+      },
+      {
+        'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'name': '성산일출봉',
+        'message': '친절한 서비스와 오션뷰룸이 인기',
+        'location': '서귀포시 한다리',
+        'distance': 2434,
+      },
+      {
+        'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'name': '성산일출봉',
+        'message': '친절한 서비스와 오션뷰룸이 인기',
+        'location': '서귀포시 한다리',
+        'distance': 2434,
+      }
+    ],
+    'restaurant': [
+      {
+        'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'name': '성산일출봉',
+        'message': '친절한 서비스와 오션뷰룸이 인기',
+        'location': '서귀포시 한다리',
+        'distance': 2434,
+      },
+      {
+        'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'name': '성산일출봉',
+        'message': '친절한 서비스와 오션뷰룸이 인기',
+        'location': '서귀포시 한다리',
+        'distance': 2434,
+      },
+      {
+        'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        'name': '222',
+        'message': '친절한 서비스와 오션뷰룸이 인기',
+        'location': '서귀포시 한다리',
+        'distance': 2434,
+      }
+    ],
+  };
+
+  int _selectedPlaceMode = 0;
 
   Widget _createInfoSection() {
     return Row(
@@ -305,8 +357,12 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
               items: [
                 "숙소", "맛집"
               ],
+              height: 34,
               onChange: (value) {
                 print(value);
+                setState(() {
+                  _selectedPlaceMode = value;
+                });
               },
             )
           ],
@@ -317,18 +373,21 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
             physics: const NeverScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
             itemBuilder: (context, idx) {
-              return CourseItem(
-                img: _courseTestData[idx]['img'],
-                name: _courseTestData[idx]['name'],
-                distance: _courseTestData[idx]['distance'],
-                duration: _courseTestData[idx]['duration'],
-                sectionColor: Colors.white
+              String key = 'accommodation';
+              if (_selectedPlaceMode == 1) key = 'restaurant';
+              return PlaceItem(
+                name: _placeTestData[key][idx]['name'],
+                distance: _placeTestData[key][idx]['distance'],
+                message: _placeTestData[key][idx]['message'],
+                imageUrl: _placeTestData[key][idx]['img'],
+                address: _placeTestData[key][idx]['location'],
               );
             },
             separatorBuilder: (context, idx) {
               return SizedBox(height: 12,);
             },
-            itemCount: _courseTestData.length
+            itemCount: _selectedPlaceMode == 0 ?
+              _placeTestData['accommodation'].length : _placeTestData['restaurant'].length
         ),
       ],
     );
