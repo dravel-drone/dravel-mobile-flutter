@@ -153,6 +153,44 @@ class _CommentWritePageState extends State<CommentWritePage> {
     );
   }
 
+  Widget _createReviewSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "리뷰 내용",
+          style: TextStyle(
+              height: 1,
+              fontWeight: FontWeight.w500,
+              fontSize: 18
+          ),
+        ),
+        SizedBox(height: 12,),
+        TextField(
+          maxLength: 600,
+          maxLines: null,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            hintText: '리뷰 입력',
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.all(
+                    Radius.circular(12)
+                )
+            ),
+            focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.all(
+                    Radius.circular(12)
+                )
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -179,7 +217,9 @@ class _CommentWritePageState extends State<CommentWritePage> {
               SizedBox(height: 32,),
               _createUsingDroneSection(),
               SizedBox(height: 32,),
-              _createDateSection()
+              _createDateSection(),
+              SizedBox(height: 32,),
+              _createReviewSection(),
             ],
           ),
         ),
