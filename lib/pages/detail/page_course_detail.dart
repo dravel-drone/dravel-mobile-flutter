@@ -11,6 +11,8 @@ class CourseDetailPage extends StatefulWidget {
 }
 
 class _CourseDetailPageState extends State<CourseDetailPage> {
+  late final ScrollController _sliverScrollController;
+
   List<String> _images = [
     'https://plus.unsplash.com/premium_photo-1675359655401-27e0b11bef70?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'https://plus.unsplash.com/premium_photo-1664801768830-46734d0f0848?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -18,6 +20,25 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
   ];
 
   int _selectedIdx = 0;
+  bool _isShrink = false;
+
+  @override
+  void initState() {
+    _sliverScrollController = ScrollController();
+    _sliverScrollController.addListener(() {
+      setState(() {
+        _isShrink = _sliverScrollController.hasClients &&
+            _sliverScrollController.offset > (230 - kToolbarHeight);
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _sliverScrollController.dispose();
+    super.dispose();
+  }
 
   Widget _createTopImageSnapSection() {
     return LayoutBuilder(
@@ -78,15 +99,16 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
+        controller: _sliverScrollController,
         slivers: [
           SliverAppBar(
-            pinned: false,
+            pinned: true,
             floating: false,
             snap: false,
             leading: IconButton(
               icon: Icon(
                 Icons.arrow_back_outlined,
-                color: Colors.white
+                color: _isShrink ? Colors.black : Colors.white
               ),
               onPressed: () {
                 Get.back();
@@ -104,7 +126,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white
+                    color: _isShrink ? Colors.black : Colors.white
                   ),
                 ),
               ),
