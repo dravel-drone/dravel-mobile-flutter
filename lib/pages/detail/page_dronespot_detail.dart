@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dravel/pages/comment/page_comment_write.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
@@ -271,7 +272,7 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
           width: double.infinity,
           child: MainButton(
               onPressed: () {
-
+                Get.to(() => CommentWritePage());
               },
               childText: '리뷰 작성하기'
           ),
