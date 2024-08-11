@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
+import 'package:dravel/widgets/button/button_main.dart';
 import 'package:dravel/widgets/button/button_switch.dart';
 import 'package:dravel/widgets/textField/textfield_main.dart';
 import 'package:flutter/material.dart';
@@ -335,26 +337,42 @@ class _CommentWritePageState extends State<CommentWritePage> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-          child: Column(
-            children: [
-              SizedBox(height: 18,),
-              _createCheckAvailableSection(),
-              SizedBox(height: 32,),
-              _createUsingDroneSection(),
-              SizedBox(height: 32,),
-              _createDateSection(),
-              SizedBox(height: 32,),
-              _createReviewSection(),
-              SizedBox(height: 16,),
-              _createPickPictureSection(),
-              SizedBox(height: 32,),
-            ],
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                child: Column(
+                  children: [
+                    SizedBox(height: 18,),
+                    _createCheckAvailableSection(),
+                    SizedBox(height: 32,),
+                    _createUsingDroneSection(),
+                    SizedBox(height: 32,),
+                    _createDateSection(),
+                    SizedBox(height: 32,),
+                    _createReviewSection(),
+                    SizedBox(height: 16,),
+                    _createPickPictureSection(),
+                    SizedBox(height: 32,),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.fromLTRB(24, 0, 24, getBottomPaddingWithSafeHeight(context, 24)),
+            child: MainButton(
+                onPressed: () {
+
+                },
+                childText: '리뷰 등록'
+            ),
+          ),
+        ],
       ),
     );
   }
