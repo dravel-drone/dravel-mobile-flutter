@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dravel/utils/util_ui.dart';
+import 'package:dravel/widgets/list/list_item_dronespot.dart';
+import 'package:dravel/widgets/list/list_item_place.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -17,6 +19,43 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
     'https://plus.unsplash.com/premium_photo-1675359655401-27e0b11bef70?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'https://plus.unsplash.com/premium_photo-1664801768830-46734d0f0848?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'https://images.unsplash.com/photo-1695321924057-91977a88eae1?q=80&w=1750&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  ];
+
+  List<Map<String, dynamic>> _placeData = [
+    {
+      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '성산일출봉',
+      'message': '친절한 서비스와 오션뷰룸이 인기',
+      'location': '서귀포시 한다리',
+      'distance': 2434,
+      'type': 1
+    },
+    {
+      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '성산일출봉',
+      'message': '친절한 서비스와 오션뷰룸이 인기',
+      'location': '서귀포시 한다리',
+      'distance': 2434,
+      'type': 1
+    },
+    {
+      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '성산일출봉',
+      'message': '친절한 서비스와 오션뷰룸이 인기',
+      'location': '서귀포시 한다리',
+      'distance': 2434,
+      'type': 1
+    },
+    {
+      'img': 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      'name': '부산항',
+      'like_count': 234,
+      'review_count': 4354,
+      'flight': 2,
+      'camera': 2,
+      'address': '경상남도 부산시',
+      'type': 0
+    },
   ];
 
   int _selectedIdx = 0;
@@ -124,6 +163,60 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
     );
   }
 
+  Widget _createCourseList() {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
+      itemBuilder: (context, idx) {
+        Widget child;
+        if (_placeData[idx]['type'] == 0) {
+          child = DroneSpotItem(
+            name: _placeData[idx]['name'],
+            imageUrl: _placeData[idx]['img'],
+            address: _placeData[idx]['address'],
+            like_count: _placeData[idx]['like_count'],
+            review_count: _placeData[idx]['review_count'],
+            camera_level: _placeData[idx]['camera'],
+            fly_level: _placeData[idx]['flight'],
+            backgroundColor: Color(0xFFF1F1F5),
+          );
+        } else {
+          child = PlaceItem(
+            name: _placeData[idx]['name'],
+            distance: _placeData[idx]['distance'],
+            message: _placeData[idx]['message'],
+            imageUrl: _placeData[idx]['img'],
+            address: _placeData[idx]['location'],
+            backgroundColor: Color(0xFFF1F1F5),
+          );
+        }
+        String text = '${idx + 1}번째 경유지';
+        if (idx == 0) text = '출발지';
+        if (idx == _placeData.length - 1) text = '마무리';
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                height: 1,
+                fontSize: 16,
+                fontWeight: FontWeight.w500
+              ),
+            ),
+            SizedBox(height: 10,),
+            child
+          ],
+        );
+      },
+      separatorBuilder: (context, idx) {
+        return SizedBox(height: 18,);
+      },
+      itemCount: _placeData.length
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,6 +228,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
             pinned: true,
             floating: false,
             snap: false,
+            surfaceTintColor: Colors.white,
             leading: IconButton(
               icon: Icon(
                 Icons.arrow_back_outlined,
@@ -166,7 +260,11 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
           SliverList(
             delegate: SliverChildListDelegate(
               [
-                _createCourseTextSection()
+                _createCourseTextSection(),
+                _createCourseList(),
+                SizedBox(
+                  height: getBottomPaddingWithSafeHeight(context, 24),
+                )
               ]
             )
           )
