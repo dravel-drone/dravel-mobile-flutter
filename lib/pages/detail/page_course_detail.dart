@@ -167,7 +167,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
     return ListView.separated(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
+      padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
       itemBuilder: (context, idx) {
         Widget child;
         if (_placeData[idx]['type'] == 0) {
