@@ -12,6 +12,7 @@ class PlaceItem extends StatelessWidget {
     required this.address,
     required this.message,
     required this.distance,
+    this.backgroundColor = Colors.white
   });
 
   String imageUrl;
@@ -20,6 +21,7 @@ class PlaceItem extends StatelessWidget {
   String address;
 
   int distance;
+  Color backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class PlaceItem extends StatelessWidget {
         height: 110,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
-          color: Colors.white,
+          color: backgroundColor,
         ),
         child: Row(
           children: [

@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dravel/pages/detail/page_course_detail.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/carousel/carousel_spot_recommend.dart';
@@ -10,6 +11,7 @@ import 'package:dravel/widgets/list/list_item_review.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 import '../utils/util_map.dart';
 
@@ -215,7 +217,10 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
               img: _courseTestData[0]['img'],
               name: _courseTestData[0]['name'],
               distance: _courseTestData[0]['distance'],
-              duration: _courseTestData[0]['duration']
+              duration: _courseTestData[0]['duration'],
+              onTap: () {
+                Get.to(() => CourseDetailPage());
+              },
             )
           ],
         ),
