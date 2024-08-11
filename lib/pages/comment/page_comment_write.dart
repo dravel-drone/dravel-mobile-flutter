@@ -3,6 +3,7 @@ import 'package:dravel/widgets/button/button_switch.dart';
 import 'package:dravel/widgets/textField/textfield_main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class CommentWritePage extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class CommentWritePage extends StatefulWidget {
 }
 
 class _CommentWritePageState extends State<CommentWritePage> {
+  DateTime _selectedDate = DateTime.now();
 
   Widget _createCheckAvailableSection() {
     return Row(
@@ -88,6 +90,69 @@ class _CommentWritePageState extends State<CommentWritePage> {
     );
   }
 
+  Widget _createDateSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "방문 일시",
+          style: TextStyle(
+              height: 1,
+              fontWeight: FontWeight.w500,
+              fontSize: 18
+          ),
+        ),
+        SizedBox(height: 12,),
+        GestureDetector(
+          onTap: () async {
+            DateTime? result = await showDatePicker(
+              context: context,
+              firstDate: DateTime(0, 1, 1),
+              lastDate: DateTime.now(),
+              initialDate: DateTime.now(),
+              locale: const Locale("ko", "KR"),
+            );
+            if (result == null) return;
+
+            setState(() {
+              _selectedDate = result;
+            });
+          },
+          child: Container(
+            padding: EdgeInsets.fromLTRB(16, 16, 18, 16),
+            width: double.infinity,
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                Radius.circular(12)
+              )
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.calendar_month_outlined,
+                  color: Colors.black54,
+                ),
+                SizedBox(width: 14,),
+                Text(
+                  DateFormat('yyy-MM-dd').format(_selectedDate),
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.w500
+                  ),
+                )
+              ],
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +177,9 @@ class _CommentWritePageState extends State<CommentWritePage> {
               SizedBox(height: 18,),
               _createCheckAvailableSection(),
               SizedBox(height: 32,),
-              _createUsingDroneSection()
+              _createUsingDroneSection(),
+              SizedBox(height: 32,),
+              _createDateSection()
             ],
           ),
         ),
