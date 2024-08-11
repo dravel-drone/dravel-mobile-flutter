@@ -44,6 +44,7 @@ dependencies:
   snapping_sheet: ^3.1.0
   flutter_localization: ^0.2.1
   intl: ^0.19.0
+  smooth_page_indicator: ^1.2.0+3
 
 dev_dependencies:
   flutter_test:
