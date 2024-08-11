@@ -1,5 +1,6 @@
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_switch.dart';
+import 'package:dravel/widgets/textField/textfield_main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,10 +22,10 @@ class _CommentWritePageState extends State<CommentWritePage> {
               style: TextStyle(
                   height: 1,
                   fontWeight: FontWeight.w500,
-                  fontSize: 16
+                  fontSize: 18
               ),
             ),
-            SizedBox(height: 8,),
+            SizedBox(height: 12,),
             SwitchButton(
               items: [
                 '○',
@@ -42,10 +43,10 @@ class _CommentWritePageState extends State<CommentWritePage> {
               style: TextStyle(
                   height: 1,
                   fontWeight: FontWeight.w500,
-                  fontSize: 16
+                  fontSize: 18
               ),
             ),
-            SizedBox(height: 8,),
+            SizedBox(height: 12,),
             SwitchButton(
               items: [
                 '○',
@@ -54,6 +55,35 @@ class _CommentWritePageState extends State<CommentWritePage> {
             )
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _createUsingDroneSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "사용한 드론 기종",
+          style: TextStyle(
+              height: 1,
+              fontWeight: FontWeight.w500,
+              fontSize: 18
+          ),
+        ),
+        SizedBox(height: 12,),
+        MainTextField(
+          backgroundColor: Colors.white,
+          hintText: '드론 이름',
+          prefixIcon: Icon(
+            Icons.flight_outlined,
+            color: Colors.black45,
+          ),
+          action: TextInputAction.done,
+          onEditingComplete: () {
+            FocusScope.of(context).unfocus();
+          },
+        )
       ],
     );
   }
@@ -79,8 +109,10 @@ class _CommentWritePageState extends State<CommentWritePage> {
           padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
           child: Column(
             children: [
-              SizedBox(height: 12,),
-              _createCheckAvailableSection()
+              SizedBox(height: 18,),
+              _createCheckAvailableSection(),
+              SizedBox(height: 32,),
+              _createUsingDroneSection()
             ],
           ),
         ),

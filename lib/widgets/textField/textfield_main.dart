@@ -7,13 +7,14 @@ class MainTextField extends TextField {
     Icon? prefixIcon,
     String? hintText,
     TextInputAction action = TextInputAction.done,
+    Color backgroundColor = const Color(0x334285F4),
     super.controller,
     super.key
   }) : super(
     textInputAction: action,
     decoration: InputDecoration(
       filled: true,
-      fillColor: Color(0x334285F4),
+      fillColor: backgroundColor,
       hintText: hintText,
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide.none,
