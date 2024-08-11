@@ -1,65 +1,68 @@
+import 'package:dravel/utils/util_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CourseDetailPage extends StatelessWidget {
-
-  Widget _createAppbar() {
-    return SliverAppBar(
-      pinned: true,
-      backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      title: Text(
-        "계정 이름",
-        style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.black
-        ),
-      ),
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back_outlined),
-        onPressed: () {
-          // Get.back();
-        },
-      ),
-      actions: [
-        IconButton(
-          icon: Icon(Icons.bookmark_border_rounded),
-          onPressed: () {
-            // Get.back();
-          },
-        )
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: NestedScrollView(
-        headerSliverBuilder: (context, value) {
-          return [
-            _createAppbar()
-          ];
-        },
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                height: 1000,
-                color: Colors.green,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            floating: true,
+            snap: false,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_outlined),
+              onPressed: () {
+                Get.back();
+              },
+            ),
+            expandedHeight: 200.0,
+            flexibleSpace: FlexibleSpaceBar(
+              expandedTitleScale: 1,
+              titlePadding: EdgeInsets.fromLTRB(0,
+                  getTopPaddingWithHeight(context, 16), 0, 0),
+              title: Align(
+                alignment: Alignment.topCenter,
+                child: Text(
+                  "코스 이름",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black
+                  ),
+                ),
               ),
-              Container(
-                width: double.infinity,
-                height: 1000,
-                color: Colors.red,
+              background: GestureDetector(
+                onTap: () {
+                  print('object');
+                },
+                child: Container(
+                  color: Colors.blue,
+                ),
               ),
-            ],
+            ),
           ),
-        ),
-      )
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Container(
+                  height: 2000,
+                  width: double.infinity,
+                  color: Colors.red,
+                ),
+                Container(
+                  height: 2000,
+                  width: double.infinity,
+                  color: Colors.green,
+                ),
+              ]
+            )
+          )
+        ],
+      ),
     );
   }
 }
