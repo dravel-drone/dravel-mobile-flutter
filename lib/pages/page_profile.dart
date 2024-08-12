@@ -21,6 +21,8 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   late final ScrollController _reviewController;
   late final ScrollController _nestedController;
 
+  bool _myProfile = true;
+
   List<dynamic> _droneLikeTestData = [
     {
       'img': 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -180,6 +182,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
         },
       ),
       actions: [
+        if (!_myProfile)
         IconButton(
           icon: Icon(Icons.bookmark_border_rounded),
           onPressed: () {
