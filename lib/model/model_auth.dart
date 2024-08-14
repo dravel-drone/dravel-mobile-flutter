@@ -14,4 +14,17 @@ class RegisterModel {
     this.age,
     this.drone,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "name": name,
+      "id": id,
+      "email": email,
+      "password": password,
+      "age": age,
+      "drone": drone,
+      "image": null,
+      "one_liner": null
+    };
+  }
 }
