@@ -1,3 +1,5 @@
+import 'package:dravel/api/http_term.dart';
+import 'package:dravel/model/model_term.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
@@ -27,8 +29,28 @@ class _SignUpPageState extends State<SignUpPage> {
 
   int _pageIdx = 0;
 
+  int isLoaded = 0;
+
+  late final List<TermModel> _termData;
+  Map<int, bool> _termAgreement = {};
+
+  Future<void> initData() async {
+    List<TermModel>? data = await TermHttp.getAllTermData();
+    if (data == null) {
+      isLoaded = -1;
+    } else {
+      _termData = data;
+      for (var i in _termData) {
+        _termAgreement[i.id] = false;
+      }
+      isLoaded = 1;
+    }
+    if (mounted) setState(() {});
+  }
+
   @override
   void initState() {
+    initData();
     _pageController = PageController(
       initialPage: _pageIdx
     );
@@ -62,20 +84,12 @@ class _SignUpPageState extends State<SignUpPage> {
         children: [
           Expanded(
             child: Column(
-              children: [
-                TermAgreementButton(
-                  isRequired: false,
-                  isChecked: true,
-                  name: '개인정보처리방침',
-                  content: '내용입니다.',
-                ),
-                TermAgreementButton(
-                  isRequired: true,
-                  isChecked: false,
-                  name: '푸시알림동의',
-                  content: '내용입니다.',
-                ),
-              ],
+              children: List.generate(_termData.length, (idx) => TermAgreementButton(
+                isChecked: _termAgreement[_termData[idx].id]!,
+                isRequired: _termData[idx].required,
+                name: _termData[idx].title,
+                content: _termData[idx].content
+              )),
             ),
           ),
           SizedBox(
@@ -232,6 +246,49 @@ class _SignUpPageState extends State<SignUpPage> {
     } else if (_pageIdx == 1) {
       title = '가입하기';
     }
+
+    Widget child;
+    if (isLoaded == 0) {
+      child = const SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 12,),
+            Text("데이터 로드중...")
+          ],
+        ),
+      );
+    } else if (isLoaded == 1) {
+      child = SafeArea(
+        child: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            _createTermPage(),
+            _createInformationPage()
+          ],
+        ),
+      );
+    } else {
+      child = const SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, color: Colors.red, size: 48,),
+            SizedBox(height: 12,),
+            Text("에러 발생\n다시 시도해주세요.")
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: CustomAppbar(
         title: title,
@@ -261,16 +318,7 @@ class _SignUpPageState extends State<SignUpPage> {
           },
         ),
       ),
-      body: SafeArea(
-        child: PageView(
-          controller: _pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            _createTermPage(),
-            _createInformationPage()
-          ],
-        ),
-      ),
+      body: child,
     );
   }
 }

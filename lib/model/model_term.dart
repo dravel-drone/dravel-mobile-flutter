@@ -16,7 +16,7 @@ class TermModel {
       id: json['id'],
       title: json['title'],
       content: json['content'],
-      required: json['required'],
+      required: json['require'] == 1,
     );
   }
 }
