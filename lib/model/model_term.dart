@@ -10,4 +10,13 @@ class TermModel {
     required this.content,
     this.required = true,
   });
+
+  factory TermModel.fromJson(Map<String, dynamic> json) {
+    return TermModel(
+      id: json['id'],
+      title: json['title'],
+      content: json['content'],
+      required: json['required'],
+    );
+  }
 }
