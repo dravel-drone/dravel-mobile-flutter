@@ -1,10 +1,10 @@
-class TermData {
+class TermModel {
   final int id;
   final String title;
   final String content;
   final bool required;
 
-  TermData({
+  TermModel({
     required this.id,
     required this.title,
     required this.content,
