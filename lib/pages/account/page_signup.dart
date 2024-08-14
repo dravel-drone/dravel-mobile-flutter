@@ -32,7 +32,7 @@ class _SignUpPageState extends State<SignUpPage> {
   int isLoaded = 0;
 
   late final List<TermModel> _termData;
-  Map<int, bool> _termAgreement = {};
+  Map<int, dynamic> _termAgreement = {};
 
   Future<void> initData() async {
     List<TermModel>? data = await TermHttp.getAllTermData();
@@ -41,7 +41,10 @@ class _SignUpPageState extends State<SignUpPage> {
     } else {
       _termData = data;
       for (var i in _termData) {
-        _termAgreement[i.id] = false;
+        _termAgreement[i.id] = {
+          "required": i.required,
+          "isAgree": false
+        };
       }
       isLoaded = 1;
     }
@@ -85,12 +88,12 @@ class _SignUpPageState extends State<SignUpPage> {
           Expanded(
             child: Column(
               children: List.generate(_termData.length, (idx) => TermAgreementButton(
-                isChecked: _termAgreement[_termData[idx].id]!,
+                isChecked: _termAgreement[_termData[idx].id]['isAgree']!,
                 isRequired: _termData[idx].required,
                 name: _termData[idx].title,
                 content: _termData[idx].content,
                 onChanged: (value) {
-                  _termAgreement[_termData[idx].id] = value;
+                  _termAgreement[_termData[idx].id]['isAgree'] = value;
                 },
               )),
             ),
@@ -100,6 +103,20 @@ class _SignUpPageState extends State<SignUpPage> {
             width: double.infinity,
             child: MainButton(
               onPressed: () {
+                for (var i in _termAgreement.keys) {
+                  if (!_termAgreement[i]['required']) continue;
+                  if (!_termAgreement[i]['isAgree']) {
+                    if (Get.isSnackbarOpen) Get.back();
+                    Get.showSnackbar(
+                      GetSnackBar(
+                        message: '필수 약관을 동의해 주세요.',
+                        backgroundColor: Colors.red,
+                        duration: Duration(seconds: 1),
+                      )
+                    );
+                    return;
+                  }
+                }
                 _pageController.animateToPage(
                   1,
                   duration: Duration(milliseconds: 250),
