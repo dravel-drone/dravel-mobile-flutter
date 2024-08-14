@@ -88,7 +88,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 isChecked: _termAgreement[_termData[idx].id]!,
                 isRequired: _termData[idx].required,
                 name: _termData[idx].title,
-                content: _termData[idx].content
+                content: _termData[idx].content,
+                onChanged: (value) {
+                  _termAgreement[_termData[idx].id] = value;
+                },
               )),
             ),
           ),
@@ -98,10 +101,11 @@ class _SignUpPageState extends State<SignUpPage> {
             child: MainButton(
               onPressed: () {
                 _pageController.animateToPage(
-                    1,
-                    duration: Duration(milliseconds: 250),
-                    curve: Curves.easeIn
+                  1,
+                  duration: Duration(milliseconds: 250),
+                  curve: Curves.easeIn
                 );
+                debugPrint(_termAgreement.toString());
                 setState(() {
                   _pageIdx = 1;
                 });
