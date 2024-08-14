@@ -11,11 +11,19 @@ void main() async {
   final storage = FlutterSecureStorage();
   await storage.deleteAll();
   Get.put(AuthController());
-  runApp(const MyApp());
+  final controller = Get.find<AuthController>();
+  runApp(MyApp(
+    isLogin: await controller.checkLogin(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({
+    required this.isLogin,
+    super.key
+  });
+
+  bool isLogin;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +36,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Pretendard'
       ),
-      home: MainNavigationPage(),
+      home: isLogin ? MainNavigationPage() : LoginPage(),
     );
   }
 }
