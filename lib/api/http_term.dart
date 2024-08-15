@@ -25,11 +25,4 @@ class TermHttp {
     }
     return data;
   }
-
-  static Future<bool> registerUser(RegisterModel inputModel) async {
-    final url = Uri.https(HttpBase.domain, 'api/v1/term');
-    final response = await http.post(url, body: inputModel.toJson());
-    if (response.statusCode != 200) return false;
-    return true;
-  }
 }
