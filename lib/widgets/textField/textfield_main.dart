@@ -8,9 +8,11 @@ class MainTextField extends TextField {
     String? hintText,
     TextInputAction action = TextInputAction.done,
     Color backgroundColor = const Color(0x334285F4),
+    bool obscureText = false,
     super.controller,
     super.key
   }) : super(
+    obscureText: obscureText,
     textInputAction: action,
     decoration: InputDecoration(
       filled: true,
