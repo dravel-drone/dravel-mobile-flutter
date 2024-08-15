@@ -29,7 +29,7 @@ class RegisterModel {
       "drone": drone,
       "image": null,
       "one_liner": null,
-      "term": agreeTerm
+      // "term": agreeTerm
     };
   }
 }
