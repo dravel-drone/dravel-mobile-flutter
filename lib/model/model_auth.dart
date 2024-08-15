@@ -7,7 +7,7 @@ class RegisterModel {
   String password;
   int? age;
   String? drone;
-  List<TermModel> agreeTerm;
+  List<int> agreeTerm;
 
   RegisterModel({
     required this.name,
@@ -29,7 +29,7 @@ class RegisterModel {
       "drone": drone,
       "image": null,
       "one_liner": null,
-      "term": List.generate(agreeTerm.length, (idx) => agreeTerm[idx].id)
+      "term": agreeTerm
     };
   }
 }
