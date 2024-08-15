@@ -1,3 +1,5 @@
+import 'package:dravel/model/model_term.dart';
+
 class RegisterModel {
   String name;
   String id;
@@ -5,6 +7,7 @@ class RegisterModel {
   String password;
   int? age;
   String? drone;
+  List<TermModel> agreeTerm;
 
   RegisterModel({
     required this.name,
@@ -13,6 +16,7 @@ class RegisterModel {
     required this.password,
     this.age,
     this.drone,
+    this.agreeTerm = const []
   });
 
   Map<String, dynamic> toJson() {
@@ -24,7 +28,8 @@ class RegisterModel {
       "age": age,
       "drone": drone,
       "image": null,
-      "one_liner": null
+      "one_liner": null,
+      "term": List.generate(agreeTerm.length, (idx) => agreeTerm[idx].id)
     };
   }
 }
