@@ -172,6 +172,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   SizedBox(height: 8,),
                   MainTextField(
                     controller: _nicknameController,
+                    maxLength: 10,
                     hintText: '닉네임',
                     prefixIcon: Icon(
                       Icons.person,
@@ -184,7 +185,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     },
                     focusNode: _nicknameFocusNode,
                   ),
-                  SizedBox(height: 24,),
+                  SizedBox(height: 2,),
                   Text('이메일'),
                   SizedBox(height: 8,),
                   MainTextField(
@@ -242,6 +243,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   SizedBox(height: 8,),
                   MainTextField(
                     controller: _droneController,
+                    maxLength: 64,
                     hintText: '드론 이름',
                     prefixIcon: Icon(
                       Icons.flight_outlined,
@@ -254,7 +256,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     },
                     focusNode: _droneFocusNode,
                   ),
-                  SizedBox(height: 24,),
+                  SizedBox(height: 2,),
                   Text('나이 (선택)'),
                   SizedBox(height: 8,),
                   MainDropDown(

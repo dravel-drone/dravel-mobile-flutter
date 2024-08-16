@@ -9,10 +9,12 @@ class MainTextField extends TextField {
     TextInputAction action = TextInputAction.done,
     Color backgroundColor = const Color(0x334285F4),
     bool obscureText = false,
+    int? maxLength,
     super.controller,
     super.key
   }) : super(
     obscureText: obscureText,
+    maxLength: maxLength,
     textInputAction: action,
     decoration: InputDecoration(
       filled: true,
