@@ -2,6 +2,7 @@ import 'package:dravel/api/http_auth.dart';
 import 'package:dravel/api/http_term.dart';
 import 'package:dravel/model/model_auth.dart';
 import 'package:dravel/model/model_term.dart';
+import 'package:dravel/utils/util_input_validator.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
@@ -191,6 +192,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   MainTextField(
                     controller: _emailController,
                     hintText: '이메일',
+                    validator: InputValidator.emailValidator,
                     prefixIcon: Icon(
                       Icons.mail_rounded,
                       color: Colors.black45,
