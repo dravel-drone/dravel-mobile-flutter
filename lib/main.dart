@@ -9,7 +9,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final storage = FlutterSecureStorage();
-  await storage.deleteAll();
+  await storage.delete(key: 'access');
+  await storage.delete(key: 'refresh');
   Get.put(AuthController());
   final controller = Get.find<AuthController>();
   runApp(MyApp(
