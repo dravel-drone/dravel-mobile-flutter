@@ -1,15 +1,29 @@
+import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/pages/account/page_login.dart';
 import 'package:dravel/pages/page_main_navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final storage = FlutterSecureStorage();
+  await storage.deleteAll();
+  Get.put(AuthController());
+  final controller = Get.find<AuthController>();
+  runApp(MyApp(
+    isLogin: await controller.checkLogin(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({
+    required this.isLogin,
+    super.key
+  });
+
+  bool isLogin;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +36,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Pretendard'
       ),
-      home: MainNavigationPage(),
+      home: isLogin ? MainNavigationPage() : LoginPage(),
     );
   }
 }

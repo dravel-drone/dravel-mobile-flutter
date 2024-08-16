@@ -91,12 +91,12 @@ class _LoginPageState extends State<LoginPage> {
       appBar: CustomAppbar(
         title: "로그인",
         textColor: Colors.black,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_outlined),
-          onPressed: () {
-            Get.back();
-          },
-        ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.arrow_back_outlined),
+        //   onPressed: () {
+        //     Get.back();
+        //   },
+        // ),
       ),
       body: SafeArea(
         child: Container(
