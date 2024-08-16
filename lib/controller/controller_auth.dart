@@ -1,3 +1,5 @@
+import 'package:dravel/api/http_auth.dart';
+import 'package:dravel/model/model_auth.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
@@ -7,5 +9,11 @@ class AuthController extends GetxController {
 
   Future<bool> checkLogin() async {
     return false;
+  }
+
+  Future<bool> login(LoginModel loginModel) async {
+    bool result = await AuthHttp.login(loginModel);
+    isLogin.value = result;
+    return result;
   }
 }

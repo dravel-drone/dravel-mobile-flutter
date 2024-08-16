@@ -1,3 +1,5 @@
+import 'package:dravel/controller/controller_auth.dart';
+import 'package:dravel/model/model_auth.dart';
 import 'package:dravel/pages/account/page_signup.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
@@ -14,6 +16,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  late AuthController _authController;
+
   late final FlutterSecureStorage _secureStorage;
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
@@ -36,6 +40,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
+    _authController = Get.find<AuthController>();
+
     _secureStorage = FlutterSecureStorage();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
@@ -182,8 +188,47 @@ class _LoginPageState extends State<LoginPage> {
                       return;
                     }
 
-                    if (_isSaveEmail) {
+                    if (Get.isSnackbarOpen) Get.back();
+                    Get.dialog(
+                        const AlertDialog(
+                          content: Row(
+                            children: [
+                              CircularProgressIndicator(),
+                              SizedBox(width: 12,),
+                              Text('로그인중..')
+                            ],
+                          ),
+                          buttonPadding: EdgeInsets.zero,
+                          contentPadding: EdgeInsets.fromLTRB(18, 24, 18, 24),
+                        ),
+                        barrierDismissible: false
+                    );
+                    bool result = await _authController.login(
+                      LoginModel(
+                        id: email,
+                        password: password
+                      )
+                    );
+                    Get.back();
 
+                    if (!result) {
+                      if (Get.isSnackbarOpen) Get.back();
+                      Get.showSnackbar(
+                          const GetSnackBar(
+                            message: "로그인 실패. 다시 시도해주세요.",
+                            backgroundColor: Colors.red,
+                            duration: Duration(seconds: 2),
+                          )
+                      );
+                      return;
+                    }
+                    // _secureStorage.write(key: 'access', value: value)
+                    // _secureStorage.write(key: 'refresh', value: value)
+
+                    if (_isSaveEmail) {
+                      _secureStorage.write(
+                        key: 'email',
+                        value: email);
                     } else {
                       _secureStorage.delete(key: 'email');
                     }

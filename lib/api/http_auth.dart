@@ -17,4 +17,16 @@ class AuthHttp {
     }
     return true;
   }
+
+  static Future<bool> login(LoginModel loginModel) async {
+    final url = Uri.https(HttpBase.domain, 'api/v1/register');
+    final response = await http.post(url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(loginModel.toJson()));
+    if (response.statusCode != 200) {
+      debugPrint(utf8.decode(response.bodyBytes));
+      return false;
+    }
+    return true;
+  }
 }
