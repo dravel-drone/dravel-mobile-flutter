@@ -18,9 +18,15 @@ class _LoginPageState extends State<LoginPage> {
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
 
+  bool _isSaveEmail = false;
   bool _obscurePassword = true;
 
   Future<void> initData() async {
+    String? saveEmail = await _secureStorage.read(key: 'saveEmail');
+    if (saveEmail != null) {
+      _isSaveEmail = saveEmail == 'true';
+    }
+
     String? email = await _secureStorage.read(key: 'email');
     if (email != null) {
       _emailController.text = email;
@@ -95,9 +101,15 @@ class _LoginPageState extends State<LoginPage> {
                     height: 24,
                     child: Checkbox(
                       activeColor: Color(0xFF4285F4),
-                      value: true,
-                      onChanged: (value) {
+                      value: _isSaveEmail,
+                      onChanged: (value) async {
+                        if (value == null) return;
 
+                        _isSaveEmail = value;
+                        await _secureStorage.write(
+                          key: 'saveEmail',
+                          value: _isSaveEmail ? 'true' : 'false');
+                        setState(() {});
                       }
                     ),
                   ),
@@ -155,8 +167,26 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
                 height: 48,
                 child: MainButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    String email = _emailController.text;
+                    String password = _passwordController.text;
+                    if (email.isEmpty || password.isEmpty) {
+                      if (Get.isSnackbarOpen) Get.back();
+                      Get.showSnackbar(
+                        GetSnackBar(
+                          message: '모든 칸을 채워주세요.',
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 1),
+                        )
+                      );
+                      return;
+                    }
 
+                    if (_isSaveEmail) {
+
+                    } else {
+                      _secureStorage.delete(key: 'email');
+                    }
                   },
                   childText: '로그인',
                 ),
