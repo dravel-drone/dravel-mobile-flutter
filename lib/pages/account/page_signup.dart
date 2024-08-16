@@ -37,8 +37,9 @@ class _SignUpPageState extends State<SignUpPage> {
     '선택안함', '10대 미만', '10대', '20대', '30대', '40대', '50대', '60대 이상'];
   int _selectedAge = 0;
 
-  int _pageIdx = 0;
+  bool _obscurePassword = true;
 
+  int _pageIdx = 0;
   int isLoaded = 0;
 
   late final List<TermModel> _termData;
@@ -211,7 +212,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   SizedBox(height: 8,),
                   MainTextField(
                     controller: _passwordController,
-                    obscureText: true,
                     validator: InputValidator.passwordValidator,
                     hintText: '비밀번호',
                     prefixIcon: Icon(
@@ -224,13 +224,25 @@ class _SignUpPageState extends State<SignUpPage> {
                       FocusScope.of(context).requestFocus(_passwordReFocusNode);
                     },
                     focusNode: _passwordFocusNode,
+                    obscureText: _obscurePassword,
+                    suffixWidget: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                      icon: Icon(
+                        _obscurePassword ?
+                        Icons.visibility_outlined :Icons.visibility_off_outlined,
+                        color: Colors.black45,
+                      ),
+                    ),
                   ),
                   SizedBox(height: 12,),
                   Text('비밀번호 확인'),
                   SizedBox(height: 8,),
                   MainTextField(
                     controller: _passwordReController,
-                    obscureText: true,
                     hintText: '비밀번호 재입력',
                     validator: (String? pass) => InputValidator.checkSamePassword(
                       _passwordController.text,
@@ -246,6 +258,19 @@ class _SignUpPageState extends State<SignUpPage> {
                       FocusScope.of(context).requestFocus(_droneFocusNode);
                     },
                     focusNode: _passwordReFocusNode,
+                    obscureText: _obscurePassword,
+                    suffixWidget: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                      icon: Icon(
+                        _obscurePassword ?
+                        Icons.visibility_outlined :Icons.visibility_off_outlined,
+                        color: Colors.black45,
+                      ),
+                    ),
                   ),
                   SizedBox(height: 24,),
                   Text('보유 드론 (선택)'),
