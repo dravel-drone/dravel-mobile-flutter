@@ -1,4 +1,5 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/cupertino.dart';
 
 class InputValidator {
   static String? emailValidator(String? content) {
@@ -24,6 +25,16 @@ class InputValidator {
     if (!hasLowerCase.hasMatch(content)) return "소문자가 포함되어야 합니다.";
     if (!hasDigit.hasMatch(content)) return"숫자가 포함되어야 합니다.";
     if (!hasSpecialCharacter.hasMatch(content)) return "특수문자가 포함되어야 합니다.";
+
+    return null;
+  }
+
+  static String? checkSamePassword(String? pass1, String? pass2) {
+    if (pass1 == null || pass1.isEmpty) return "비밀번호를 입력해주세요.";
+    if (pass2 == null || pass2.isEmpty) return "비밀번호를 재입력해주세요.";
+
+    debugPrint('$pass1, $pass2');
+    if (pass1 != pass2) return "비밀번호가 다릅니다.";
 
     return null;
   }

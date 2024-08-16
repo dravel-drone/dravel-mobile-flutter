@@ -232,6 +232,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     controller: _passwordReController,
                     obscureText: true,
                     hintText: '비밀번호 재입력',
+                    validator: (String? pass) => InputValidator.checkSamePassword(
+                      _passwordController.text,
+                      pass
+                    ),
                     prefixIcon: Icon(
                       Icons.lock_rounded,
                       color: Colors.black45,
