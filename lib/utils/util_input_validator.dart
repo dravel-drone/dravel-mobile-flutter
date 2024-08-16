@@ -6,4 +6,9 @@ class InputValidator {
     if (EmailValidator.validate(content)) return null;
     return '이메일이 유효하지 않습니다.';
   }
+
+  static String? mustInputValidator(String? content) {
+    if (content == null || content.isEmpty) return '필수입력 칸 입니다.';
+    return null;
+  }
 }

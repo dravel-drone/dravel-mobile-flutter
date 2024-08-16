@@ -173,6 +173,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   SizedBox(height: 8,),
                   MainTextField(
                     controller: _nicknameController,
+                    validator: InputValidator.mustInputValidator,
                     maxLength: 10,
                     hintText: '닉네임',
                     prefixIcon: Icon(
@@ -186,12 +187,13 @@ class _SignUpPageState extends State<SignUpPage> {
                     },
                     focusNode: _nicknameFocusNode,
                   ),
-                  SizedBox(height: 2,),
+                  SizedBox(height: 12,),
                   Text('이메일'),
                   SizedBox(height: 8,),
                   MainTextField(
                     controller: _emailController,
                     hintText: '이메일',
+                    maxLength: 128,
                     validator: InputValidator.emailValidator,
                     prefixIcon: Icon(
                       Icons.mail_rounded,
@@ -204,7 +206,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     },
                     focusNode: _emailFocusNode,
                   ),
-                  SizedBox(height: 24,),
+                  SizedBox(height: 12,),
                   Text('비밀번호'),
                   SizedBox(height: 8,),
                   MainTextField(
