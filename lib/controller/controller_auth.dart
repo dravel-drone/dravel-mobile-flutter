@@ -11,9 +11,9 @@ class AuthController extends GetxController {
     return false;
   }
 
-  Future<bool> login(LoginModel loginModel) async {
-    bool result = await AuthHttp.login(loginModel);
-    isLogin.value = result;
+  Future<AuthKeyModel?> login(LoginModel loginModel) async {
+    AuthKeyModel? result = await AuthHttp.login(loginModel);
+    isLogin.value = result != null;
     return result;
   }
 }

@@ -52,3 +52,13 @@ class LoginModel {
     };
   }
 }
+
+class AuthKeyModel {
+  String accessKey;
+  String refreshKey;
+
+  AuthKeyModel({
+    required this.accessKey,
+    required this.refreshKey,
+  });
+}

@@ -203,7 +203,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         barrierDismissible: false
                     );
-                    bool result = await _authController.login(
+                    AuthKeyModel? result = await _authController.login(
                       LoginModel(
                         id: email,
                         password: password
@@ -211,7 +211,7 @@ class _LoginPageState extends State<LoginPage> {
                     );
                     Get.back();
 
-                    if (!result) {
+                    if (result == null) {
                       if (Get.isSnackbarOpen) Get.back();
                       Get.showSnackbar(
                           const GetSnackBar(
