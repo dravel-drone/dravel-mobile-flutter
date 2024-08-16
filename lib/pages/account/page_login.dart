@@ -13,6 +13,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _obscurePassword = true;
 
   Widget _createTextInputSection() {
     return Column(
@@ -31,11 +32,24 @@ class _LoginPageState extends State<LoginPage> {
         Text('비밀번호'),
         SizedBox(height: 8,),
         MainTextField(
-            hintText: '비밀번호',
-            prefixIcon: Icon(
-              Icons.lock_rounded,
+          hintText: '비밀번호',
+          prefixIcon: Icon(
+            Icons.lock_rounded,
+            color: Colors.black45,
+          ),
+          obscureText: _obscurePassword,
+          suffixWidget: IconButton(
+            onPressed: () {
+              setState(() {
+                _obscurePassword = !_obscurePassword;
+              });
+            },
+            icon: Icon(
+              _obscurePassword ?
+                Icons.visibility_outlined :Icons.visibility_off_outlined,
               color: Colors.black45,
-            )
+            ),
+          ),
         ),
         SizedBox(height: 24,),
         Row(
