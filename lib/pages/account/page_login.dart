@@ -5,6 +5,7 @@ import 'package:dravel/widgets/textField/textfield_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {
@@ -13,7 +14,35 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  late final FlutterSecureStorage _secureStorage;
+  late final TextEditingController _emailController;
+  late final TextEditingController _passwordController;
+
   bool _obscurePassword = true;
+
+  Future<void> initData() async {
+    String? email = await _secureStorage.read(key: 'email');
+    if (email != null) {
+      _emailController.text = email;
+    }
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    _secureStorage = FlutterSecureStorage();
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    initData();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   Widget _createTextInputSection() {
     return Column(
@@ -22,16 +51,18 @@ class _LoginPageState extends State<LoginPage> {
         Text('이메일'),
         SizedBox(height: 8,),
         MainTextField(
-            hintText: '이메일',
-            prefixIcon: Icon(
-              Icons.mail_rounded,
-              color: Colors.black45,
-            )
+          controller: _emailController,
+          hintText: '이메일',
+          prefixIcon: Icon(
+            Icons.mail_rounded,
+            color: Colors.black45,
+          )
         ),
         SizedBox(height: 24,),
         Text('비밀번호'),
         SizedBox(height: 8,),
         MainTextField(
+          controller: _passwordController,
           hintText: '비밀번호',
           prefixIcon: Icon(
             Icons.lock_rounded,
