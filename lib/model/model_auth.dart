@@ -35,3 +35,30 @@ class RegisterModel {
     };
   }
 }
+
+class LoginModel {
+  String id;
+  String password;
+
+  LoginModel({
+    required this.id,
+    required this.password,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'password': password
+    };
+  }
+}
+
+class AuthKeyModel {
+  String accessKey;
+  String refreshKey;
+
+  AuthKeyModel({
+    required this.accessKey,
+    required this.refreshKey,
+  });
+}

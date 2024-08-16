@@ -11,6 +11,7 @@ class MainTextField extends TextFormField {
     bool obscureText = false,
     int? maxLength,
     String? Function(String?)? validator,
+    Widget? suffixWidget,
     super.controller,
     super.key
   }) : super(
@@ -52,6 +53,7 @@ class MainTextField extends TextFormField {
         )
       ),
       prefixIcon: prefixIcon,
+      suffixIcon: suffixWidget
     ),
     validator: validator,
     autovalidateMode: AutovalidateMode.always,
