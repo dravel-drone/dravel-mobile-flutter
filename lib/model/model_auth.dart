@@ -21,15 +21,17 @@ class RegisterModel {
 
   Map<String, dynamic> toJson() {
     return {
-      "name": name,
-      "id": id,
-      "email": email,
-      "password": password,
-      "age": age,
-      "drone": drone,
-      "image": null,
-      "one_liner": null,
-      // "term": agreeTerm
+      "user": {
+        "name": name,
+        "id": id,
+        "email": email,
+        "password": password,
+        "age": age,
+        "drone": drone,
+        "image": null,
+        "one_liner": null
+      },
+      "agreed_term_ids": agreeTerm
     };
   }
 }
