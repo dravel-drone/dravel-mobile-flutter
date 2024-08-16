@@ -1,6 +1,7 @@
 import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/model/model_auth.dart';
 import 'package:dravel/pages/account/page_signup.dart';
+import 'package:dravel/pages/page_main_navigation.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
 import 'package:dravel/widgets/textField/textfield_main.dart';
@@ -222,16 +223,18 @@ class _LoginPageState extends State<LoginPage> {
                       );
                       return;
                     }
-                    // _secureStorage.write(key: 'access', value: value)
-                    // _secureStorage.write(key: 'refresh', value: value)
-
                     if (_isSaveEmail) {
-                      _secureStorage.write(
-                        key: 'email',
-                        value: email);
+                      await _secureStorage.write(
+                          key: 'email',
+                          value: email);
                     } else {
-                      _secureStorage.delete(key: 'email');
+                      await _secureStorage.delete(key: 'email');
                     }
+
+                    await _secureStorage.write(key: 'access', value: result.accessKey);
+                    await _secureStorage.write(key: 'refresh', value: result.refreshKey);
+
+                    Get.to(() => MainNavigationPage());
                   },
                   childText: '로그인',
                 ),
