@@ -212,6 +212,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   MainTextField(
                     controller: _passwordController,
                     obscureText: true,
+                    validator: InputValidator.passwordValidator,
                     hintText: '비밀번호',
                     prefixIcon: Icon(
                       Icons.lock_rounded,
@@ -224,7 +225,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     },
                     focusNode: _passwordFocusNode,
                   ),
-                  SizedBox(height: 24,),
+                  SizedBox(height: 12,),
                   Text('비밀번호 확인'),
                   SizedBox(height: 8,),
                   MainTextField(
