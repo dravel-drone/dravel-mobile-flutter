@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dravel/api/http_dronespot.dart';
 import 'package:dravel/pages/detail/page_course_detail.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../utils/util_map.dart';
 
@@ -22,25 +24,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   int _selectedCarouselCard = 0;
-
   int _maxReviewCount = 0;
 
-  List<dynamic> _recommendSpotTestData = [
-    {
-      'img': 'https://images.unsplash.com/photo-1643785005361-947c91314690?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '스위스',
-      'content': '깎은듯한 날카로운 산이 모여있는 장소',
-      'like_count': 193,
-      'address': '경기도 스위스시 스위스동'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1695321924057-91977a88eae1?q=80&w=1750&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '제주도',
-      'content': '해질녘 평화로운 제주도의 오름',
-      'like_count': 453,
-      'address': '제주특별시 애월시 애월읍'
-    },
-  ];
+  List<dynamic> _recommendSpotTestData = [];
 
   List<dynamic> _recommendReviewTestData = [
     {
@@ -118,15 +104,74 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     }
   ];
 
+  bool _loadRecommendDronespot = false;
+
+  Future<void> _getRecommendDronespot() async {
+    final result = await DroneSpotHttp.getPopularDronespot();
+    if (result != null) {
+
+    }
+
+    Future<void>.delayed(Duration(seconds: 4));
+
+    _loadRecommendDronespot = true;
+    if (mounted) setState(() {});
+  }
+
   @override
   void initState() {
     if (_recommendReviewTestData.length > 3) {
       _maxReviewCount = 3;
     }
+    // _getRecommendDronespot();
     super.initState();
   }
 
   Widget _createDroneSpotRecommendSection() {
+    if (!_loadRecommendDronespot) {
+      return Container(
+        padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+        child: AspectRatio(
+          aspectRatio: 9/12,
+          child: Shimmer.fromColors(
+            child: Container(
+              padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
+              width: double.infinity,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(36),
+                color: Color(0x66FFFFFF),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    width: 120,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: Color(0xFFFFFFFF),
+                    ),
+                  ),
+                  SizedBox(height: 8,),
+                  Container(
+                    width: 260,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: Color(0xFFFFFFFF),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            baseColor: Color(0xFFC6C6C6),
+            highlightColor: Colors.white
+          ),
+        ),
+      );
+    }
     return Column(
       children: [
         CarouselSlider(
