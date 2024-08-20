@@ -11,7 +11,14 @@ import '../model/model_term.dart';
 class DroneSpotHttp {
   static Future<List<DroneSpotModel>?> getPopularDronespot() async {
     final url = Uri.https(HttpBase.domain, 'api/v1/dronespot/popular');
-    final response = await http.get(url);
+
+    final accessKey = await HttpBase.getAccessKey();
+    Map<String, String> headers = {};
+    if (accessKey != null) {
+      headers['Authorization'] = 'Bearer $accessKey';
+    }
+
+    final response = await http.get(url, headers: headers);
 
     if (response.statusCode != 200) {
       return null;
