@@ -12,7 +12,7 @@ class DroneSpotRecommendCard extends StatelessWidget{
     this.imageUrl,
     this.address,
     this.onTap,
-    Key? key
+    this.isLiked = false,
   });
 
   String? imageUrl;
@@ -22,6 +22,8 @@ class DroneSpotRecommendCard extends StatelessWidget{
 
   int like_count;
   int id;
+
+  bool isLiked;
 
   Function()? onTap;
 
@@ -89,7 +91,7 @@ class DroneSpotRecommendCard extends StatelessWidget{
                           children: [
                             Icon(
                               Icons.favorite,
-                              color: Colors.white,
+                              color: isLiked ? Colors.pink[300] : Colors.white,
                               size: 18,
                             ),
                             SizedBox(width: 4,),

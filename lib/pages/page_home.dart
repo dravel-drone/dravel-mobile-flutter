@@ -182,7 +182,8 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                   content: _recommendSpotData[idx].comment,
                   imageUrl: _recommendSpotData[idx].imageUrl,
                   address: _recommendSpotData[idx].location.address,
-                  like_count: _recommendSpotData[idx].likeCount
+                  like_count: _recommendSpotData[idx].likeCount,
+                  isLiked: _recommendSpotData[idx].isLike,
                 )
             ),
             options: CarouselOptions(
