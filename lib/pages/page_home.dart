@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../utils/util_map.dart';
 
@@ -186,6 +187,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
             ),
             options: CarouselOptions(
                 initialPage: _selectedCarouselCard,
+                autoPlay: true,
                 enlargeCenterPage: true,
                 viewportFraction: 0.87,
                 enlargeFactor: 0.25,
@@ -198,40 +200,58 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
             )
         ),
         SizedBox(height: 12,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(_recommendSpotData.length, (idx) {
-            Widget child;
-            if (idx == _selectedCarouselCard) {
-              child = Container(
-                height: 10,
-                width: 34,
-                decoration: BoxDecoration(
-                    color: Color(0xFF0075FF),
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(40)
-                    )
-                ),
-              );
-            } else {
-              child = Container(
-                height: 10,
-                width: 10,
-                decoration: BoxDecoration(
-                    color: Colors.black54,
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(40)
-                    )
-                ),
-              );
-            }
-            return Padding(
-              // key: ValueKey<int>(idx == _selectedCarouselCard ? 1 : 0),
-              padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-              child: child,
-            );
-          }),
+        AnimatedSmoothIndicator(
+          activeIndex: _selectedCarouselCard,
+          count: _recommendSpotData.length,
+          effect: CustomizableEffect(
+            activeDotDecoration: DotDecoration(
+              width: 38,
+              height: 12,
+              borderRadius: BorderRadius.circular(100),
+              color: Color(0xFF0075FF)
+            ),
+            dotDecoration: DotDecoration(
+              width: 12,
+              height: 12,
+              borderRadius: BorderRadius.circular(100),
+              color: Colors.black54
+            )
+          ),
         )
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: List.generate(_recommendSpotData.length, (idx) {
+        //     Widget child;
+        //     if (idx == _selectedCarouselCard) {
+        //       child = Container(
+        //         height: 10,
+        //         width: 34,
+        //         decoration: BoxDecoration(
+        //             color: Color(0xFF0075FF),
+        //             borderRadius: BorderRadius.all(
+        //                 Radius.circular(40)
+        //             )
+        //         ),
+        //       );
+        //     } else {
+        //       child = Container(
+        //         height: 10,
+        //         width: 10,
+        //         decoration: BoxDecoration(
+        //             color: Colors.black54,
+        //             borderRadius: BorderRadius.all(
+        //                 Radius.circular(40)
+        //             )
+        //         ),
+        //       );
+        //     }
+        //     return Padding(
+        //       // key: ValueKey<int>(idx == _selectedCarouselCard ? 1 : 0),
+        //       padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+        //       child: child,
+        //     );
+        //   }),
+        // )
       ],
     );
   }
