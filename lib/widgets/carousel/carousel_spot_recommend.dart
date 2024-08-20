@@ -25,27 +25,6 @@ class DroneSpotRecommendCard extends StatelessWidget{
 
   Function()? onTap;
 
-  Widget _createInfoItem({
-    required IconData icon,
-    required String text
-  }) => Row(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      Icon(
-        icon,
-        color: Colors.white,
-        size: 18,
-      ),
-      SizedBox(width: 4,),
-      Text(
-        text,
-        style: TextStyle(
-            color: Colors.white
-        ),
-      )
-    ],
-  );
-
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -103,23 +82,51 @@ class DroneSpotRecommendCard extends StatelessWidget{
                         ),
                       ),
                       SizedBox(height: 8,),
-                      if (address != null)
-                        Row(
+                      SizedBox(
+                        width: double.infinity,
+                        child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            _createInfoItem(
-                              icon: Icons.favorite,
-                              text: '$like_count'
+                            Icon(
+                              Icons.favorite,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            SizedBox(width: 4,),
+                            Text(
+                              '$like_count',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
                             ),
                             SizedBox(width: 12,),
-                            _createInfoItem(
-                              icon: Icons.location_on,
-                              text: address!
-                            )
+
+                            if (address != null)
+                              Icon(
+                                Icons.location_on,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                            if (address != null)
+                              SizedBox(width: 4,),
+                            if (address != null)
+                              Expanded(
+                                child: Text(
+                                  address!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
                           ],
-                        )
+                        ),
+                      )
                     ],
-                  ),
+                  )
                 )
               ],
             ),
