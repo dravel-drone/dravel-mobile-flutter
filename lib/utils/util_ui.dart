@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -99,4 +101,27 @@ Widget getPicturePermitWidget(int level, {
       )
     ],
   );
+}
+
+List<Color> getRandomGradientColor(int seed) {
+  List<List<Color>> colors = [
+    [
+      Color(0xFF12c2e9),
+      Color(0xFFc471ed),
+      Color(0xFFf64f59),
+    ],
+    [
+      Color(0xFF8360c3),
+      Color(0xFF2ebf91),
+    ],
+    [
+      Color(0xFF4e54c8),
+      Color(0xFF8f94fb),
+    ],
+    [
+      Color(0xFFc0392b),
+      Color(0xFF8e44ad),
+    ],
+  ];
+  return colors[Random(seed).nextInt(colors.length)];
 }

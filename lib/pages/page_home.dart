@@ -2,7 +2,9 @@ import 'dart:collection';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dravel/api/http_base.dart';
 import 'package:dravel/api/http_dronespot.dart';
+import 'package:dravel/model/model_dronespot.dart';
 import 'package:dravel/pages/detail/page_course_detail.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
@@ -26,7 +28,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
   int _selectedCarouselCard = 0;
   int _maxReviewCount = 0;
 
-  List<dynamic> _recommendSpotTestData = [];
+  List<DroneSpotModel> _recommendSpotData = [];
 
   List<dynamic> _recommendReviewTestData = [
     {
@@ -109,11 +111,8 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
   Future<void> _getRecommendDronespot() async {
     final result = await DroneSpotHttp.getPopularDronespot();
     if (result != null) {
-
+      _recommendSpotData = result;
     }
-
-    Future<void>.delayed(Duration(seconds: 4));
-
     _loadRecommendDronespot = true;
     if (mounted) setState(() {});
   }
@@ -123,7 +122,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     if (_recommendReviewTestData.length > 3) {
       _maxReviewCount = 3;
     }
-    // _getRecommendDronespot();
+    _getRecommendDronespot();
     super.initState();
   }
 
@@ -175,13 +174,14 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     return Column(
       children: [
         CarouselSlider(
-            items: List.generate(_recommendSpotTestData.length, (idx) =>
+            items: List.generate(_recommendSpotData.length, (idx) =>
                 DroneSpotRecommendCard(
-                    name: _recommendSpotTestData[idx]['name'],
-                    content: _recommendSpotTestData[idx]['content'],
-                    imageUrl: _recommendSpotTestData[idx]['img'],
-                    address: _recommendSpotTestData[idx]['address'],
-                    like_count: _recommendSpotTestData[idx]['like_count']
+                  id: _recommendSpotData[idx].id,
+                  name: _recommendSpotData[idx].name,
+                  content: _recommendSpotData[idx].comment,
+                  imageUrl: _recommendSpotData[idx].imageUrl,
+                  address: _recommendSpotData[idx].location.address,
+                  like_count: _recommendSpotData[idx].likeCount
                 )
             ),
             options: CarouselOptions(
@@ -200,7 +200,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
         SizedBox(height: 12,),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(_recommendSpotTestData.length, (idx) {
+          children: List.generate(_recommendSpotData.length, (idx) {
             Widget child;
             if (idx == _selectedCarouselCard) {
               child = Container(
@@ -226,7 +226,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
               );
             }
             return Padding(
-              key: ValueKey<int>(idx == _selectedCarouselCard ? 1 : 0),
+              // key: ValueKey<int>(idx == _selectedCarouselCard ? 1 : 0),
               padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
               child: child,
             );

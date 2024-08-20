@@ -65,7 +65,7 @@ class DroneSpotModel {
       flight: data['permit']['flight'],
       camera: data['permit']['camera']
     );
-    final areaList = List.generate(data['area'], (idx) => AreaModel(
+    final areaList = List.generate(data['area'].length, (idx) => AreaModel(
         id: data['area'][idx]['id'],
         name: data['area'][idx]['name']
       )
