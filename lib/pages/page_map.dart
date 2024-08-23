@@ -133,8 +133,6 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
     _bottomSheetContentController.addListener(() {
       _detectListViewIdx();
     });
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _fetchDataFromNetwork());
     super.initState();
   }
 
