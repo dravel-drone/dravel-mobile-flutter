@@ -255,10 +255,11 @@ class KakaoMapController : UIViewController, MapControllerDelegate, KakaoMapEven
             viewInfoName: "map",
             defaultPosition: defaultPosition,
             defaultLevel: _args!["zoomLevel"] as! Int)
+        print(mapviewInfo);
         
         //KakaoMap 추가.
         mapController?.addView(mapviewInfo)
-        channel?.invokeMethod("onMapInit", arguments: nil)
+        print(mapController);
         print("view added")
     }
     
@@ -313,14 +314,16 @@ class KakaoMapController : UIViewController, MapControllerDelegate, KakaoMapEven
     
     //addView 성공 이벤트 delegate. 추가적으로 수행할 작업을 진행한다.
     func addViewSucceeded(_ viewName: String, viewInfoName: String) {
+        print("Map add Success")
         let view = mapController?.getView("mapview") as! KakaoMap
         view.viewRect = mapContainer!.bounds    //뷰 add 도중에 resize 이벤트가 발생한 경우 이벤트를 받지 못했을 수 있음. 원하는 뷰 사이즈로 재조정.
+        channel?.invokeMethod("onMapInit", arguments: nil)
         viewInit(viewName: viewName)
     }
     
     //addView 실패 이벤트 delegate. 실패에 대한 오류 처리를 진행한다.
     func addViewFailed(_ viewName: String, viewInfoName: String) {
-        print("Failed")
+        print("Map add Failed")
     }
     
     //Container 뷰가 리사이즈 되었을때 호출된다. 변경된 크기에 맞게 ViewBase들의 크기를 조절할 필요가 있는 경우 여기에서 수행한다.
