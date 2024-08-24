@@ -39,16 +39,19 @@ class RegisterModel {
 class LoginModel {
   String id;
   String password;
+  String deviceId;
 
   LoginModel({
     required this.id,
     required this.password,
+    required this.deviceId
   });
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'password': password
+      'password': password,
+      'device_id': deviceId
     };
   }
 }

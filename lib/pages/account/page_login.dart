@@ -207,7 +207,8 @@ class _LoginPageState extends State<LoginPage> {
                     AuthKeyModel? result = await _authController.login(
                       LoginModel(
                         id: email,
-                        password: password
+                        password: password,
+                        deviceId: (await _secureStorage.read(key: 'device_id'))!
                       )
                     );
                     Get.back();
