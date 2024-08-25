@@ -62,4 +62,17 @@ class AuthHttp {
     }
     return true;
   }
+
+  static Future<String?> refresh(RefreshModel refreshModel) async {
+    // final url = Uri.https(HttpBase.domain, 'api/v1/refresh');
+    final url = Uri.http(HttpBase.debugUrl, 'api/v1/refresh');
+    final response = await http.post(url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(refreshModel.toJson()));
+    if (response.statusCode != 200) {
+      debugPrint(utf8.decode(response.bodyBytes));
+      return null;
+    }
+    return jsonDecode(utf8.decode(response.bodyBytes))['access_token'];
+  }
 }

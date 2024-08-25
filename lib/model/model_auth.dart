@@ -73,6 +73,20 @@ class LogoutModel {
   }
 }
 
+class RefreshModel {
+  String deviceId;
+
+  RefreshModel({
+    required this.deviceId,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'device_id': deviceId,
+    };
+  }
+}
+
 class AuthKeyModel {
   String accessKey;
   String refreshKey;

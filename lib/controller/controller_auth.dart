@@ -89,4 +89,16 @@ class AuthController extends GetxController {
       );
     }
   }
+
+  Future<bool> refreshAccessToken() async {
+    String? result = await AuthHttp.refresh(
+        RefreshModel(deviceId: (await _secureStorage.read(key: 'device_id'))!)
+    );
+    if (result == null) {
+      logout();
+      return false;
+    }
+    await _secureStorage.write(key: 'access', value: result);
+    return true;
+  }
 }
