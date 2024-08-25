@@ -205,11 +205,8 @@ class _LoginPageState extends State<LoginPage> {
                         barrierDismissible: false
                     );
                     AuthKeyModel? result = await _authController.login(
-                      LoginModel(
-                        id: email,
-                        password: password,
-                        deviceId: (await _secureStorage.read(key: 'device_id'))!
-                      )
+                      id: email,
+                      password: password,
                     );
                     Get.back();
 

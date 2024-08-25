@@ -56,6 +56,23 @@ class LoginModel {
   }
 }
 
+class LogoutModel {
+  String deviceId;
+  String uid;
+
+  LogoutModel({
+    required this.deviceId,
+    required this.uid
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'uid': uid,
+      'device_id': deviceId,
+    };
+  }
+}
+
 class AuthKeyModel {
   String accessKey;
   String refreshKey;

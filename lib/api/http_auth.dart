@@ -48,4 +48,16 @@ class AuthHttp {
       'user': LoginUserModel.fromJson(jsonDecode(utf8.decode(response.bodyBytes)))
     };
   }
+
+  static Future<bool> logout(LogoutModel logoutModel) async {
+    final url = Uri.https(HttpBase.debugUrl, 'api/v1/logout');
+    final response = await http.post(url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(logoutModel.toJson()));
+    if (response.statusCode != 200) {
+      debugPrint(utf8.decode(response.bodyBytes));
+      return false;
+    }
+    return true;
+  }
 }

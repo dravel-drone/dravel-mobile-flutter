@@ -1,5 +1,7 @@
 import 'package:dravel/api/http_auth.dart';
 import 'package:dravel/model/model_auth.dart';
+import 'package:dravel/pages/account/page_login.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
@@ -22,8 +24,17 @@ class AuthController extends GetxController {
         && await _secureStorage.read(key: 'refresh') != null;
   }
 
-  Future<AuthKeyModel?> login(LoginModel loginModel) async {
-    Map<String, dynamic>? result = await AuthHttp.login(loginModel);
+  Future<AuthKeyModel?> login({
+    required String id,
+    required String password
+  }) async {
+    Map<String, dynamic>? result = await AuthHttp.login(
+      LoginModel(
+        id: id,
+        password: password,
+        deviceId: (await _secureStorage.read(key: 'device_id'))!
+      )
+    );
     if (result != null) {
       isLogin.value = true;
       userUid.value = result['user'].uid;
@@ -35,5 +46,26 @@ class AuthController extends GetxController {
       isLogin.value = false;
     }
     return result != null ? result['key'] : null;
+  }
+
+  Future<void> logout() async {
+    bool result = await AuthHttp.logout(
+      LogoutModel(
+        deviceId: (await _secureStorage.read(key: 'device_id'))!,
+        uid: userUid.value!
+      )
+    );
+
+    await _secureStorage.delete(key: 'access');
+    await _secureStorage.delete(key: 'refresh');
+    await _secureStorage.delete(key: 'uid');
+    Get.offAll(() => LoginPage());
+    Get.showSnackbar(
+      const GetSnackBar(
+        message: "로그아웃 오류",
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 1),
+      )
+    );
   }
 }
