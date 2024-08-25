@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dravel/api/http_base.dart';
 import 'package:dravel/api/http_dronespot.dart';
+import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/model/model_dronespot.dart';
 import 'package:dravel/pages/detail/page_course_detail.dart';
 import 'package:dravel/utils/util_ui.dart';
@@ -26,6 +27,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
+  late final AuthController _authController;
+
   int _selectedCarouselCard = 0;
   int _maxReviewCount = 0;
 
@@ -110,7 +113,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
   bool _loadRecommendDronespot = false;
 
   Future<void> _getRecommendDronespot() async {
-    final result = await DroneSpotHttp.getPopularDronespot();
+    final result = await DroneSpotHttp.getPopularDronespot(_authController);
     if (result != null) {
       _recommendSpotData = result;
     }
@@ -120,6 +123,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
   @override
   void initState() {
+    _authController = Get.find<AuthController>();
     if (_recommendReviewTestData.length > 3) {
       _maxReviewCount = 3;
     }

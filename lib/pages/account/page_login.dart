@@ -205,10 +205,8 @@ class _LoginPageState extends State<LoginPage> {
                         barrierDismissible: false
                     );
                     AuthKeyModel? result = await _authController.login(
-                      LoginModel(
-                        id: email,
-                        password: password
-                      )
+                      id: email,
+                      password: password,
                     );
                     Get.back();
 
@@ -230,9 +228,6 @@ class _LoginPageState extends State<LoginPage> {
                     } else {
                       await _secureStorage.delete(key: 'email');
                     }
-
-                    await _secureStorage.write(key: 'access', value: result.accessKey);
-                    await _secureStorage.write(key: 'refresh', value: result.refreshKey);
 
                     Get.to(() => MainNavigationPage());
                   },
