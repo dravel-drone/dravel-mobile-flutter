@@ -10,7 +10,8 @@ import '../model/model_term.dart';
 
 class DroneSpotHttp {
   static Future<List<DroneSpotModel>?> getPopularDronespot() async {
-    final url = Uri.https(HttpBase.domain, 'api/v1/dronespot/popular');
+    // final url = Uri.https(HttpBase.domain, 'api/v1/dronespot/popular');
+    final url = Uri.http(HttpBase.debugUrl, 'api/v1/dronespot/popular');
 
     final accessKey = await HttpBase.getAccessKey();
     Map<String, String> headers = {};

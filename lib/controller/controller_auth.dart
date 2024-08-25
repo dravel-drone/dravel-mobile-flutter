@@ -49,23 +49,44 @@ class AuthController extends GetxController {
   }
 
   Future<void> logout() async {
-    bool result = await AuthHttp.logout(
-      LogoutModel(
-        deviceId: (await _secureStorage.read(key: 'device_id'))!,
-        uid: userUid.value!
-      )
+    Get.dialog(
+      const AlertDialog(
+        content: Row(
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(width: 12,),
+            Text('로그아웃중..')
+          ],
+        ),
+        buttonPadding: EdgeInsets.zero,
+        contentPadding: EdgeInsets.fromLTRB(18, 24, 18, 24),
+      ),
+      barrierDismissible: false
     );
+
+    bool result = false;
+    if (userUid.value != null) {
+      result = await AuthHttp.logout(
+          LogoutModel(
+              deviceId: (await _secureStorage.read(key: 'device_id'))!,
+              uid: userUid.value!
+          )
+      );
+    }
 
     await _secureStorage.delete(key: 'access');
     await _secureStorage.delete(key: 'refresh');
     await _secureStorage.delete(key: 'uid');
     Get.offAll(() => LoginPage());
-    Get.showSnackbar(
-      const GetSnackBar(
-        message: "로그아웃 오류",
-        backgroundColor: Colors.red,
-        duration: Duration(seconds: 1),
-      )
-    );
+
+    if (!result) {
+      Get.showSnackbar(
+          const GetSnackBar(
+            message: "로그아웃 오류",
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 1),
+          )
+      );
+    }
   }
 }

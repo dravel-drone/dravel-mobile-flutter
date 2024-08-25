@@ -112,7 +112,7 @@ class LoginUserModel {
         name: data['name'],
         id: data['id'],
         email: data['email'],
-        isAdmin: data['isAdmin'],
+        isAdmin: data['is_admin'],
         age: data['age'] ?? 0,
         drone: data['drone'],
         imageUrl: data['image'],

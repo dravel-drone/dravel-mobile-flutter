@@ -25,7 +25,8 @@ class AuthHttp {
       return match != null ? match.group(1) : null;
     }
 
-    final url = Uri.https(HttpBase.debugUrl, 'api/v1/login');
+    // final url = Uri.https(HttpBase.domain, 'api/v1/login');
+    final url = Uri.http(HttpBase.debugUrl, 'api/v1/login');
     final response = await http.post(url,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(loginModel.toJson()));
@@ -39,7 +40,7 @@ class AuthHttp {
     final refreshToken = extractToken(cookies, 'refresh_token');
 
     debugPrint("access_token: $accessToken\nrefresh_token: $refreshToken");
-
+    debugPrint(utf8.decode(response.bodyBytes));
     return {
       'key': AuthKeyModel(
           accessKey: accessToken!,
@@ -50,7 +51,8 @@ class AuthHttp {
   }
 
   static Future<bool> logout(LogoutModel logoutModel) async {
-    final url = Uri.https(HttpBase.debugUrl, 'api/v1/logout');
+    // final url = Uri.https(HttpBase.domain, 'api/v1/logout');
+    final url = Uri.http(HttpBase.debugUrl, 'api/v1/logout');
     final response = await http.post(url,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(logoutModel.toJson()));
