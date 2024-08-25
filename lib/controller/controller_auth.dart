@@ -9,7 +9,7 @@ class AuthController extends GetxController {
   late final FlutterSecureStorage _secureStorage;
 
   Rx<bool> isLogin = Rx(false);
-  Rxn<LoginUserModel> loginUser = Rxn(null);
+  Rxn<String> userUid = Rxn(null);
 
   @override
   void onInit() {
@@ -26,7 +26,11 @@ class AuthController extends GetxController {
     Map<String, dynamic>? result = await AuthHttp.login(loginModel);
     if (result != null) {
       isLogin.value = true;
-      loginUser.value = result['user'];
+      userUid.value = result['user'].uid;
+
+      await _secureStorage.write(key: 'access', value: result['key'].accessKey);
+      await _secureStorage.write(key: 'refresh', value: result['key'].refreshKey);
+      await _secureStorage.write(key: 'uid', value: userUid.value);
     } else {
       isLogin.value = false;
     }

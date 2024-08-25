@@ -232,9 +232,6 @@ class _LoginPageState extends State<LoginPage> {
                       await _secureStorage.delete(key: 'email');
                     }
 
-                    await _secureStorage.write(key: 'access', value: result.accessKey);
-                    await _secureStorage.write(key: 'refresh', value: result.refreshKey);
-
                     Get.to(() => MainNavigationPage());
                   },
                   childText: '로그인',
