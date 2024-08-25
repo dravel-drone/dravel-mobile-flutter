@@ -18,14 +18,14 @@ class AuthHttp {
     return true;
   }
 
-  static Future<AuthKeyModel?> login(LoginModel loginModel) async {
+  static Future<Map<String, dynamic>?> login(LoginModel loginModel) async {
     String? extractToken(String input, String tokenType) {
       final regex = RegExp('${tokenType}=([^;]+)');
       final match = regex.firstMatch(input);
       return match != null ? match.group(1) : null;
     }
 
-    final url = Uri.https(HttpBase.domain, 'api/v1/login');
+    final url = Uri.https(HttpBase.debugUrl, 'api/v1/login');
     final response = await http.post(url,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(loginModel.toJson()));
@@ -40,9 +40,12 @@ class AuthHttp {
 
     debugPrint("access_token: $accessToken\nrefresh_token: $refreshToken");
 
-    return AuthKeyModel(
-      accessKey: accessToken!,
-      refreshKey: refreshToken!
-    );
+    return {
+      'key': AuthKeyModel(
+          accessKey: accessToken!,
+          refreshKey: refreshToken!
+      ),
+      'user': LoginUserModel.fromJson(jsonDecode(utf8.decode(response.bodyBytes)))
+    };
   }
 }

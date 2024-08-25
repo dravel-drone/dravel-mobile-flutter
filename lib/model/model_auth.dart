@@ -65,3 +65,41 @@ class AuthKeyModel {
     required this.refreshKey,
   });
 }
+
+class LoginUserModel {
+  String uid;
+  String name;
+  String id;
+  String email;
+  int isAdmin;
+  int age;
+  String? drone;
+  String? imageUrl;
+  String? oneLiner;
+
+  LoginUserModel({
+    required this.uid,
+    required this.name,
+    required this.id,
+    required this.email,
+    required this.isAdmin,
+    required this.age,
+    required this.drone,
+    required this.imageUrl,
+    required this.oneLiner,
+  });
+
+  factory LoginUserModel.fromJson(Map<String, dynamic> data) {
+    return LoginUserModel(
+        uid: data['uid'],
+        name: data['name'],
+        id: data['id'],
+        email: data['email'],
+        isAdmin: data['isAdmin'],
+        age: data['age'] ?? 0,
+        drone: data['drone'],
+        imageUrl: data['image'],
+        oneLiner: data['one_liner']
+    );
+  }
+}
