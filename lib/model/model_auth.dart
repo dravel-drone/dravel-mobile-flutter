@@ -56,6 +56,37 @@ class LoginModel {
   }
 }
 
+class LogoutModel {
+  String deviceId;
+  String uid;
+
+  LogoutModel({
+    required this.deviceId,
+    required this.uid
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'uid': uid,
+      'device_id': deviceId,
+    };
+  }
+}
+
+class RefreshModel {
+  String deviceId;
+
+  RefreshModel({
+    required this.deviceId,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'device_id': deviceId,
+    };
+  }
+}
+
 class AuthKeyModel {
   String accessKey;
   String refreshKey;
@@ -64,4 +95,42 @@ class AuthKeyModel {
     required this.accessKey,
     required this.refreshKey,
   });
+}
+
+class LoginUserModel {
+  String uid;
+  String name;
+  String id;
+  String email;
+  int isAdmin;
+  int age;
+  String? drone;
+  String? imageUrl;
+  String? oneLiner;
+
+  LoginUserModel({
+    required this.uid,
+    required this.name,
+    required this.id,
+    required this.email,
+    required this.isAdmin,
+    required this.age,
+    required this.drone,
+    required this.imageUrl,
+    required this.oneLiner,
+  });
+
+  factory LoginUserModel.fromJson(Map<String, dynamic> data) {
+    return LoginUserModel(
+        uid: data['uid'],
+        name: data['name'],
+        id: data['id'],
+        email: data['email'],
+        isAdmin: data['is_admin'],
+        age: data['age'] ?? 0,
+        drone: data['drone'],
+        imageUrl: data['image'],
+        oneLiner: data['one_liner']
+    );
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/pages/account/page_login.dart';
 import 'package:dravel/pages/profile/page_follow_list.dart';
 import 'package:dravel/pages/profile/page_profile_edit.dart';
@@ -11,6 +12,12 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class ProfilePage extends StatefulWidget {
+  ProfilePage({
+    this.pageMode = false
+  });
+
+  bool pageMode;
+
   @override
   State<StatefulWidget> createState() => _ProfilePageState();
 }
@@ -20,6 +27,8 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   late final ScrollController _droneSpotController;
   late final ScrollController _reviewController;
   late final ScrollController _nestedController;
+
+  late final AuthController _authController;
 
   List<dynamic> _droneLikeTestData = [
     {
@@ -144,6 +153,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
 
   @override
   void initState() {
+    _authController = Get.find<AuthController>();
     _tabController = TabController(length: 2, vsync: this);
     _reviewController = ScrollController();
     _droneSpotController = ScrollController();
@@ -173,18 +183,23 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
             color: Colors.black
         ),
       ),
-      leading: IconButton(
+      leading: !widget.pageMode ? IconButton(
         icon: Icon(Icons.arrow_back_outlined),
         onPressed: () {
           // Get.back();
         },
-      ),
+      ) : null,
       actions: [
-        IconButton(
+        widget.pageMode ? IconButton(
           icon: Icon(Icons.bookmark_border_rounded),
           onPressed: () {
             // Get.back();
           },
+        ) : TextButton(
+          onPressed: () {
+            _authController.logout();
+          },
+          child: Text('로그아웃')
         )
       ],
     );

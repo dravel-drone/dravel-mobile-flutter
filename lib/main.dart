@@ -14,8 +14,8 @@ import 'utils/util_auth.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final storage = FlutterSecureStorage();
-  await storage.delete(key: 'access');
-  await storage.delete(key: 'refresh');
+  // await storage.delete(key: 'access');
+  // await storage.delete(key: 'refresh');
 
   if (!await storage.containsKey(key: 'device_id')) {
     final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
