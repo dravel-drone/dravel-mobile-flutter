@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dravel/api/http_base.dart';
+import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/model/model_auth.dart';
 import 'package:dravel/model/model_dronespot.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,29 +10,43 @@ import 'package:http/http.dart' as http;
 import '../model/model_term.dart';
 
 class DroneSpotHttp {
-  static Future<List<DroneSpotModel>?> getPopularDronespot() async {
-    // final url = Uri.https(HttpBase.domain, 'api/v1/dronespot/popular');
-    final url = Uri.http(HttpBase.debugUrl, 'api/v1/dronespot/popular');
+  static Future<List<DroneSpotModel>?> getPopularDronespot(AuthController authController) async {
+    final url = Uri.https(HttpBase.domain, 'api/v1/dronespot/popular');
+    // final url = Uri.http(HttpBase.debugUrl, 'api/v1/dronespot/popular');
 
-    final accessKey = await HttpBase.getAccessKey();
-    Map<String, String> headers = {};
-    if (accessKey != null) {
-      headers['Authorization'] = 'Bearer $accessKey';
+    int trial = 0;
+    while (trial < 2) {
+      final accessKey = await HttpBase.getAccessKey();
+      Map<String, String> headers = {};
+      if (accessKey != null) {
+        headers['Authorization'] = 'Bearer $accessKey';
+      }
+
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode != 200) {
+        if (response.statusCode == 401 && trial == 0) {
+          debugPrint("Accesstoken Expired");
+          if (!await authController.refreshAccessToken()) {
+            return null;
+          }
+          trial += 1;
+          continue;
+        } else {
+          return null;
+        }
+      } else {
+        debugPrint(utf8.decode(response.bodyBytes));
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        debugPrint(jsonData.toString());
+
+        List<DroneSpotModel> data = [];
+        for (var i in jsonData) {
+          data.add(DroneSpotModel.fromJson(i));
+        }
+        return data;
+      }
     }
-
-    final response = await http.get(url, headers: headers);
-
-    if (response.statusCode != 200) {
-      return null;
-    }
-    debugPrint(utf8.decode(response.bodyBytes));
-    final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
-    debugPrint(jsonData.toString());
-
-    List<DroneSpotModel> data = [];
-    for (var i in jsonData) {
-      data.add(DroneSpotModel.fromJson(i));
-    }
-    return data;
+    return null;
   }
 }

@@ -6,6 +6,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 class AuthHttp {
+  static String? _extractToken(String input, String tokenType) {
+    final regex = RegExp('${tokenType}=([^;]+)');
+    final match = regex.firstMatch(input);
+    return match != null ? match.group(1) : null;
+  }
+
   static Future<bool> registerUser(RegisterModel inputModel) async {
     final url = Uri.https(HttpBase.domain, 'api/v1/register');
     final response = await http.post(url,
@@ -19,14 +25,8 @@ class AuthHttp {
   }
 
   static Future<Map<String, dynamic>?> login(LoginModel loginModel) async {
-    String? extractToken(String input, String tokenType) {
-      final regex = RegExp('${tokenType}=([^;]+)');
-      final match = regex.firstMatch(input);
-      return match != null ? match.group(1) : null;
-    }
-
-    // final url = Uri.https(HttpBase.domain, 'api/v1/login');
-    final url = Uri.http(HttpBase.debugUrl, 'api/v1/login');
+    final url = Uri.https(HttpBase.domain, 'api/v1/login');
+    // final url = Uri.http(HttpBase.debugUrl, 'api/v1/login');
     final response = await http.post(url,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(loginModel.toJson()));
@@ -36,8 +36,8 @@ class AuthHttp {
     }
 
     final cookies = response.headers['set-cookie']!;
-    final accessToken = extractToken(cookies, 'access_token');
-    final refreshToken = extractToken(cookies, 'refresh_token');
+    final accessToken = _extractToken(cookies, 'access_token');
+    final refreshToken = _extractToken(cookies, 'refresh_token');
 
     debugPrint("access_token: $accessToken\nrefresh_token: $refreshToken");
     debugPrint(utf8.decode(response.bodyBytes));
@@ -51,8 +51,8 @@ class AuthHttp {
   }
 
   static Future<bool> logout(LogoutModel logoutModel) async {
-    // final url = Uri.https(HttpBase.domain, 'api/v1/logout');
-    final url = Uri.http(HttpBase.debugUrl, 'api/v1/logout');
+    final url = Uri.https(HttpBase.domain, 'api/v1/logout');
+    // final url = Uri.http(HttpBase.debugUrl, 'api/v1/logout');
     final response = await http.post(url,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(logoutModel.toJson()));
@@ -63,16 +63,24 @@ class AuthHttp {
     return true;
   }
 
-  static Future<String?> refresh(RefreshModel refreshModel) async {
-    // final url = Uri.https(HttpBase.domain, 'api/v1/refresh');
-    final url = Uri.http(HttpBase.debugUrl, 'api/v1/refresh');
+  static Future<String?> refresh(RefreshModel refreshModel, {
+    required String refreshToken
+  }) async {
+    final url = Uri.https(HttpBase.domain, 'api/v1/refresh');
+    // final url = Uri.http(HttpBase.debugUrl, 'api/v1/refresh');
     final response = await http.post(url,
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          'Cookie': 'refresh_token=$refreshToken'
+        },
         body: jsonEncode(refreshModel.toJson()));
     if (response.statusCode != 200) {
       debugPrint(utf8.decode(response.bodyBytes));
       return null;
     }
-    return jsonDecode(utf8.decode(response.bodyBytes))['access_token'];
+
+    final cookies = response.headers['set-cookie']!;
+    final accessToken = _extractToken(cookies, 'access_token');
+    return accessToken;
   }
 }

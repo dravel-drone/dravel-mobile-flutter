@@ -91,8 +91,15 @@ class AuthController extends GetxController {
   }
 
   Future<bool> refreshAccessToken() async {
+    String? refreshToken = await _secureStorage.read(key: 'refresh');
+    if (refreshToken == null) {
+      logout();
+      return false;
+    }
+
     String? result = await AuthHttp.refresh(
-        RefreshModel(deviceId: (await _secureStorage.read(key: 'device_id'))!)
+      RefreshModel(deviceId: (await _secureStorage.read(key: 'device_id'))!),
+      refreshToken: refreshToken
     );
     if (result == null) {
       logout();
