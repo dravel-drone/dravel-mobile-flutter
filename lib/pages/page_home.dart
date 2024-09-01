@@ -176,6 +176,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
         ),
       );
     }
+    if (_recommendSpotData.isEmpty) return Container();
     return Column(
       children: [
         CarouselSlider(
