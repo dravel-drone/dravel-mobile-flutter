@@ -6,7 +6,8 @@ class DronespotReviewModel {
   SimpleUserModel? writer;
   String placeName;
   PermitModel permit;
-  String? droneType;
+  String droneType;
+  String drone;
   String date;
   String comment;
   String? photoUrl;
@@ -18,7 +19,8 @@ class DronespotReviewModel {
     this.writer,
     required this.placeName,
     required this.permit,
-    this.droneType,
+    required this.droneType,
+    required this.drone,
     required this.date,
     required this.comment,
     required this.photoUrl,

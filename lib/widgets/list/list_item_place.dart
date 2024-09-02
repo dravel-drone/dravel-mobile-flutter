@@ -7,21 +7,24 @@ import '../../utils/util_ui.dart';
 
 class PlaceItem extends StatelessWidget {
   PlaceItem({
+    required this.id,
     required this.name,
-    required this.imageUrl,
+    this.imageUrl,
     required this.address,
-    required this.message,
+    this.message,
     required this.distance,
     this.backgroundColor = Colors.white
   });
 
-  String imageUrl;
+  String? imageUrl;
   String name;
-  String message;
+  String? message;
   String address;
 
   int distance;
   Color backgroundColor;
+
+  int id;
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +40,28 @@ class PlaceItem extends StatelessWidget {
         ),
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: CachedNetworkImage(
-                height: double.infinity,
-                width: 85,
-                fit: BoxFit.cover,
-                imageUrl: imageUrl,
+            if (imageUrl != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: CachedNetworkImage(
+                  height: double.infinity,
+                  width: 85,
+                  fit: BoxFit.cover,
+                  imageUrl: imageUrl!,
+                ),
+              )
+            else
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: Container(
+                  width: 85,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: getRandomGradientColor(id + 4353453)
+                      )
+                  ),
+                ),
               ),
-            ),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(16, 8, 4, 4),
@@ -58,6 +74,7 @@ class PlaceItem extends StatelessWidget {
                         Expanded(
                           child: Text(
                             name,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
@@ -76,7 +93,7 @@ class PlaceItem extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      message,
+                      message ?? '',
                       style: TextStyle(
                           color: Colors.black54,
                           fontSize: 14,
@@ -92,10 +109,17 @@ class PlaceItem extends StatelessWidget {
                           size: 18,
                         ),
                         SizedBox(width: 4,),
-                        Text(
-                          address,
-                          style: TextStyle(
-                            color: Colors.black54,
+                        Expanded(
+                          child: Text(
+                            address,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 12,
+                              height: 1
+                            ),
                           ),
                         )
                       ],

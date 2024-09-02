@@ -30,9 +30,9 @@ class DronespotPlaceModel {
   factory DronespotPlaceModel.fromJson(Map<String, dynamic> jsonData) {
     final accommodationList = List.generate(jsonData['accommodations'].length, (idx) {
       final location = LocationModel(
-        lat: jsonData['accommodations'][idx]['lat'],
-        lon: jsonData['accommodations'][idx]['lon'],
-        address: jsonData['accommodations'][idx]['address'],
+        lat: jsonData['accommodations'][idx]['location']['lat'],
+        lon: jsonData['accommodations'][idx]['location']['lon'],
+        address: jsonData['accommodations'][idx]['location']['address'],
       );
 
       return PlaceModel(
@@ -46,9 +46,9 @@ class DronespotPlaceModel {
     });
     final restaurantList = List.generate(jsonData['restaurants'].length, (idx) {
       final location = LocationModel(
-        lat: jsonData['restaurants'][idx]['lat'],
-        lon: jsonData['restaurants'][idx]['lon'],
-        address: jsonData['restaurants'][idx]['address'],
+        lat: jsonData['restaurants'][idx]['location']['lat'],
+        lon: jsonData['restaurants'][idx]['location']['lon'],
+        address: jsonData['restaurants'][idx]['location']['address'],
       );
 
       return PlaceModel(

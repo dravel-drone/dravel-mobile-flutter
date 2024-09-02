@@ -7,6 +7,7 @@ import 'package:dravel/api/http_dronespot.dart';
 import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/model/model_dronespot.dart';
 import 'package:dravel/pages/detail/page_course_detail.dart';
+import 'package:dravel/pages/detail/page_dronespot_detail.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/carousel/carousel_spot_recommend.dart';
@@ -189,6 +190,9 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                   address: _recommendSpotData[idx].location.address,
                   like_count: _recommendSpotData[idx].likeCount,
                   isLiked: _recommendSpotData[idx].isLike,
+                  onTap: () {
+                    Get.to(() => DroneSpotDetailPage(id: _recommendSpotData[idx].id));
+                  },
                 )
             ),
             options: CarouselOptions(
@@ -285,6 +289,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
             ),
             SizedBox(height: 12,),
             CourseItem(
+              id: 434,
               img: _courseTestData[0]['img'],
               name: _courseTestData[0]['name'],
               distance: _courseTestData[0]['distance'],

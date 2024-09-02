@@ -1,13 +1,16 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dravel/api/http_base.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/util_map.dart';
+import '../../utils/util_ui.dart';
 
 class CourseItem extends StatelessWidget {
   CourseItem({
-    required this.img,
+    this.img,
+    required this.id,
     required this.name,
     required this.distance,
     required this.duration,
@@ -15,11 +18,13 @@ class CourseItem extends StatelessWidget {
     this.onTap
   });
 
-  String img;
+  String? img;
   String name;
 
   int distance;
   int duration;
+
+  int id;
 
   Color sectionColor;
 
@@ -40,14 +45,25 @@ class CourseItem extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Expanded(
-                child: CachedNetworkImage(
-                  imageUrl: img,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
+              if (img != null)
+                Expanded(
+                  child: CachedNetworkImage(
+                    imageUrl: HttpBase.baseUrl + img!,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                )
+              else
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: getRandomGradientColor(id + 4353453)
+                        )
+                    ),
+                  ),
                 ),
-              ),
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.fromLTRB(12, 8, 12, 8),

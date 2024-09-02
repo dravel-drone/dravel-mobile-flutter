@@ -400,6 +400,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
         // controller: _reviewController,
         itemBuilder: (context, idx) {
           return ReviewFullItem(
+            id: 32,
               img: _reviewLikeTestData[idx]['img'],
               name: _reviewLikeTestData[idx]['name'],
               place: _reviewLikeTestData[idx]['place'],

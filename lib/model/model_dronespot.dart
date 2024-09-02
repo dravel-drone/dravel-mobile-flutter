@@ -115,7 +115,8 @@ class DronespotDetailModel extends DroneSpotModel {
           placeName: jsonData['reviews'][idx]['place_name'],
           permit: reviewPermit,
           droneType: jsonData['reviews'][idx]['drone_type'],
-          date: jsonData['reviews'][idx]['date'],
+          drone: jsonData['reviews'][idx]['drone'],
+          date: jsonData['reviews'][idx]['date'].split('T')[0],
           comment: jsonData['reviews'][idx]['comment'],
           photoUrl: jsonData['reviews'][idx]['photo'],
           likeCount: jsonData['reviews'][idx]['like_count'] ?? 0,
@@ -129,7 +130,8 @@ class DronespotDetailModel extends DroneSpotModel {
         content: jsonData['courses'][idx]['content'],
         distance: jsonData['courses'][idx]['distance'],
         duration: jsonData['courses'][idx]['duration'],
-        id: jsonData['courses'][idx]['id']
+        id: jsonData['courses'][idx]['id'],
+        photoUrl: jsonData['courses'][idx]['photo_url']
       );
     });
 
