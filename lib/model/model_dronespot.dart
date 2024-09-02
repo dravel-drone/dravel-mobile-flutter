@@ -1,34 +1,9 @@
-class LocationModel {
-  double lat;
-  double lon;
-  String? address;
+import 'package:dravel/model/model_auth.dart';
+import 'package:dravel/model/model_review.dart';
+import 'package:dravel/model/model_etc.dart';
+import 'package:dravel/model/model_place.dart';
 
-  LocationModel({
-    required this.lat,
-    required this.lon,
-    this.address,
-  });
-}
-
-class PermitModel {
-  int flight;
-  int camera;
-
-  PermitModel({
-    required this.flight,
-    required this.camera,
-  });
-}
-
-class AreaModel {
-  int id;
-  String name;
-
-  AreaModel({
-    required this.id,
-    required this.name,
-  });
-}
+import 'model_course.dart';
 
 class DroneSpotModel {
   int id;
@@ -82,6 +57,98 @@ class DroneSpotModel {
       reviewCount: data['reviews_count'] ?? 0,
       imageUrl: data['photo'],
       area: areaList,
+    );
+  }
+}
+
+class DronespotDetailModel extends DroneSpotModel {
+  List<DronespotReviewModel> reviews;
+  DronespotPlaceModel places;
+  List<CourseModel> courses;
+
+  DronespotDetailModel({
+    required super.id,
+    required super.name,
+    required super.location,
+    required super.comment,
+    required super.permit,
+    required super.isLike,
+    required super.likeCount,
+    required super.reviewCount,
+    super.imageUrl,
+    super.area = const [],
+
+    this.reviews = const [],
+    this.courses = const [],
+    required this.places,
+  });
+
+  factory DronespotDetailModel.fromJson(Map<String, dynamic> jsonData) {
+    final location = LocationModel(
+      lat: jsonData['location']['lat'],
+      lon: jsonData['location']['lon'],
+      address: jsonData['location']['address'],
+    );
+    final permit = PermitModel(
+        flight: jsonData['permit']['flight'],
+        camera: jsonData['permit']['camera']
+    );
+    final areaList = List.generate(jsonData['area'].length, (idx) => AreaModel(
+        id: jsonData['area'][idx]['id'],
+        name: jsonData['area'][idx]['name']
+      )
+    );
+
+    final reviewList = List.generate(jsonData['reviews'].length, (idx) {
+      final writer = jsonData['reviews'][idx]['writer'] != null ? SimpleUserModel(
+          uid: jsonData['reviews'][idx]['writer']['uid'],
+          name: jsonData['reviews'][idx]['writer']['name']
+      ) : null;
+      final reviewPermit = PermitModel(
+          flight: jsonData['reviews'][idx]['permit']['flight'],
+          camera: jsonData['reviews'][idx]['permit']['camera']
+      );
+
+      return DronespotReviewModel(
+          id: jsonData['reviews'][idx]['id'],
+          writer: writer,
+          placeName: jsonData['reviews'][idx]['place_name'],
+          permit: reviewPermit,
+          droneType: jsonData['reviews'][idx]['drone_type'],
+          drone: jsonData['reviews'][idx]['drone'],
+          date: jsonData['reviews'][idx]['date'].split('T')[0],
+          comment: jsonData['reviews'][idx]['comment'],
+          photoUrl: jsonData['reviews'][idx]['photo'],
+          likeCount: jsonData['reviews'][idx]['like_count'] ?? 0,
+          isLike: jsonData['reviews'][idx]['is_like'] == 1
+      );
+    });
+
+    final courseList = List.generate(jsonData['courses'].length, (idx) {
+      return CourseModel(
+        name: jsonData['courses'][idx]['name'],
+        content: jsonData['courses'][idx]['content'],
+        distance: jsonData['courses'][idx]['distance'],
+        duration: jsonData['courses'][idx]['duration'],
+        id: jsonData['courses'][idx]['id'],
+        photoUrl: jsonData['courses'][idx]['photo_url']
+      );
+    });
+
+    return DronespotDetailModel(
+      id: jsonData['id'],
+      name: jsonData['name'],
+      isLike: jsonData['is_like'] == 1,
+      likeCount: jsonData['likes_count'] ?? 0,
+      reviewCount: jsonData['reviews_count'] ?? 0,
+      imageUrl: jsonData['photo_url'],
+      comment: jsonData['comment'],
+      location: location,
+      area: areaList,
+      permit: permit,
+      reviews: reviewList,
+      courses: courseList,
+      places: DronespotPlaceModel.fromJson(jsonData['places'])
     );
   }
 }

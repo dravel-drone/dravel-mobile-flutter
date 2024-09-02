@@ -1,4 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dravel/api/http_base.dart';
+import 'package:dravel/api/http_dronespot.dart';
+import 'package:dravel/controller/controller_auth.dart';
+import 'package:dravel/model/model_dronespot.dart';
 import 'package:dravel/pages/comment/page_comment_write.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
@@ -11,127 +15,68 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DroneSpotDetailPage extends StatefulWidget {
+  DroneSpotDetailPage({
+    required this.id
+  });
+
+  int id;
+
   @override
   State<StatefulWidget> createState() => _DroneSpotDetailPageState();
 }
 
 class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
-  List<dynamic> _reviewTestData = [
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1675359655401-27e0b11bef70?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '강릉',
-      'is_like': false,
-      'like_count': 234,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-07-05',
-      'drone': '매빅 에어2'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1664801768830-46734d0f0848?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '아늘기',
-      'place': '신안',
-      'is_like': true,
-      'like_count': 394,
-      'content': '테스트',
-      'write_date': '2023-11-05',
-      'drone': '매빅 미니4 PRO'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1465447142348-e9952c393450?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '서울',
-      'is_like': false,
-      'like_count': 345,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-02-17',
-      'drone': '매빅 에어3'
-    },
-  ];
-
-  List<dynamic> _courseTestData = [
-    {
-      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '제주 코스',
-      'distance': 2434,
-      'duration': 345
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '제주 코스',
-      'distance': 2434,
-      'duration': 345
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '제주 코스',
-      'distance': 2434,
-      'duration': 345
-    }
-  ];
-
-  Map<String, dynamic> _placeTestData = {
-    'accommodation': [
-      {
-        'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        'name': '성산일출봉',
-        'message': '친절한 서비스와 오션뷰룸이 인기',
-        'location': '서귀포시 한다리',
-        'distance': 2434,
-      },
-      {
-        'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        'name': '성산일출봉',
-        'message': '친절한 서비스와 오션뷰룸이 인기',
-        'location': '서귀포시 한다리',
-        'distance': 2434,
-      },
-      {
-        'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        'name': '성산일출봉',
-        'message': '친절한 서비스와 오션뷰룸이 인기',
-        'location': '서귀포시 한다리',
-        'distance': 2434,
-      }
-    ],
-    'restaurant': [
-      {
-        'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        'name': '성산일출봉',
-        'message': '친절한 서비스와 오션뷰룸이 인기',
-        'location': '서귀포시 한다리',
-        'distance': 2434,
-      },
-      {
-        'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        'name': '성산일출봉',
-        'message': '친절한 서비스와 오션뷰룸이 인기',
-        'location': '서귀포시 한다리',
-        'distance': 2434,
-      },
-      {
-        'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        'name': '222',
-        'message': '친절한 서비스와 오션뷰룸이 인기',
-        'location': '서귀포시 한다리',
-        'distance': 2434,
-      }
-    ],
-  };
+  
+  late DronespotDetailModel _data;
+  late final AuthController _authController;
 
   int _selectedPlaceMode = 0;
+  int _loadDronespot = -1;
+
+
+  Future<void> _getSpotData() async {
+    final result = await DroneSpotHttp.getDronespotDetial(_authController, id: widget.id);
+
+    if (result != null) {
+      _data = result;
+      debugPrint(result.name);
+    } else {
+      _loadDronespot = 0;
+    }
+    _loadDronespot = 1;
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    _authController = Get.find<AuthController>();
+    _getSpotData();
+    super.initState();
+  }
 
   Widget _createInfoSection() {
+    Widget photo;
+    if (_data.imageUrl != null) {
+      photo = CachedNetworkImage(
+        height: 120,
+        width: 120,
+        imageUrl: HttpBase.baseUrl + _data.imageUrl!,
+        fit: BoxFit.cover,
+      );
+    } else {
+      photo = Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(colors: getRandomGradientColor(_data.id + 74353))),
+      );
+    }
+
     return Row(
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: CachedNetworkImage(
-            height: 120,
-            width: 120,
-            fit: BoxFit.cover,
-            imageUrl: 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-          ),
+          child: photo,
         ),
         SizedBox(width: 14,),
         Expanded(
@@ -152,12 +97,12 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                   ),
                   Icon(
                     Icons.favorite,
-                    color: Color(0xFF0075FF),
+                    color: _data.isLike ? Color(0xFF0075FF) : Colors.black26,
                     size: 16,
                   ),
                   SizedBox(width: 2,),
                   Text(
-                    '54',
+                    '${_data.likeCount}',
                     style: TextStyle(
                         color: Colors.black87,
                         fontSize: 14
@@ -173,32 +118,36 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                     fontWeight: FontWeight.w600
                 ),
               ),
-              getFlyPermitWidget(0,
+              getFlyPermitWidget(_data.permit.flight,
               style: TextStyle(
                 color: Colors.black54
               )),
               SizedBox(height: 2,),
-              getPicturePermitWidget(2,
+              getPicturePermitWidget(_data.permit.camera,
               style: TextStyle(
                   color: Colors.black54
               )),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.location_on,
-                    color: Colors.black54,
-                    size: 18,
-                  ),
-                  SizedBox(width: 4,),
-                  Text(
-                    '서귀포시 안덕면 사계리',
-                    style: TextStyle(
-                      color: Colors.black54
+              if (_data.location.address != null)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.location_on,
+                      color: Colors.black54,
+                      size: 18,
                     ),
-                  )
-                ],
-              ),
+                    SizedBox(width: 4,),
+                    Expanded(
+                      child: Text(
+                        _data.location.address!,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: Colors.black54
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               Text(
                 '현재 12도 / 맑음',
                 style: TextStyle(
@@ -247,26 +196,56 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
           ],
         ),
         SizedBox(height: 12,),
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          itemBuilder: (context, idx) {
-            return ReviewFullItem(
-                img: _reviewTestData[idx]['img'],
-                name: _reviewTestData[idx]['name'],
-                place: _reviewTestData[idx]['place'],
-                content: _reviewTestData[idx]['content'],
-                likeCount: _reviewTestData[idx]['like_count'],
-                drone: _reviewTestData[idx]['drone'],
-                date: _reviewTestData[idx]['write_date']
-            );;
-          },
-          separatorBuilder: (context, idx) {
-            return SizedBox(height: 12,);
-          },
-          itemCount: _reviewTestData.length
-        ),
+        if (_data.reviews.isNotEmpty)
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemBuilder: (context, idx) {
+              return ReviewFullItem(
+                  id: _data.reviews[idx].id,
+                  img: _data.reviews[idx].photoUrl,
+                  name: _data.reviews[idx].writer?.name,
+                  place: _data.reviews[idx].placeName,
+                  content: _data.reviews[idx].comment,
+                  likeCount: _data.reviews[idx].likeCount,
+                  drone: _data.reviews[idx].drone,
+                  date: _data.reviews[idx].date,
+                  isLike: _data.reviews[idx].isLike
+              );;
+            },
+            separatorBuilder: (context, idx) {
+              return SizedBox(height: 12,);
+            },
+            itemCount: _data.reviews.length
+          )
+        else
+          Container(
+            width: double.infinity,
+            height: 120,
+            decoration: BoxDecoration(
+              color: Colors.black12,
+              borderRadius: BorderRadius.circular(12)
+            ),
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.sentiment_very_dissatisfied,
+                    size: 38,
+                    color: Colors.black38,
+                  ),
+                  SizedBox(height: 8,),
+                  Text("아직 리뷰가 없습니다.", style: TextStyle(
+                    height: 1,
+                    color: Colors.black38
+                  ),)
+                ],
+              ),
+            ),
+          ),
         SizedBox(height: 12,),
         SizedBox(
           width: double.infinity,
@@ -314,24 +293,53 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
           ],
         ),
         SizedBox(height: 12,),
-        ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.zero,
-            itemBuilder: (context, idx) {
-              return CourseItem(
-                img: _courseTestData[idx]['img'],
-                name: _courseTestData[idx]['name'],
-                distance: _courseTestData[idx]['distance'],
-                duration: _courseTestData[idx]['duration'],
-                sectionColor: Colors.white
-              );
-            },
-            separatorBuilder: (context, idx) {
-              return SizedBox(height: 12,);
-            },
-            itemCount: _courseTestData.length
-        ),
+        if (_data.courses.isNotEmpty)
+          ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, idx) {
+                return CourseItem(
+                  img: _data.courses[idx].photoUrl,
+                  id: _data.courses[idx].id,
+                  name: _data.courses[idx].name,
+                  distance: _data.courses[idx].distance,
+                  duration: _data.courses[idx].duration,
+                  sectionColor: Colors.white
+                );
+              },
+              separatorBuilder: (context, idx) {
+                return SizedBox(height: 12,);
+              },
+              itemCount: _data.courses.length
+          )
+        else
+          Container(
+            width: double.infinity,
+            height: 120,
+            decoration: BoxDecoration(
+                color: Colors.black12,
+                borderRadius: BorderRadius.circular(12)
+            ),
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.sentiment_very_dissatisfied,
+                    size: 38,
+                    color: Colors.black38,
+                  ),
+                  SizedBox(height: 8,),
+                  Text("아직 추천 코스가 없습니다.", style: TextStyle(
+                      height: 1,
+                      color: Colors.black38
+                  ),)
+                ],
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -375,20 +383,31 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
             padding: EdgeInsets.zero,
             itemBuilder: (context, idx) {
               String key = 'accommodation';
-              if (_selectedPlaceMode == 1) key = 'restaurant';
-              return PlaceItem(
-                name: _placeTestData[key][idx]['name'],
-                distance: _placeTestData[key][idx]['distance'],
-                message: _placeTestData[key][idx]['message'],
-                imageUrl: _placeTestData[key][idx]['img'],
-                address: _placeTestData[key][idx]['location'],
-              );
+              if (_selectedPlaceMode == 1) {
+                return PlaceItem(
+                  id: _data.places.restaurants[idx].id,
+                  name: _data.places.restaurants[idx].name,
+                  distance: 32,
+                  message: _data.places.restaurants[idx].comment,
+                  imageUrl: _data.places.restaurants[idx].photoUrl,
+                  address: _data.places.restaurants[idx].location.address!,
+                );
+              } else {
+                return PlaceItem(
+                  id: _data.places.accommodations[idx].id,
+                  name: _data.places.accommodations[idx].name,
+                  distance: 32,
+                  message: _data.places.accommodations[idx].comment,
+                  imageUrl: _data.places.accommodations[idx].photoUrl,
+                  address: _data.places.accommodations[idx].location.address!,
+                );
+              }
             },
             separatorBuilder: (context, idx) {
               return SizedBox(height: 12,);
             },
             itemCount: _selectedPlaceMode == 0 ?
-              _placeTestData['accommodation'].length : _placeTestData['restaurant'].length
+              _data.places.accommodations.length : _data.places.restaurants.length
         ),
       ],
     );
@@ -396,10 +415,56 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_loadDronespot != 1) {
+      Widget body;
+      if (_loadDronespot == -1) {
+        body = Center(
+          child: Column(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 8,),
+              Text("데이터 로딩중...")
+            ],
+          ),
+        );
+      } else {
+        body = Center(
+          child: Column(
+            children: [
+              Icon(Icons.cloud_off_rounded, size: 48,),
+              SizedBox(height: 12,),
+              Text("오류가 발생했습니다. 다시 시도해주세요.")
+            ],
+          ),
+        );
+      }
+      
+      return Scaffold(
+        backgroundColor: Color(0xFFF1F1F5),
+        appBar: CustomAppbar(
+          title: "",
+          textColor: Colors.black,
+          backgroundColor: Color(0xFFF1F1F5),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_outlined),
+            onPressed: () {
+              Get.back();
+            },
+          ),
+        ),
+        body: Container(
+          padding: EdgeInsets.all(38),
+          width: double.infinity,
+          height: double.infinity,
+          child: body,
+        ),
+      );
+    }
+    
     return Scaffold(
       backgroundColor: Color(0xFFF1F1F5),
       appBar: CustomAppbar(
-        title: "장소이름",
+        title: _data.name,
         textColor: Colors.black,
         backgroundColor: Color(0xFFF1F1F5),
         leading: IconButton(
