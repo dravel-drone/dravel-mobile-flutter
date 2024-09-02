@@ -196,28 +196,56 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
           ],
         ),
         SizedBox(height: 12,),
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          itemBuilder: (context, idx) {
-            return ReviewFullItem(
-                id: _data.reviews[idx].id,
-                img: _data.reviews[idx].photoUrl,
-                name: _data.reviews[idx].writer?.name,
-                place: _data.reviews[idx].placeName,
-                content: _data.reviews[idx].comment,
-                likeCount: _data.reviews[idx].likeCount,
-                drone: _data.reviews[idx].drone,
-                date: _data.reviews[idx].date,
-                isLike: _data.reviews[idx].isLike
-            );;
-          },
-          separatorBuilder: (context, idx) {
-            return SizedBox(height: 12,);
-          },
-          itemCount: _data.reviews.length
-        ),
+        if (_data.reviews.isNotEmpty)
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemBuilder: (context, idx) {
+              return ReviewFullItem(
+                  id: _data.reviews[idx].id,
+                  img: _data.reviews[idx].photoUrl,
+                  name: _data.reviews[idx].writer?.name,
+                  place: _data.reviews[idx].placeName,
+                  content: _data.reviews[idx].comment,
+                  likeCount: _data.reviews[idx].likeCount,
+                  drone: _data.reviews[idx].drone,
+                  date: _data.reviews[idx].date,
+                  isLike: _data.reviews[idx].isLike
+              );;
+            },
+            separatorBuilder: (context, idx) {
+              return SizedBox(height: 12,);
+            },
+            itemCount: _data.reviews.length
+          )
+        else
+          Container(
+            width: double.infinity,
+            height: 120,
+            decoration: BoxDecoration(
+              color: Colors.black12,
+              borderRadius: BorderRadius.circular(12)
+            ),
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.sentiment_very_dissatisfied,
+                    size: 38,
+                    color: Colors.black38,
+                  ),
+                  SizedBox(height: 8,),
+                  Text("아직 리뷰가 없습니다.", style: TextStyle(
+                    height: 1,
+                    color: Colors.black38
+                  ),)
+                ],
+              ),
+            ),
+          ),
         SizedBox(height: 12,),
         SizedBox(
           width: double.infinity,
@@ -265,25 +293,53 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
           ],
         ),
         SizedBox(height: 12,),
-        ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.zero,
-            itemBuilder: (context, idx) {
-              return CourseItem(
-                img: _data.courses[idx].photoUrl,
-                id: _data.courses[idx].id,
-                name: _data.courses[idx].name,
-                distance: _data.courses[idx].distance,
-                duration: _data.courses[idx].duration,
-                sectionColor: Colors.white
-              );
-            },
-            separatorBuilder: (context, idx) {
-              return SizedBox(height: 12,);
-            },
-            itemCount: _data.courses.length
-        ),
+        if (_data.courses.isNotEmpty)
+          ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, idx) {
+                return CourseItem(
+                  img: _data.courses[idx].photoUrl,
+                  id: _data.courses[idx].id,
+                  name: _data.courses[idx].name,
+                  distance: _data.courses[idx].distance,
+                  duration: _data.courses[idx].duration,
+                  sectionColor: Colors.white
+                );
+              },
+              separatorBuilder: (context, idx) {
+                return SizedBox(height: 12,);
+              },
+              itemCount: _data.courses.length
+          )
+        else
+          Container(
+            width: double.infinity,
+            height: 120,
+            decoration: BoxDecoration(
+                color: Colors.black12,
+                borderRadius: BorderRadius.circular(12)
+            ),
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.sentiment_very_dissatisfied,
+                    size: 38,
+                    color: Colors.black38,
+                  ),
+                  SizedBox(height: 8,),
+                  Text("아직 추천 코스가 없습니다.", style: TextStyle(
+                      height: 1,
+                      color: Colors.black38
+                  ),)
+                ],
+              ),
+            ),
+          ),
       ],
     );
   }
