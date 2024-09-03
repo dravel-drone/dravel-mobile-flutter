@@ -16,8 +16,28 @@ class CommentWritePage extends StatefulWidget {
 }
 
 class _CommentWritePageState extends State<CommentWritePage> {
+  late final TextEditingController _droneNameController;
+  late final TextEditingController _reviewController;
+
   DateTime _selectedDate = DateTime.now();
   List<XFile> _selectedImages = [];
+
+  bool _permitFlight = false;
+  bool _permitCamera = false;
+
+  @override
+  void initState() {
+    _droneNameController = TextEditingController();
+    _reviewController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _droneNameController.dispose();
+    _reviewController.dispose();
+    super.dispose();
+  }
 
   Widget _createCheckAvailableSection() {
     return Row(
@@ -39,6 +59,9 @@ class _CommentWritePageState extends State<CommentWritePage> {
                 '○',
                 'X'
               ],
+              onChange: (value) {
+                _permitFlight = value == 1;
+              },
             )
           ],
         ),
@@ -60,6 +83,9 @@ class _CommentWritePageState extends State<CommentWritePage> {
                 '○',
                 'X'
               ],
+              onChange: (value) {
+                _permitCamera = value == 1;
+              },
             )
           ],
         ),
@@ -82,6 +108,7 @@ class _CommentWritePageState extends State<CommentWritePage> {
         SizedBox(height: 12,),
         MainTextField(
           backgroundColor: Colors.white,
+          controller: _droneNameController,
           hintText: '드론 이름',
           prefixIcon: Icon(
             Icons.flight_outlined,
@@ -175,6 +202,7 @@ class _CommentWritePageState extends State<CommentWritePage> {
         TextField(
           maxLength: 600,
           maxLines: null,
+          controller: _reviewController,
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
@@ -286,7 +314,7 @@ class _CommentWritePageState extends State<CommentWritePage> {
               );
               if (result != null) {
                 setState(() {
-                  _selectedImages.add(result!);
+                  _selectedImages.add(result);
                 });
               }
             },
@@ -370,7 +398,19 @@ class _CommentWritePageState extends State<CommentWritePage> {
             padding: EdgeInsets.fromLTRB(24, 0, 24, getBottomPaddingWithSafeHeight(context, 24)),
             child: MainButton(
                 onPressed: () {
+                  String droneName = _droneNameController.text;
+                  String review = _reviewController.text;
 
+                  if (droneName.isEmpty || review.isEmpty) {
+                    if (Get.isSnackbarOpen) Get.back();
+                    Get.showSnackbar(
+                      GetSnackBar(
+                        message: '빈 칸을 모두 채워주세요.',
+                        backgroundColor: Colors.orange,
+                        duration: Duration(seconds: 1),
+                      )
+                    );
+                  }
                 },
                 childText: '리뷰 등록'
             ),
