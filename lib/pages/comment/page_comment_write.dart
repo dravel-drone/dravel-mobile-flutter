@@ -274,18 +274,21 @@ class _CommentWritePageState extends State<CommentWritePage> {
         ),
         SizedBox(height: 12,),
         Visibility(
-          visible: _selectedImages.length < 5,
+          visible: _selectedImages.length < 1,
           child: GestureDetector(
             onTap: () async {
               final ImagePicker picker = ImagePicker();
-              List<XFile> result = await picker.pickMultiImage(
+              XFile? result = await picker.pickImage(
+                source: ImageSource.gallery,
                 maxWidth: 650,
                 maxHeight: 650,
-                limit: 5 - _selectedImages.length,
+                // limit: 1 - _selectedImages.length,
               );
-              setState(() {
-                _selectedImages.addAll(result);
-              });
+              if (result != null) {
+                setState(() {
+                  _selectedImages.add(result!);
+                });
+              }
             },
             child: Container(
               padding: EdgeInsets.fromLTRB(16, 16, 18, 16),
