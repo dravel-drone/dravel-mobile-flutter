@@ -36,14 +36,15 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
 
   Future<void> _getSpotData() async {
     final result = await DroneSpotHttp.getDronespotDetial(_authController, id: widget.id);
+    print(result);
 
     if (result != null) {
       _data = result;
+      _loadDronespot = 1;
       debugPrint(result.name);
     } else {
       _loadDronespot = 0;
     }
-    _loadDronespot = 1;
     if (mounted) setState(() {});
   }
 
@@ -251,7 +252,11 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
           width: double.infinity,
           child: MainButton(
               onPressed: () {
-                Get.to(() => CommentWritePage());
+                Get.to(() => CommentWritePage(
+                  dronespotId: widget.id,
+                ))?.then((v) {
+                  _getSpotData();
+                });
               },
               childText: '리뷰 작성하기'
           ),
@@ -420,6 +425,8 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
       if (_loadDronespot == -1) {
         body = Center(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircularProgressIndicator(),
               SizedBox(height: 8,),
@@ -430,6 +437,8 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
       } else {
         body = Center(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.cloud_off_rounded, size: 48,),
               SizedBox(height: 12,),

@@ -58,11 +58,13 @@ class ReviewHttp {
           trial += 1;
           continue;
         } else {
+          debugPrint(await response.stream.bytesToString());
           return null;
         }
       } else {
-        debugPrint(await response.stream.bytesToString());
-        final jsonData = jsonDecode(await response.stream.bytesToString());
+        final responseBody = await response.stream.bytesToString();
+        debugPrint(responseBody);
+        final jsonData = jsonDecode(responseBody);
         debugPrint(jsonData.toString());
 
         return DronespotReviewModel.fromJson(jsonData);

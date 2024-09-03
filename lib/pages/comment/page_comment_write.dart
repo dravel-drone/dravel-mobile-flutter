@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:dravel/api/http_review.dart';
+import 'package:dravel/controller/controller_auth.dart';
+import 'package:dravel/model/model_review.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
@@ -11,6 +14,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class CommentWritePage extends StatefulWidget {
+  CommentWritePage({
+    required this.dronespotId
+  });
+
+  int dronespotId;
+
   @override
   State<StatefulWidget> createState() => _CommentWritePageState();
 }
@@ -18,6 +27,8 @@ class CommentWritePage extends StatefulWidget {
 class _CommentWritePageState extends State<CommentWritePage> {
   late final TextEditingController _droneNameController;
   late final TextEditingController _reviewController;
+
+  late final AuthController _authController;
 
   DateTime _selectedDate = DateTime.now();
   List<XFile> _selectedImages = [];
@@ -27,6 +38,7 @@ class _CommentWritePageState extends State<CommentWritePage> {
 
   @override
   void initState() {
+    _authController = Get.find<AuthController>();
     _droneNameController = TextEditingController();
     _reviewController = TextEditingController();
     super.initState();
@@ -397,7 +409,7 @@ class _CommentWritePageState extends State<CommentWritePage> {
             width: double.infinity,
             padding: EdgeInsets.fromLTRB(24, 0, 24, getBottomPaddingWithSafeHeight(context, 24)),
             child: MainButton(
-                onPressed: () {
+                onPressed: () async {
                   String droneName = _droneNameController.text;
                   String review = _reviewController.text;
 
@@ -409,6 +421,59 @@ class _CommentWritePageState extends State<CommentWritePage> {
                         backgroundColor: Colors.orange,
                         duration: Duration(seconds: 1),
                       )
+                    );
+                    return;
+                  }
+
+                  if (Get.isSnackbarOpen) Get.back();
+
+                  Get.dialog(
+                    AlertDialog(
+                      content: Row(
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(width: 24,),
+                          Text(
+                            '댓글 추가중..',
+                            style: TextStyle(
+                              height: 1
+                            ),
+                          )
+                        ],
+                      ),
+                      actionsPadding: EdgeInsets.zero,
+                      contentPadding: EdgeInsets.fromLTRB(24, 18, 24, 18),
+                    ),
+                    barrierDismissible: false
+                  );
+
+                  final DronespotReviewModel? result = await ReviewHttp.addReview(
+                    _authController,
+                    id: widget.dronespotId,
+                    data: DronespotReviewCreateModel(
+                      droneType: droneName,
+                      drone: droneName,
+                      date: DateFormat('yyyy-MM-ddT00:00:00').format(_selectedDate),
+                      comment: review,
+                      permitFlight: _permitFlight ? 1 : 0,
+                      permitCamera: _permitCamera ? 1 : 0,
+                    ),
+                    imagePath: _selectedImages.isNotEmpty ?
+                      _selectedImages[0].path : null
+                  );
+
+                  bool? isDialogOpen = Get.isDialogOpen;
+                  if (isDialogOpen != null && isDialogOpen) Get.back();
+                  if (result != null) {
+                    Get.back();
+                  } else {
+                    if (Get.isSnackbarOpen) Get.back();
+                    Get.showSnackbar(
+                        GetSnackBar(
+                          message: '오류가 발생했습니다. 다시 시도해주세요.',
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 1),
+                        )
                     );
                   }
                 },
