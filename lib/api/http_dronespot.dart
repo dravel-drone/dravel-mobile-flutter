@@ -72,14 +72,16 @@ class DroneSpotHttp {
       final response = await http.get(url, headers: headers);
 
       if (response.statusCode != 200) {
-        if (response.statusCode == 401 && trial == 0) {
+        if (response.statusCode == 401) {
           debugPrint("Accesstoken Expired");
           if (!await authController.refreshAccessToken()) {
+            debugPrint(utf8.decode(response.bodyBytes));
             return null;
           }
           trial += 1;
           continue;
         } else {
+          debugPrint(utf8.decode(response.bodyBytes));
           return null;
         }
       } else {

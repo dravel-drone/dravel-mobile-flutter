@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:dravel/api/http_review.dart';
+import 'package:dravel/controller/controller_auth.dart';
+import 'package:dravel/model/model_review.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
@@ -11,13 +14,42 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class CommentWritePage extends StatefulWidget {
+  CommentWritePage({
+    required this.dronespotId
+  });
+
+  int dronespotId;
+
   @override
   State<StatefulWidget> createState() => _CommentWritePageState();
 }
 
 class _CommentWritePageState extends State<CommentWritePage> {
+  late final TextEditingController _droneNameController;
+  late final TextEditingController _reviewController;
+
+  late final AuthController _authController;
+
   DateTime _selectedDate = DateTime.now();
   List<XFile> _selectedImages = [];
+
+  bool _permitFlight = false;
+  bool _permitCamera = false;
+
+  @override
+  void initState() {
+    _authController = Get.find<AuthController>();
+    _droneNameController = TextEditingController();
+    _reviewController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _droneNameController.dispose();
+    _reviewController.dispose();
+    super.dispose();
+  }
 
   Widget _createCheckAvailableSection() {
     return Row(
@@ -39,6 +71,9 @@ class _CommentWritePageState extends State<CommentWritePage> {
                 '○',
                 'X'
               ],
+              onChange: (value) {
+                _permitFlight = value == 1;
+              },
             )
           ],
         ),
@@ -60,6 +95,9 @@ class _CommentWritePageState extends State<CommentWritePage> {
                 '○',
                 'X'
               ],
+              onChange: (value) {
+                _permitCamera = value == 1;
+              },
             )
           ],
         ),
@@ -82,6 +120,7 @@ class _CommentWritePageState extends State<CommentWritePage> {
         SizedBox(height: 12,),
         MainTextField(
           backgroundColor: Colors.white,
+          controller: _droneNameController,
           hintText: '드론 이름',
           prefixIcon: Icon(
             Icons.flight_outlined,
@@ -175,6 +214,7 @@ class _CommentWritePageState extends State<CommentWritePage> {
         TextField(
           maxLength: 600,
           maxLines: null,
+          controller: _reviewController,
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
@@ -274,18 +314,21 @@ class _CommentWritePageState extends State<CommentWritePage> {
         ),
         SizedBox(height: 12,),
         Visibility(
-          visible: _selectedImages.length < 5,
+          visible: _selectedImages.length < 1,
           child: GestureDetector(
             onTap: () async {
               final ImagePicker picker = ImagePicker();
-              List<XFile> result = await picker.pickMultiImage(
+              XFile? result = await picker.pickImage(
+                source: ImageSource.gallery,
                 maxWidth: 650,
                 maxHeight: 650,
-                limit: 5 - _selectedImages.length,
+                // limit: 1 - _selectedImages.length,
               );
-              setState(() {
-                _selectedImages.addAll(result);
-              });
+              if (result != null) {
+                setState(() {
+                  _selectedImages.add(result);
+                });
+              }
             },
             child: Container(
               padding: EdgeInsets.fromLTRB(16, 16, 18, 16),
@@ -366,8 +409,73 @@ class _CommentWritePageState extends State<CommentWritePage> {
             width: double.infinity,
             padding: EdgeInsets.fromLTRB(24, 0, 24, getBottomPaddingWithSafeHeight(context, 24)),
             child: MainButton(
-                onPressed: () {
+                onPressed: () async {
+                  String droneName = _droneNameController.text;
+                  String review = _reviewController.text;
 
+                  if (droneName.isEmpty || review.isEmpty) {
+                    if (Get.isSnackbarOpen) Get.back();
+                    Get.showSnackbar(
+                      GetSnackBar(
+                        message: '빈 칸을 모두 채워주세요.',
+                        backgroundColor: Colors.orange,
+                        duration: Duration(seconds: 1),
+                      )
+                    );
+                    return;
+                  }
+
+                  if (Get.isSnackbarOpen) Get.back();
+
+                  Get.dialog(
+                    AlertDialog(
+                      content: Row(
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(width: 24,),
+                          Text(
+                            '댓글 추가중..',
+                            style: TextStyle(
+                              height: 1
+                            ),
+                          )
+                        ],
+                      ),
+                      actionsPadding: EdgeInsets.zero,
+                      contentPadding: EdgeInsets.fromLTRB(24, 18, 24, 18),
+                    ),
+                    barrierDismissible: false
+                  );
+
+                  final DronespotReviewModel? result = await ReviewHttp.addReview(
+                    _authController,
+                    id: widget.dronespotId,
+                    data: DronespotReviewCreateModel(
+                      droneType: droneName,
+                      drone: droneName,
+                      date: DateFormat('yyyy-MM-ddT00:00:00').format(_selectedDate),
+                      comment: review,
+                      permitFlight: _permitFlight ? 1 : 0,
+                      permitCamera: _permitCamera ? 1 : 0,
+                    ),
+                    imagePath: _selectedImages.isNotEmpty ?
+                      _selectedImages[0].path : null
+                  );
+
+                  bool? isDialogOpen = Get.isDialogOpen;
+                  if (isDialogOpen != null && isDialogOpen) Get.back();
+                  if (result != null) {
+                    Get.back();
+                  } else {
+                    if (Get.isSnackbarOpen) Get.back();
+                    Get.showSnackbar(
+                        GetSnackBar(
+                          message: '오류가 발생했습니다. 다시 시도해주세요.',
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 1),
+                        )
+                    );
+                  }
                 },
                 childText: '리뷰 등록'
             ),
