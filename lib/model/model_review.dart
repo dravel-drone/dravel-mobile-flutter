@@ -28,3 +28,21 @@ class DronespotReviewModel {
     required this.isLike
   });
 }
+
+class DronespotReviewCreateModel {
+  int permitFlight;
+  int permitCamera;
+  String droneType;
+  String drone;
+  String date;
+  String comment;
+
+  DronespotReviewCreateModel({
+    required this.droneType,
+    required this.drone,
+    required this.date,
+    required this.comment,
+    required this.permitFlight,
+    required this.permitCamera,
+  });
+}
