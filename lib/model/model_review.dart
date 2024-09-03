@@ -27,6 +27,31 @@ class DronespotReviewModel {
     required this.likeCount,
     required this.isLike
   });
+
+  factory DronespotReviewModel.fromJson(Map<String, dynamic> jsonData) {
+    final writer = jsonData['writer'] != null ? SimpleUserModel(
+      uid: jsonData['writer']['uid'],
+      name: jsonData['writer']['name']
+    ) : null;
+    final permit = PermitModel(
+      flight: jsonData['permit']['flight'],
+      camera: jsonData['permit']['camera']
+    );
+
+    return DronespotReviewModel(
+      id: jsonData['id'],
+      writer: writer,
+      placeName: jsonData['place_name'],
+      permit: permit,
+      droneType: jsonData['drone_type'],
+      drone: jsonData['drone'],
+      comment: jsonData['comment'],
+      date: jsonData['date'].split('T')[0],
+      photoUrl: jsonData['photo'],
+      likeCount: jsonData['like_count'],
+      isLike: jsonData['is_like'] == 1,
+    );
+  }
 }
 
 class DronespotReviewCreateModel {
