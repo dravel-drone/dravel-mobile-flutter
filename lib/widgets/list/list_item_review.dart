@@ -249,6 +249,7 @@ class ReviewFullItem extends StatefulWidget {
     required this.likeCount,
     required this.drone,
     required this.date,
+    required this.onChange,
     this.isLike = false
   });
 
@@ -263,6 +264,8 @@ class ReviewFullItem extends StatefulWidget {
 
   int likeCount;
   int id;
+
+  ValueChanged<LikeChangeValue> onChange;
 
   @override
   State<StatefulWidget> createState() => _ReviewFullItemState();
@@ -376,6 +379,10 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                                 setState(() {
                                   widget.isLike = false;
                                   widget.likeCount -= 1;
+                                  widget.onChange(LikeChangeValue(
+                                      isLike: widget.isLike,
+                                      likeCount: widget.likeCount
+                                  ));
                                 });
                               } else {
                                 bool? result = await ReviewHttp.likeReview(_authController, id: widget.id);
@@ -386,6 +393,10 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                                 setState(() {
                                   widget.isLike = true;
                                   widget.likeCount += 1;
+                                  widget.onChange(LikeChangeValue(
+                                      isLike: widget.isLike,
+                                      likeCount: widget.likeCount
+                                  ));
                                 });
                               }
                             },
