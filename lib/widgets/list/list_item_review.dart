@@ -1,7 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/api/http_base.dart';
+import 'package:dravel/api/http_review.dart';
+import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ReviewRecommendItem extends StatefulWidget {
   ReviewRecommendItem({
@@ -24,6 +27,8 @@ class ReviewRecommendItem extends StatefulWidget {
 }
 
 class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
+  late final AuthController _authController;
+
   final GlobalKey _secondChildKey = GlobalKey();
   double _secondChildHeight = 0;
 
@@ -31,10 +36,12 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
 
   @override
   void initState() {
-    super.initState();
+    _authController = Get.find<AuthController>();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _afterLayout();
     });
+    super.initState();
   }
 
   void _afterLayout() {
@@ -183,6 +190,8 @@ class ReviewFullItem extends StatefulWidget {
 }
 
 class _ReviewFullItemState extends State<ReviewFullItem> {
+  late final AuthController _authController;
+
   final GlobalKey _secondChildKey = GlobalKey();
   double _secondChildHeight = 0;
 
@@ -190,10 +199,11 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
 
   @override
   void initState() {
-    super.initState();
+    _authController = Get.find<AuthController>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _afterLayout();
     });
+    super.initState();
   }
 
   void _afterLayout() {
@@ -276,17 +286,48 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                               ),
                             ),
                           ),
-                          Icon(
-                            Icons.favorite,
-                            color: Color(0xFF0075FF),
-                            size: 16,
-                          ),
-                          SizedBox(width: 2,),
-                          Text(
-                            '${widget.likeCount}',
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 14
+                          GestureDetector(
+                            onTap: () async {
+                              if (widget.isLike) {
+                                bool? result = await ReviewHttp.unlikeReview(_authController, id: widget.id);
+
+                                if (result == null || !result) {
+                                  return;
+                                }
+                                setState(() {
+                                  widget.isLike = false;
+                                  widget.likeCount -= 1;
+                                });
+                              } else {
+                                bool? result = await ReviewHttp.likeReview(_authController, id: widget.id);
+
+                                if (result == null || !result) {
+                                  return;
+                                }
+                                setState(() {
+                                  widget.isLike = true;
+                                  widget.likeCount += 1;
+                                });
+                              }
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.favorite,
+                                  color: widget.isLike ?
+                                  Color(0xFF0075FF) : Colors.black38,
+                                  size: 16,
+                                ),
+                                SizedBox(width: 2,),
+                                Text(
+                                  '${widget.likeCount}',
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 14
+                                  ),
+                                )
+                              ],
                             ),
                           )
                         ],
