@@ -152,4 +152,46 @@ class ReviewHttp {
     }
     return null;
   }
+
+  static Future<List<DronespotReviewModel>?> getTrendReview(
+    AuthController authController,
+  ) async {
+    final url = Uri.https(HttpBase.domain, 'api/v1/trend/review');
+
+    int trial = 0;
+    while (trial < 2) {
+      final accessKey = await HttpBase.getAccessKey();
+      Map<String, String> headers = {};
+      if (accessKey != null) {
+        headers['Authorization'] = 'Bearer $accessKey';
+      }
+
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode != 200) {
+        if (response.statusCode == 401 && trial == 0) {
+          debugPrint("Accesstoken Expired");
+          if (!await authController.refreshAccessToken()) {
+            return null;
+          }
+          trial += 1;
+          continue;
+        } else {
+          debugPrint(utf8.decode(response.bodyBytes));
+          return null;
+        }
+      } else {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        debugPrint(jsonData.toString());
+
+        List<DronespotReviewModel> data = [];
+        for (var i in jsonData) {
+          data.add(DronespotReviewModel.fromJson(i));
+        }
+
+        return data;
+      }
+    }
+    return null;
+  }
 }

@@ -13,14 +13,17 @@ class ReviewRecommendItem extends StatefulWidget {
     required this.place,
     required this.content,
     required this.likeCount,
+    required this.id
   });
 
-  String img;
-  String name;
+  String? img;
+  String? name;
   String place;
   String content;
 
   int likeCount;
+
+  int id;
 
   @override
   State<StatefulWidget> createState() => _ReviewRecommendItemState();
@@ -77,12 +80,34 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
           ),
           child: Row(
             children: [
-              CachedNetworkImage(
-                imageUrl: widget.img,
-                width: 100,
-                height: _secondChildHeight > 0 ? _secondChildHeight : null,
-                fit: BoxFit.cover,
-              ),
+              if (widget.img != null)
+                CachedNetworkImage(
+                  imageUrl: widget.img!,
+                  errorWidget: (context, error, obj) {
+                    return Container(
+                      width: 100,
+                      height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: getRandomGradientColor(widget.id + 43564745)
+                          )
+                      ),
+                    );
+                  },
+                  width: 100,
+                  height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                  fit: BoxFit.cover,
+                )
+              else
+                Container(
+                  width: 100,
+                  height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: getRandomGradientColor(widget.id + 43564745)
+                      )
+                  ),
+                ),
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
@@ -94,7 +119,7 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                         children: [
                           Expanded(
                             child: Text(
-                              widget.name,
+                              widget.name ?? '',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
@@ -248,7 +273,7 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                       height: _secondChildHeight > 0 ? _secondChildHeight : null,
                       decoration: BoxDecoration(
                           gradient: LinearGradient(
-                              colors: getRandomGradientColor(43564745)
+                              colors: getRandomGradientColor(widget.id + 43564745)
                           )
                       ),
                     );
@@ -263,7 +288,7 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                   height: _secondChildHeight > 0 ? _secondChildHeight : null,
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
-                          colors: getRandomGradientColor(43564745)
+                          colors: getRandomGradientColor(widget.id + 43564745)
                       )
                   ),
                 ),
