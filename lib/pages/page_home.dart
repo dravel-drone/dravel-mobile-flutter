@@ -3,9 +3,11 @@ import 'dart:collection';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dravel/api/http_base.dart';
+import 'package:dravel/api/http_course.dart';
 import 'package:dravel/api/http_dronespot.dart';
 import 'package:dravel/api/http_review.dart';
 import 'package:dravel/controller/controller_auth.dart';
+import 'package:dravel/model/model_course.dart';
 import 'package:dravel/model/model_dronespot.dart';
 import 'package:dravel/model/model_review.dart';
 import 'package:dravel/pages/detail/page_course_detail.dart';
@@ -39,14 +41,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
   List<DronespotReviewModel> _recommendReviewData = [];
 
-  List<dynamic> _courseTestData = [
-    {
-      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '제주 코스',
-      'distance': 2434,
-      'duration': 345
-    }
-  ];
+  CourseModel? _courseData;
 
   bool _loadRecommendDronespot = false;
 
@@ -73,8 +68,19 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     if (mounted) setState(() {});
   }
 
+  Future<void> _getRecommendCourse() async {
+    final result = await CourseHttp.getRecommendCourse();
+    if (result == null) {
+      return;
+    }
+
+    _courseData = result;
+    if (mounted) setState(() {});
+  }
+
   Future<void> _initData() async {
     await _getRecommendDronespot();
+    await _getRecommendCourse();
     await _getRecommendReview();
   }
 
@@ -241,16 +247,17 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
               ),
             ),
             SizedBox(height: 12,),
-            CourseItem(
-              id: 434,
-              img: _courseTestData[0]['img'],
-              name: _courseTestData[0]['name'],
-              distance: _courseTestData[0]['distance'],
-              duration: _courseTestData[0]['duration'],
-              onTap: () {
-                Get.to(() => CourseDetailPage());
-              },
-            )
+            if (_courseData != null)
+              CourseItem(
+                id: _courseData!.id,
+                img: _courseData!.photoUrl,
+                name: _courseData!.name,
+                distance: _courseData!.distance,
+                duration: _courseData!.duration,
+                onTap: () {
+                  Get.to(() => CourseDetailPage());
+                },
+              )
           ],
         ),
       )

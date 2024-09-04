@@ -14,4 +14,15 @@ class CourseModel {
     required this.id,
     this.photoUrl
   });
+
+  factory CourseModel.fromJson(Map<String, dynamic> jsonData) {
+    return CourseModel(
+      name: jsonData['name'],
+      content: jsonData['content'],
+      distance: jsonData['distance'],
+      duration: jsonData['duration'],
+      id: jsonData['id'],
+      photoUrl: jsonData['photo_url']
+    );
+  }
 }
