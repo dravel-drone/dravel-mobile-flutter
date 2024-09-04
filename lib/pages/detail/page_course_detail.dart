@@ -183,6 +183,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
           );
         } else {
           child = PlaceItem(
+            id: 3,
             name: _placeData[idx]['name'],
             distance: _placeData[idx]['distance'],
             message: _placeData[idx]['message'],

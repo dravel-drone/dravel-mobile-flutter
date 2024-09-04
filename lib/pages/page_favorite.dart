@@ -422,13 +422,17 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
       controller: _reviewController,
       itemBuilder: (context, idx) {
         return ReviewFullItem(
+          id: 32,
           img: _reviewLikeTestData[idx]['img'],
           name: _reviewLikeTestData[idx]['name'],
           place: _reviewLikeTestData[idx]['place'],
           content: _reviewLikeTestData[idx]['content'],
           likeCount: _reviewLikeTestData[idx]['like_count'],
           drone: _reviewLikeTestData[idx]['drone'],
-          date: _reviewLikeTestData[idx]['write_date']
+          date: _reviewLikeTestData[idx]['write_date'],
+          onChange: (value) {
+
+          },
         );;
       },
       separatorBuilder: (context, idx) {

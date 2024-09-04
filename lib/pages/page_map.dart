@@ -277,7 +277,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
             fly_level: _droneSpotTestData[idx]['flight'],
             backgroundColor: Color(0xFFF1F1F5),
             onTap: () {
-              Get.to(() => DroneSpotDetailPage());
+              // Get.to(() => DroneSpotDetailPage());
             },
           );
         },

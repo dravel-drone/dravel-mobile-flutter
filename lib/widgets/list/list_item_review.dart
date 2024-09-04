@@ -1,5 +1,20 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dravel/api/http_base.dart';
+import 'package:dravel/api/http_review.dart';
+import 'package:dravel/controller/controller_auth.dart';
+import 'package:dravel/utils/util_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class LikeChangeValue {
+  int likeCount;
+  bool isLike;
+
+  LikeChangeValue({
+    required this.likeCount,
+    required this.isLike
+  });
+}
 
 class ReviewRecommendItem extends StatefulWidget {
   ReviewRecommendItem({
@@ -8,20 +23,30 @@ class ReviewRecommendItem extends StatefulWidget {
     required this.place,
     required this.content,
     required this.likeCount,
+    required this.id,
+    required this.onChange,
+    this.isLike = false
   });
 
-  String img;
-  String name;
+  String? img;
+  String? name;
   String place;
   String content;
 
   int likeCount;
+  bool isLike;
+
+  int id;
+
+  ValueChanged<LikeChangeValue> onChange;
 
   @override
   State<StatefulWidget> createState() => _ReviewRecommendItemState();
 }
 
 class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
+  late final AuthController _authController;
+
   final GlobalKey _secondChildKey = GlobalKey();
   double _secondChildHeight = 0;
 
@@ -29,10 +54,12 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
 
   @override
   void initState() {
-    super.initState();
+    _authController = Get.find<AuthController>();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _afterLayout();
     });
+    super.initState();
   }
 
   void _afterLayout() {
@@ -68,12 +95,34 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
           ),
           child: Row(
             children: [
-              CachedNetworkImage(
-                imageUrl: widget.img,
-                width: 100,
-                height: _secondChildHeight > 0 ? _secondChildHeight : null,
-                fit: BoxFit.cover,
-              ),
+              if (widget.img != null)
+                CachedNetworkImage(
+                  imageUrl: widget.img!,
+                  errorWidget: (context, error, obj) {
+                    return Container(
+                      width: 100,
+                      height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: getRandomGradientColor(widget.id + 43564745)
+                          )
+                      ),
+                    );
+                  },
+                  width: 100,
+                  height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                  fit: BoxFit.cover,
+                )
+              else
+                Container(
+                  width: 100,
+                  height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: getRandomGradientColor(widget.id + 43564745)
+                      )
+                  ),
+                ),
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
@@ -85,7 +134,7 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                         children: [
                           Expanded(
                             child: Text(
-                              widget.name,
+                              widget.name ?? '',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
@@ -103,17 +152,56 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                           //     color: Colors.black54,
                           //     size: 16,
                           //   ),
-                          Icon(
-                            Icons.favorite,
-                            color: Color(0xFF0075FF),
-                            size: 16,
-                          ),
-                          SizedBox(width: 2,),
-                          Text(
-                            '${widget.likeCount}',
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 14
+                          GestureDetector(
+                            onTap: () async {
+                              if (widget.isLike) {
+                                bool? result = await ReviewHttp.unlikeReview(_authController, id: widget.id);
+
+                                if (result == null || !result) {
+                                  return;
+                                }
+                                setState(() {
+                                  widget.isLike = false;
+                                  widget.likeCount -= 1;
+                                  widget.onChange(LikeChangeValue(
+                                      isLike: widget.isLike,
+                                      likeCount: widget.likeCount
+                                  ));
+                                });
+                              } else {
+                                bool? result = await ReviewHttp.likeReview(_authController, id: widget.id);
+
+                                if (result == null || !result) {
+                                  return;
+                                }
+                                setState(() {
+                                  widget.isLike = true;
+                                  widget.likeCount += 1;
+                                  widget.onChange(LikeChangeValue(
+                                      isLike: widget.isLike,
+                                      likeCount: widget.likeCount
+                                  ));
+                                });
+                              }
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.favorite,
+                                  color: widget.isLike ?
+                                  Color(0xFF0075FF) : Colors.black38,
+                                  size: 16,
+                                ),
+                                SizedBox(width: 2,),
+                                Text(
+                                  '${widget.likeCount}',
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 14
+                                  ),
+                                )
+                              ],
                             ),
                           )
                         ],
@@ -153,29 +241,39 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
 
 class ReviewFullItem extends StatefulWidget {
   ReviewFullItem({
-    required this.img,
-    required this.name,
+    this.img,
+    this.name,
+    required this.id,
     required this.place,
     required this.content,
     required this.likeCount,
     required this.drone,
     required this.date,
+    required this.onChange,
+    this.isLike = false
   });
 
-  String img;
-  String name;
+  String? img;
+  String? name;
   String place;
   String content;
   String drone;
   String date;
 
+  bool isLike;
+
   int likeCount;
+  int id;
+
+  ValueChanged<LikeChangeValue> onChange;
 
   @override
   State<StatefulWidget> createState() => _ReviewFullItemState();
 }
 
 class _ReviewFullItemState extends State<ReviewFullItem> {
+  late final AuthController _authController;
+
   final GlobalKey _secondChildKey = GlobalKey();
   double _secondChildHeight = 0;
 
@@ -183,10 +281,11 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
 
   @override
   void initState() {
-    super.initState();
+    _authController = Get.find<AuthController>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _afterLayout();
     });
+    super.initState();
   }
 
   void _afterLayout() {
@@ -222,12 +321,34 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
           ),
           child: Row(
             children: [
-              CachedNetworkImage(
-                imageUrl: widget.img,
-                width: 100,
-                height: _secondChildHeight > 0 ? _secondChildHeight : null,
-                fit: BoxFit.cover,
-              ),
+              if (widget.img != null)
+                CachedNetworkImage(
+                  imageUrl: HttpBase.baseUrl + widget.img!,
+                  errorWidget: (context, error, obj) {
+                    return Container(
+                      width: 100,
+                      height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: getRandomGradientColor(widget.id + 43564745)
+                          )
+                      ),
+                    );
+                  },
+                  width: 100,
+                  height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                  fit: BoxFit.cover,
+                )
+              else
+                Container(
+                  width: 100,
+                  height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: getRandomGradientColor(widget.id + 43564745)
+                      )
+                  ),
+                ),
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
@@ -239,7 +360,7 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                         children: [
                           Expanded(
                             child: Text(
-                              widget.name,
+                              widget.name ?? '탈퇴한 사용자',
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -247,17 +368,56 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                               ),
                             ),
                           ),
-                          Icon(
-                            Icons.favorite,
-                            color: Color(0xFF0075FF),
-                            size: 16,
-                          ),
-                          SizedBox(width: 2,),
-                          Text(
-                            '${widget.likeCount}',
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 14
+                          GestureDetector(
+                            onTap: () async {
+                              if (widget.isLike) {
+                                bool? result = await ReviewHttp.unlikeReview(_authController, id: widget.id);
+
+                                if (result == null || !result) {
+                                  return;
+                                }
+                                setState(() {
+                                  widget.isLike = false;
+                                  widget.likeCount -= 1;
+                                  widget.onChange(LikeChangeValue(
+                                      isLike: widget.isLike,
+                                      likeCount: widget.likeCount
+                                  ));
+                                });
+                              } else {
+                                bool? result = await ReviewHttp.likeReview(_authController, id: widget.id);
+
+                                if (result == null || !result) {
+                                  return;
+                                }
+                                setState(() {
+                                  widget.isLike = true;
+                                  widget.likeCount += 1;
+                                  widget.onChange(LikeChangeValue(
+                                      isLike: widget.isLike,
+                                      likeCount: widget.likeCount
+                                  ));
+                                });
+                              }
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.favorite,
+                                  color: widget.isLike ?
+                                  Color(0xFF0075FF) : Colors.black38,
+                                  size: 16,
+                                ),
+                                SizedBox(width: 2,),
+                                Text(
+                                  '${widget.likeCount}',
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 14
+                                  ),
+                                )
+                              ],
                             ),
                           )
                         ],
@@ -283,19 +443,23 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                         softWrap: true,
                         maxLines: mode ? null : 3,
                       ),
-                      SizedBox(height: 4,),
+                      SizedBox(height: 8,),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Expanded(
                             child: Text(
                               widget.drone,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              softWrap: false,
                               style: TextStyle(
                                 height: 1,
-                                fontSize: 16
+                                fontSize: 14
                               ),
                             ),
                           ),
+                          SizedBox(width: 8,),
                           Text(
                             widget.date,
                             style: TextStyle(

@@ -134,3 +134,13 @@ class LoginUserModel {
     );
   }
 }
+
+class SimpleUserModel {
+  String uid;
+  String name;
+
+  SimpleUserModel({
+    required this.uid,
+    required this.name
+  });
+}
