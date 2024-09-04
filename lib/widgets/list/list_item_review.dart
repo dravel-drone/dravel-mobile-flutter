@@ -289,8 +289,14 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                           GestureDetector(
                             onTap: () async {
                               if (widget.isLike) {
+                                bool? result = await ReviewHttp.unlikeReview(_authController, id: widget.id);
+
+                                if (result == null || !result) {
+                                  return;
+                                }
                                 setState(() {
                                   widget.isLike = false;
+                                  widget.likeCount -= 1;
                                 });
                               } else {
                                 bool? result = await ReviewHttp.likeReview(_authController, id: widget.id);
