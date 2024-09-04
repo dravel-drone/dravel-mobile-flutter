@@ -6,6 +6,16 @@ import 'package:dravel/utils/util_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+class LikeChangeValue {
+  int likeCount;
+  bool isLike;
+
+  LikeChangeValue({
+    required this.likeCount,
+    required this.isLike
+  });
+}
+
 class ReviewRecommendItem extends StatefulWidget {
   ReviewRecommendItem({
     required this.img,
@@ -14,6 +24,7 @@ class ReviewRecommendItem extends StatefulWidget {
     required this.content,
     required this.likeCount,
     required this.id,
+    required this.onChange,
     this.isLike = false
   });
 
@@ -26,6 +37,8 @@ class ReviewRecommendItem extends StatefulWidget {
   bool isLike;
 
   int id;
+
+  ValueChanged<LikeChangeValue> onChange;
 
   @override
   State<StatefulWidget> createState() => _ReviewRecommendItemState();
@@ -150,6 +163,10 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                                 setState(() {
                                   widget.isLike = false;
                                   widget.likeCount -= 1;
+                                  widget.onChange(LikeChangeValue(
+                                      isLike: widget.isLike,
+                                      likeCount: widget.likeCount
+                                  ));
                                 });
                               } else {
                                 bool? result = await ReviewHttp.likeReview(_authController, id: widget.id);
@@ -160,6 +177,10 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                                 setState(() {
                                   widget.isLike = true;
                                   widget.likeCount += 1;
+                                  widget.onChange(LikeChangeValue(
+                                      isLike: widget.isLike,
+                                      likeCount: widget.likeCount
+                                  ));
                                 });
                               }
                             },
