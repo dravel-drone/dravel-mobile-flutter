@@ -122,13 +122,22 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     if (mounted) setState(() {});
   }
 
+  Future<void> _getRecommendReview() async {
+
+  }
+
+  Future<void> _initData() async {
+    await _getRecommendDronespot();
+    await _getRecommendReview();
+  }
+
   @override
   void initState() {
     _authController = Get.find<AuthController>();
     if (_recommendReviewTestData.length > 3) {
       _maxReviewCount = 3;
     }
-    _getRecommendDronespot();
+    _initData();
     super.initState();
   }
 
