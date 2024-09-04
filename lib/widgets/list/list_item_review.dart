@@ -13,7 +13,8 @@ class ReviewRecommendItem extends StatefulWidget {
     required this.place,
     required this.content,
     required this.likeCount,
-    required this.id
+    required this.id,
+    this.isLike = false
   });
 
   String? img;
@@ -22,6 +23,7 @@ class ReviewRecommendItem extends StatefulWidget {
   String content;
 
   int likeCount;
+  bool isLike;
 
   int id;
 
@@ -137,17 +139,48 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                           //     color: Colors.black54,
                           //     size: 16,
                           //   ),
-                          Icon(
-                            Icons.favorite,
-                            color: Color(0xFF0075FF),
-                            size: 16,
-                          ),
-                          SizedBox(width: 2,),
-                          Text(
-                            '${widget.likeCount}',
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 14
+                          GestureDetector(
+                            onTap: () async {
+                              if (widget.isLike) {
+                                bool? result = await ReviewHttp.unlikeReview(_authController, id: widget.id);
+
+                                if (result == null || !result) {
+                                  return;
+                                }
+                                setState(() {
+                                  widget.isLike = false;
+                                  widget.likeCount -= 1;
+                                });
+                              } else {
+                                bool? result = await ReviewHttp.likeReview(_authController, id: widget.id);
+
+                                if (result == null || !result) {
+                                  return;
+                                }
+                                setState(() {
+                                  widget.isLike = true;
+                                  widget.likeCount += 1;
+                                });
+                              }
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.favorite,
+                                  color: widget.isLike ?
+                                  Color(0xFF0075FF) : Colors.black38,
+                                  size: 16,
+                                ),
+                                SizedBox(width: 2,),
+                                Text(
+                                  '${widget.likeCount}',
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 14
+                                  ),
+                                )
+                              ],
                             ),
                           )
                         ],

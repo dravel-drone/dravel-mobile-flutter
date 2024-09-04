@@ -289,7 +289,8 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                   name: _recommendReviewData[idx].writer?.name,
                   place: _recommendReviewData[idx].placeName,
                   content: _recommendReviewData[idx].comment,
-                  likeCount: _recommendReviewData[idx].likeCount
+                  likeCount: _recommendReviewData[idx].likeCount,
+                  isLike: _recommendReviewData[idx].isLike,
                 );
               },
               separatorBuilder: (context, idx) {
