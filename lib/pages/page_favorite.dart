@@ -429,7 +429,10 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
           content: _reviewLikeTestData[idx]['content'],
           likeCount: _reviewLikeTestData[idx]['like_count'],
           drone: _reviewLikeTestData[idx]['drone'],
-          date: _reviewLikeTestData[idx]['write_date']
+          date: _reviewLikeTestData[idx]['write_date'],
+          onChange: (value) {
+
+          },
         );;
       },
       separatorBuilder: (context, idx) {

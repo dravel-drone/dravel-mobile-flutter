@@ -62,7 +62,7 @@ class DroneSpotModel {
 }
 
 class DronespotDetailModel extends DroneSpotModel {
-  List<DronespotReviewModel> reviews;
+  List<DronespotReviewDetailModel> reviews;
   DronespotPlaceModel places;
   List<CourseModel> courses;
 
@@ -109,7 +109,7 @@ class DronespotDetailModel extends DroneSpotModel {
           camera: jsonData['reviews'][idx]['permit']['camera']
       );
 
-      return DronespotReviewModel(
+      return DronespotReviewDetailModel(
           id: jsonData['reviews'][idx]['id'],
           writer: writer,
           placeName: jsonData['reviews'][idx]['place_name'],

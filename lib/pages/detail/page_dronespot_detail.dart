@@ -204,15 +204,19 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
             padding: EdgeInsets.zero,
             itemBuilder: (context, idx) {
               return ReviewFullItem(
-                  id: _data.reviews[idx].id,
-                  img: _data.reviews[idx].photoUrl,
-                  name: _data.reviews[idx].writer?.name,
-                  place: _data.reviews[idx].placeName,
-                  content: _data.reviews[idx].comment,
-                  likeCount: _data.reviews[idx].likeCount,
-                  drone: _data.reviews[idx].drone,
-                  date: _data.reviews[idx].date,
-                  isLike: _data.reviews[idx].isLike
+                id: _data.reviews[idx].id,
+                img: _data.reviews[idx].photoUrl,
+                name: _data.reviews[idx].writer?.name,
+                place: _data.reviews[idx].placeName,
+                content: _data.reviews[idx].comment,
+                likeCount: _data.reviews[idx].likeCount,
+                drone: _data.reviews[idx].drone,
+                date: _data.reviews[idx].date,
+                isLike: _data.reviews[idx].isLike,
+                onChange: (value) {
+                  _data.reviews[idx].isLike = value.isLike;
+                  _data.reviews[idx].likeCount = value.likeCount;
+                },
               );;
             },
             separatorBuilder: (context, idx) {
