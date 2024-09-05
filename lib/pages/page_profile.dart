@@ -435,7 +435,11 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
             like_count: _droneLikeTestData[idx]['like_count'],
             review_count: _droneLikeTestData[idx]['review_count'],
             camera_level: _droneLikeTestData[idx]['camera'],
-            fly_level: _droneLikeTestData[idx]['flight']
+            fly_level: _droneLikeTestData[idx]['flight'],
+            isLike: false,
+            onChange: (value) {
+
+            },
           );
         },
         separatorBuilder: (context, idx) {

@@ -229,12 +229,19 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
             review_count: _droneSpotData[idx].reviewCount,
             camera_level: _droneSpotData[idx].permit.camera,
             fly_level: _droneSpotData[idx].permit.flight,
+            isLike: _droneSpotData[idx].isLike,
             backgroundColor: Color(0xFFF1F1F5),
             onTap: () {
               Get.to(() => DroneSpotDetailPage(
                 id: _droneSpotData[idx].id,
               ));
             },
+            onChange: (value) {
+              setState(() {
+                _droneSpotData[idx].isLike = value.isLike;
+                _droneSpotData[idx].likeCount = value.likeCount;
+              });
+            }
           );
         },
         separatorBuilder: (context, idx) {
