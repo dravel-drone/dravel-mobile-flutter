@@ -31,6 +31,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   List<DroneSpotModel> _droneSpotData = [];
 
   Future<void> _fetchDataFromNetwork() async {
+    debugPrint("dmjiaohnfuoajnfloajfoajnp");
     final result = await DroneSpotHttp.getAllDronespot(
       _authController,
       droneType: _selectedDrone != -1 ? _selectedDrone : null
@@ -49,7 +50,11 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
 
     _droneSpotData = result;
 
+    await _kakaoMapChannel.removeAllSpotLabel();
+
+    debugPrint(_droneSpotData.length.toString());
     for (var i in _droneSpotData) {
+      debugPrint(i.name);
       _kakaoMapChannel.addSpotLabel(
           lat: i.location.lat,
           lon: i.location.lon,

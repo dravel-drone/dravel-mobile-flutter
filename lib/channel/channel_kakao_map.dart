@@ -34,4 +34,8 @@ class KakaoMapChannel {
       'id': id
     });
   }
+
+  Future<void> removeAllSpotLabel() async {
+    await _channel.invokeMethod('removeAllSpotLabel');
+  }
 }
