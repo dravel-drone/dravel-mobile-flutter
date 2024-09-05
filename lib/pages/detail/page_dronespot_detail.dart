@@ -66,8 +66,8 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
       );
     } else {
       photo = Container(
-        width: double.infinity,
-        height: double.infinity,
+        height: 120,
+        width: 120,
         decoration: BoxDecoration(
             gradient: LinearGradient(colors: getRandomGradientColor(_data.id + 74353))),
       );
