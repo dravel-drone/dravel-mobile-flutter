@@ -31,7 +31,10 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   List<DroneSpotModel> _droneSpotData = [];
 
   Future<void> _fetchDataFromNetwork() async {
-    final result = await DroneSpotHttp.getAllDronespot(_authController);
+    final result = await DroneSpotHttp.getAllDronespot(
+      _authController,
+      droneType: _selectedDrone != -1 ? _selectedDrone : null
+    );
     if (result == null) {
       if (Get.isSnackbarOpen) Get.back();
       Get.showSnackbar(
@@ -124,6 +127,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
             setState(() {
               _selectedDrone = selected ? index : -1;
             });
+            _fetchDataFromNetwork();
           },
         ),
       ),

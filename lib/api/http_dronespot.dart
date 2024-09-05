@@ -54,8 +54,13 @@ class DroneSpotHttp {
     return null;
   }
 
-  static Future<List<DroneSpotModel>?> getAllDronespot(AuthController authController) async {
-    final url = Uri.https(HttpBase.domain, 'api/v1/dronespot/all');
+  static Future<List<DroneSpotModel>?> getAllDronespot(AuthController authController, {
+    int? droneType
+  }) async {
+    final Map<String, dynamic> queryParameter = {};
+    if (droneType != null) queryParameter['droneType'] = '$droneType';
+
+    final url = Uri.https(HttpBase.domain, 'api/v1/dronespot/all', queryParameter);
     // final url = Uri.http(HttpBase.debugUrl, 'api/v1/dronespot/popular');
 
     int trial = 0;
