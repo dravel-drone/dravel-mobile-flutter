@@ -9,6 +9,7 @@ import 'package:dravel/pages/search/page_dronespot_search.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/list/list_item_dronespot.dart';
 import 'package:dravel/widgets/map/map_kakao.dart';
+import 'package:dravel/widgets/no_data.dart';
 import 'package:dravel/widgets/sheet/sheet_grab.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -202,6 +203,16 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _createBottomSheetContent() {
+    if (_droneSpotData.isEmpty) return Container(
+      color: Colors.white,
+      child: SizedBox(
+        height: 100,
+        child:  NoDataWidget(
+          backgroundColor: Colors.transparent,
+        ),
+      )
+    );
+
     return Container(
       color: Colors.white,
       child: ListView.separated(
@@ -230,7 +241,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
           return SizedBox(height: 16,);
         },
         itemCount: _droneSpotData.length
-      ),
+      )
     );
   }
 
