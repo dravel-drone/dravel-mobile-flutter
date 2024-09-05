@@ -66,8 +66,8 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
       );
     } else {
       photo = Container(
-        width: double.infinity,
-        height: double.infinity,
+        height: 120,
+        width: 120,
         decoration: BoxDecoration(
             gradient: LinearGradient(colors: getRandomGradientColor(_data.id + 74353))),
       );
@@ -96,17 +96,48 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                       ),
                     ),
                   ),
-                  Icon(
-                    Icons.favorite,
-                    color: _data.isLike ? Color(0xFF0075FF) : Colors.black26,
-                    size: 16,
-                  ),
-                  SizedBox(width: 2,),
-                  Text(
-                    '${_data.likeCount}',
-                    style: TextStyle(
-                        color: Colors.black87,
-                        fontSize: 14
+                  GestureDetector(
+                    onTap: () async {
+                      if (_data.isLike) {
+                        bool? result = await DroneSpotHttp.unlikeDronespot(_authController, id: widget.id);
+
+                        if (result == null || !result) {
+                          return;
+                        }
+                        setState(() {
+                          _data.isLike = false;
+                          _data.likeCount -= 1;
+                        });
+                      } else {
+                        bool? result = await DroneSpotHttp.likeDronespot(_authController, id: widget.id);
+
+                        if (result == null || !result) {
+                          return;
+                        }
+                        setState(() {
+                          _data.isLike = true;
+                          _data.likeCount += 1;
+                        });
+                      }
+                    },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.favorite,
+                          color: _data.isLike ?
+                          Color(0xFF0075FF) : Colors.black38,
+                          size: 16,
+                        ),
+                        SizedBox(width: 2,),
+                        Text(
+                          '${_data.likeCount}',
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 14
+                          ),
+                        )
+                      ],
                     ),
                   )
                 ],
