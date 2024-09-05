@@ -1,12 +1,14 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dravel/api/http_base.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/util_ui.dart';
 
 class DroneSpotItem extends StatelessWidget {
   DroneSpotItem({
+    required this.id,
     required this.name,
     required this.imageUrl,
     required this.address,
@@ -18,7 +20,7 @@ class DroneSpotItem extends StatelessWidget {
     this.onTap,
   });
 
-  String imageUrl;
+  String? imageUrl;
   String name;
   String address;
 
@@ -26,6 +28,8 @@ class DroneSpotItem extends StatelessWidget {
   int review_count;
   int camera_level;
   int fly_level;
+
+  int id;
 
   Color backgroundColor;
 
@@ -47,15 +51,27 @@ class DroneSpotItem extends StatelessWidget {
           ),
           child: Row(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: CachedNetworkImage(
+              if (imageUrl != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: CachedNetworkImage(
+                    height: double.infinity,
+                    width: 110,
+                    fit: BoxFit.cover,
+                    imageUrl: HttpBase.baseUrl + imageUrl!,
+                  ),
+                )
+              else
+                Container(
                   height: double.infinity,
                   width: 110,
-                  fit: BoxFit.cover,
-                  imageUrl: imageUrl,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      gradient: LinearGradient(
+                          colors: getRandomGradientColor(id + 4353453)
+                      )
+                  ),
                 ),
-              ),
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(16, 8, 4, 8),
@@ -104,8 +120,12 @@ class DroneSpotItem extends StatelessWidget {
                             size: 18,
                           ),
                           SizedBox(width: 4,),
-                          Text(
-                            address,
+                          Expanded(
+                            child: Text(
+                              address,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           )
                         ],
                       ),

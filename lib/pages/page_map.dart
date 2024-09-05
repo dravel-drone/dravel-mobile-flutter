@@ -1,6 +1,9 @@
 import 'dart:math';
 
+import 'package:dravel/api/http_dronespot.dart';
 import 'package:dravel/channel/channel_kakao_map.dart';
+import 'package:dravel/controller/controller_auth.dart';
+import 'package:dravel/model/model_dronespot.dart';
 import 'package:dravel/pages/detail/page_dronespot_detail.dart';
 import 'package:dravel/pages/search/page_dronespot_search.dart';
 import 'package:dravel/utils/util_ui.dart';
@@ -19,115 +22,45 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   KakaoMapChannel _kakaoMapChannel = KakaoMapChannel();
+  late final AuthController _authController;
   late final ScrollController _bottomSheetContentController;
   late final SnappingSheetController _snappingSheetController;
 
   int _selectedDrone = -1;
 
-  List<Map<String, dynamic>> _droneSpotTestData = [];
+  List<DroneSpotModel> _droneSpotData = [];
 
   Future<void> _fetchDataFromNetwork() async {
-    await Future.delayed(Duration(milliseconds: 600));
-    _droneSpotTestData = [
-      {
-        'id': 0,
-        'img': 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        'name': '거제도',
-        'like_count': 234,
-        'review_count': 4354,
-        'location': {
-          'lat': 33.539206,
-          'lon': 126.667611
-        },
-        'flight': 0,
-        'camera': 2,
-        'address': '경상남도 거제시'
-      },
-      {
-        'id': 1,
-        'img': 'https://images.unsplash.com/photo-1485086806232-72035a9f951c?q=80&w=1635&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        'name': '두바이',
-        'like_count': 4353,
-        'review_count': 123,
-        'location': {
-          'lat': 33.549862,
-          'lon': 126.678342
-        },
-        'flight': 1,
-        'camera': 1,
-        'address': '경상남도 두바이시'
-      },
-      {
-        'id': 2,
-        'img': 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        'name': '부산항',
-        'like_count': 234,
-        'review_count': 4354,
-        'location': {
-          'lat': 33.546361,
-          'lon': 126.659556
-        },
-        'flight': 2,
-        'camera': 2,
-        'address': '경상남도 부산시'
-      },
-      {
-        'id': 3,
-        'img': 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        'name': '거제도',
-        'like_count': 234,
-        'review_count': 4354,
-        'location': {
-          'lat': 33.532850,
-          'lon': 126.674042
-        },
-        'flight': 0,
-        'camera': 2,
-        'address': '경상남도 거제시'
-      },
-      {
-        'id': 4,
-        'img': 'https://images.unsplash.com/photo-1485086806232-72035a9f951c?q=80&w=1635&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        'name': '두바이',
-        'like_count': 4353,
-        'review_count': 123,
-        'location': {
-          'lat': 33.539337,
-          'lon': 126.659079
-        },
-        'flight': 1,
-        'camera': 1,
-        'address': '경상남도 두바이시'
-      },
-      {
-        'id': 5,
-        'img': 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        'name': '부산항',
-        'like_count': 234,
-        'review_count': 4354,
-        'location': {
-          'lat': 33.538301,
-          'lon': 126.654998
-        },
-        'flight': 2,
-        'camera': 2,
-        'address': '경상남도 부산시'
-      },
-    ];
-    setState(() {
-      for (var i in _droneSpotTestData) {
-        _kakaoMapChannel.addSpotLabel(
-          lat: i['location']['lat'],
-          lon: i['location']['lon'],
-          name: i['name'],
-          id: i['id']
-        );
-      }
-    });
+    final result = await DroneSpotHttp.getAllDronespot(_authController);
+    if (result == null) {
+      if (Get.isSnackbarOpen) Get.back();
+      Get.showSnackbar(
+        GetSnackBar(
+          message: '드론스팟 로드 중 오류가 발생했습니다.',
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 1),
+        )
+      );
+      return;
+    }
+
+    _droneSpotData = result;
+
+    for (var i in _droneSpotData) {
+      _kakaoMapChannel.addSpotLabel(
+          lat: i.location.lat,
+          lon: i.location.lon,
+          name: i.name,
+          id: i.id
+      );
+    }
+
+    if (mounted) setState(() {});
   }
 
   @override
   void initState() {
+    _authController = Get.find<AuthController>();
     _bottomSheetContentController = ScrollController();
     _snappingSheetController = SnappingSheetController();
     _bottomSheetContentController.addListener(() {
@@ -268,13 +201,14 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
         controller: _bottomSheetContentController,
         itemBuilder: (context, idx) {
           return DroneSpotItem(
-            name: _droneSpotTestData[idx]['name'],
-            imageUrl: _droneSpotTestData[idx]['img'],
-            address: _droneSpotTestData[idx]['address'],
-            like_count: _droneSpotTestData[idx]['like_count'],
-            review_count: _droneSpotTestData[idx]['review_count'],
-            camera_level: _droneSpotTestData[idx]['camera'],
-            fly_level: _droneSpotTestData[idx]['flight'],
+            id: _droneSpotData[idx].id,
+            name: _droneSpotData[idx].name,
+            imageUrl: _droneSpotData[idx].imageUrl,
+            address: _droneSpotData[idx].location.address!,
+            like_count: _droneSpotData[idx].likeCount,
+            review_count: _droneSpotData[idx].reviewCount,
+            camera_level: _droneSpotData[idx].permit.camera,
+            fly_level: _droneSpotData[idx].permit.flight,
             backgroundColor: Color(0xFFF1F1F5),
             onTap: () {
               // Get.to(() => DroneSpotDetailPage());
@@ -284,7 +218,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
         separatorBuilder: (context, idx) {
           return SizedBox(height: 16,);
         },
-        itemCount: _droneSpotTestData.length
+        itemCount: _droneSpotData.length
       ),
     );
   }
@@ -321,15 +255,15 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
           children: [
             KakaoMapView(
               channel: _kakaoMapChannel,
-              initData: _droneSpotTestData,
+              // initData: _droneSpotData,
               onMapInit: () {
                 print("initMap");
                 _fetchDataFromNetwork();
               },
               onLabelTab: (labelId) {
                 int idx = -1;
-                for (var i = 0;i < _droneSpotTestData.length;i++) {
-                  if (_droneSpotTestData[i]['id'] == labelId) {
+                for (var i = 0;i < _droneSpotData.length;i++) {
+                  if (_droneSpotData[i].id == labelId) {
                     idx = i;
                     break;
                   }

@@ -172,6 +172,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
         Widget child;
         if (_placeData[idx]['type'] == 0) {
           child = DroneSpotItem(
+            id: 1,
             name: _placeData[idx]['name'],
             imageUrl: _placeData[idx]['img'],
             address: _placeData[idx]['address'],

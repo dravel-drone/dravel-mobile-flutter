@@ -398,6 +398,7 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
       controller: _droneSpotController,
       itemBuilder: (context, idx) {
         return DroneSpotItem(
+          id: 1,
           name: _droneLikeTestData[idx]['name'],
           imageUrl: _droneLikeTestData[idx]['img'],
           address: _droneLikeTestData[idx]['address'],
