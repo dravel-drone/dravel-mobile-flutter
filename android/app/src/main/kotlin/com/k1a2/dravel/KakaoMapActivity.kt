@@ -237,6 +237,36 @@ class KakaoMapActivity(
             "removeAllSpotLabel" -> {
                 removeAllSpotLabel()
             }
+            "setLabels" -> {
+                val data: List<Map<String, Any>>? = call.argument<List<Map<String, Any>>>("labels")
+                Log.d("label", data.toString())
+
+                if (data == null) {
+                    result.error(
+                        "121",
+                        "METHOD ERROR",
+                        "data null error occur")
+                    return
+                }
+
+                try {
+                    removeAllSpotLabel()
+                    data.forEach { item ->
+                        val name = item["name"] as? String ?: "Unknown"
+                        val lon = item["lon"] as? Double ?: 0.0
+                        val lat = item["lat"] as? Double ?: 0.0
+                        val id = item["id"] as? Int ?: 0
+
+                        addSpotLabel(name, lat, lon, id)
+                    }
+                    result.success(null)
+                } catch (e: Exception) {
+                    result.error(
+                        "120",
+                        "METHOD ERROR",
+                        "setLabels error occur")
+                }
+            }
         }
     }
 }
