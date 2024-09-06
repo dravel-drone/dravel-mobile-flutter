@@ -1,7 +1,9 @@
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/list/list_item_search.dart';
+import 'package:dravel/widgets/no_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DroneSpotSearchPage extends StatefulWidget {
   @override
@@ -9,18 +11,29 @@ class DroneSpotSearchPage extends StatefulWidget {
 }
 
 class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
+  late final SharedPreferences _sharedPreferences;
+  late final TextEditingController _searchController;
 
-  List<Map<String, dynamic>> _recentKeyword = [
-    {
-      "name": "성산일출봉",
-    },
-    {
-      "name": "한라산",
-    },
-    {
-      "name": "우도",
-    },
-  ];
+  List<String> _recentKeyword = [];
+
+  Future<void> _initSharedPreferences() async {
+    _sharedPreferences = await SharedPreferences.getInstance();
+    _recentKeyword = _sharedPreferences.getStringList('search') ?? [];
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    _initSharedPreferences();
+    _searchController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   Widget _createSearchBar() {
     return Container(
@@ -38,6 +51,7 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
           ),
           Expanded(
             child: TextField(
+              controller: _searchController,
               decoration: InputDecoration(
                 hintText: '드론스팟 검색어',
                 enabledBorder: OutlineInputBorder(
@@ -55,8 +69,14 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
                 contentPadding: EdgeInsets.fromLTRB(0, 14, 6, 14)
               ),
               textInputAction: TextInputAction.search,
-              onEditingComplete: () {
-                debugPrint("objecsearcht");
+              onEditingComplete: () async {
+                final String text = _searchController.text;
+                if (text.isEmpty) return;
+
+                _recentKeyword.insert(0, text);
+                if (_recentKeyword.length > 10) _recentKeyword.removeAt(_recentKeyword.length - 1);
+                await _sharedPreferences.setStringList('search', _recentKeyword);
+                setState(() {});
               },
               onTapOutside: (e) {
                 FocusScope.of(context).unfocus();
@@ -88,24 +108,27 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
             ),
           ),
           SizedBox(height: 12,),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.zero,
-            itemBuilder: (context, idx) {
-              return SearchKeywordListItem(
-                mode: SearchKeywordListItem.MODE_RECENT_KEYWORD,
-                name: _recentKeyword[idx]['name'],
-                onTap: () {
+          if (_recentKeyword.isNotEmpty)
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, idx) {
+                return SearchKeywordListItem(
+                  mode: SearchKeywordListItem.MODE_RECENT_KEYWORD,
+                  name: _recentKeyword[idx],
+                  onTap: () {
 
-                },
-              );
-            },
-            separatorBuilder: (context, idx) {
-              return SizedBox(height: 12,);
-            },
-            itemCount: _recentKeyword.length
-          )
+                  },
+                );
+              },
+              separatorBuilder: (context, idx) {
+                return SizedBox(height: 12,);
+              },
+              itemCount: _recentKeyword.length
+            )
+          else
+            NoDataWidget()
         ],
       ),
     );
@@ -138,7 +161,7 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
             itemBuilder: (context, idx) {
               return SearchKeywordListItem(
                 mode: SearchKeywordListItem.MODE_TEAND_KEYWORD,
-                name: _recentKeyword[idx]['name'],
+                name: _recentKeyword[idx],
                 num: idx + 1,
                 onTap: () {
 
@@ -172,7 +195,8 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
                     SizedBox(height: 24,),
                     _createRecentKeywordSection(),
                     SizedBox(height: 24,),
-                    _createTrendKeywordSection()
+                    _createTrendKeywordSection(),
+                    SizedBox(height: getBottomPaddingWithSafeHeight(context, 24),)
                   ],
                 ),
               ),
