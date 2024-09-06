@@ -54,11 +54,11 @@ class KakaoMapActivity(
     private var prevCameraPos: CameraPosition? = null
 
     init {
+        methodChannel.setMethodCallHandler(this)
         val inflater = LayoutInflater.from(context)
         this.context = context
         nativeView = inflater.inflate(R.layout.layout_kakao_map, null)
         this.creationParams = creationParams
-        methodChannel.setMethodCallHandler(this)
     }
 
     override fun getView(): View? {
@@ -105,18 +105,18 @@ class KakaoMapActivity(
                     kakaoMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(prevCameraPos!!))
                 }
 
-                val initData = creationParams!!["initData"] as List<Map<String, Any>>
-                if (initData.isNotEmpty()) {
-                    for (data in initData) {
-                        val location = data["location"] as Map<String, Double>
-                        addSpotLabel(
-                            data["name"]!!.toString(),
-                            location["lat"]!!,
-                            location["lon"]!!,
-                            data["id"] as Int,
-                        )
-                    }
-                }
+//                val initData = creationParams!!["initData"] as List<Map<String, Any>>
+//                if (initData.isNotEmpty()) {
+//                    for (data in initData) {
+//                        val location = data["location"] as Map<String, Double>
+//                        addSpotLabel(
+//                            data["name"]!!.toString(),
+//                            location["lat"]!!,
+//                            location["lon"]!!,
+//                            data["id"] as Int,
+//                        )
+//                    }
+//                }
 
                 kakaoMap!!.setOnLabelClickListener(object : OnLabelClickListener {
                     override fun onLabelClicked(p0: KakaoMap?, p1: LabelLayer?, p2: Label?) {
@@ -197,6 +197,13 @@ class KakaoMapActivity(
         layer!!.addLabel(options)
     }
 
+    private fun removeAllSpotLabel() {
+        print("deleted1")
+        val layer = kakaoMap!!.labelManager!!.layer
+        layer!!.removeAll()
+        print("deleted2")
+    }
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "moveCamera" -> {
@@ -225,6 +232,39 @@ class KakaoMapActivity(
                         "110",
                         "METHOD ERROR",
                         "add spot label error occur")
+                }
+            }
+            "removeAllSpotLabel" -> {
+                removeAllSpotLabel()
+            }
+            "setLabels" -> {
+                val data: List<Map<String, Any>>? = call.argument<List<Map<String, Any>>>("labels")
+                Log.d("label", data.toString())
+
+                if (data == null) {
+                    result.error(
+                        "121",
+                        "METHOD ERROR",
+                        "data null error occur")
+                    return
+                }
+
+                try {
+                    removeAllSpotLabel()
+                    data.forEach { item ->
+                        val name = item["name"] as? String ?: "Unknown"
+                        val lon = item["lon"] as? Double ?: 0.0
+                        val lat = item["lat"] as? Double ?: 0.0
+                        val id = item["id"] as? Int ?: 0
+
+                        addSpotLabel(name, lat, lon, id)
+                    }
+                    result.success(null)
+                } catch (e: Exception) {
+                    result.error(
+                        "120",
+                        "METHOD ERROR",
+                        "setLabels error occur")
                 }
             }
         }

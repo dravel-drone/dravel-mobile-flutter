@@ -8,9 +8,11 @@ import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
 import 'package:dravel/widgets/button/button_switch.dart';
+import 'package:dravel/widgets/error_data.dart';
 import 'package:dravel/widgets/list/list_item_course.dart';
 import 'package:dravel/widgets/list/list_item_place.dart';
 import 'package:dravel/widgets/list/list_item_review.dart';
+import 'package:dravel/widgets/load_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -36,7 +38,6 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
 
   Future<void> _getSpotData() async {
     final result = await DroneSpotHttp.getDronespotDetial(_authController, id: widget.id);
-    print(result);
 
     if (result != null) {
       _data = result;
@@ -66,8 +67,8 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
       );
     } else {
       photo = Container(
-        width: double.infinity,
-        height: double.infinity,
+        height: 120,
+        width: 120,
         decoration: BoxDecoration(
             gradient: LinearGradient(colors: getRandomGradientColor(_data.id + 74353))),
       );
@@ -96,17 +97,48 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                       ),
                     ),
                   ),
-                  Icon(
-                    Icons.favorite,
-                    color: _data.isLike ? Color(0xFF0075FF) : Colors.black26,
-                    size: 16,
-                  ),
-                  SizedBox(width: 2,),
-                  Text(
-                    '${_data.likeCount}',
-                    style: TextStyle(
-                        color: Colors.black87,
-                        fontSize: 14
+                  GestureDetector(
+                    onTap: () async {
+                      if (_data.isLike) {
+                        bool? result = await DroneSpotHttp.unlikeDronespot(_authController, id: widget.id);
+
+                        if (result == null || !result) {
+                          return;
+                        }
+                        setState(() {
+                          _data.isLike = false;
+                          _data.likeCount -= 1;
+                        });
+                      } else {
+                        bool? result = await DroneSpotHttp.likeDronespot(_authController, id: widget.id);
+
+                        if (result == null || !result) {
+                          return;
+                        }
+                        setState(() {
+                          _data.isLike = true;
+                          _data.likeCount += 1;
+                        });
+                      }
+                    },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.favorite,
+                          color: _data.isLike ?
+                          Color(0xFF0075FF) : Colors.black38,
+                          size: 16,
+                        ),
+                        SizedBox(width: 2,),
+                        Text(
+                          '${_data.likeCount}',
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 14
+                          ),
+                        )
+                      ],
                     ),
                   )
                 ],
@@ -427,29 +459,9 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
     if (_loadDronespot != 1) {
       Widget body;
       if (_loadDronespot == -1) {
-        body = Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 8,),
-              Text("데이터 로딩중...")
-            ],
-          ),
-        );
+        body = LoadDataWidget();
       } else {
-        body = Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.cloud_off_rounded, size: 48,),
-              SizedBox(height: 12,),
-              Text("오류가 발생했습니다. 다시 시도해주세요.")
-            ],
-          ),
-        );
+        body = ErrorDataWidget();
       }
       
       return Scaffold(

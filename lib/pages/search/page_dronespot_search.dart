@@ -1,7 +1,17 @@
+import 'package:dravel/api/http_dronespot.dart';
+import 'package:dravel/controller/controller_auth.dart';
+import 'package:dravel/model/model_dronespot.dart';
+import 'package:dravel/pages/detail/page_dronespot_detail.dart';
 import 'package:dravel/utils/util_ui.dart';
+import 'package:dravel/widgets/error_data.dart';
+import 'package:dravel/widgets/list/list_item_dronespot.dart';
 import 'package:dravel/widgets/list/list_item_search.dart';
+import 'package:dravel/widgets/load_data.dart';
+import 'package:dravel/widgets/no_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DroneSpotSearchPage extends StatefulWidget {
   @override
@@ -9,18 +19,39 @@ class DroneSpotSearchPage extends StatefulWidget {
 }
 
 class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
+  late final SharedPreferences _sharedPreferences;
+  late final TextEditingController _searchController;
 
-  List<Map<String, dynamic>> _recentKeyword = [
-    {
-      "name": "성산일출봉",
-    },
-    {
-      "name": "한라산",
-    },
-    {
-      "name": "우도",
-    },
-  ];
+  List<String> _recentKeyword = [];
+  List<TrendDronrspot> _trendKeyword = [];
+
+  Future<void> _initSharedPreferences() async {
+    _sharedPreferences = await SharedPreferences.getInstance();
+    _recentKeyword = _sharedPreferences.getStringList('search') ?? [];
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _initTrend() async {
+    final result = await DroneSpotHttp.getTrendDronespot();
+    if (result == null) return;
+
+    _trendKeyword = result;
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    _initSharedPreferences();
+    _initTrend();
+    _searchController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   Widget _createSearchBar() {
     return Container(
@@ -38,6 +69,7 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
           ),
           Expanded(
             child: TextField(
+              controller: _searchController,
               decoration: InputDecoration(
                 hintText: '드론스팟 검색어',
                 enabledBorder: OutlineInputBorder(
@@ -55,8 +87,18 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
                 contentPadding: EdgeInsets.fromLTRB(0, 14, 6, 14)
               ),
               textInputAction: TextInputAction.search,
-              onEditingComplete: () {
-                debugPrint("objecsearcht");
+              onEditingComplete: () async {
+                FocusScope.of(context).unfocus();
+
+                final String text = _searchController.text;
+                if (text.isEmpty) return;
+
+                _recentKeyword.insert(0, text);
+                if (_recentKeyword.length > 10) _recentKeyword.removeAt(_recentKeyword.length - 1);
+                await _sharedPreferences.setStringList('search', _recentKeyword);
+                setState(() {});
+
+                Get.off(() => SearchResultPage(keyword: text));
               },
               onTapOutside: (e) {
                 FocusScope.of(context).unfocus();
@@ -88,24 +130,27 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
             ),
           ),
           SizedBox(height: 12,),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.zero,
-            itemBuilder: (context, idx) {
-              return SearchKeywordListItem(
-                mode: SearchKeywordListItem.MODE_RECENT_KEYWORD,
-                name: _recentKeyword[idx]['name'],
-                onTap: () {
-
-                },
-              );
-            },
-            separatorBuilder: (context, idx) {
-              return SizedBox(height: 12,);
-            },
-            itemCount: _recentKeyword.length
-          )
+          if (_recentKeyword.isNotEmpty)
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, idx) {
+                return SearchKeywordListItem(
+                  mode: SearchKeywordListItem.MODE_RECENT_KEYWORD,
+                  name: _recentKeyword[idx],
+                  onTap: () {
+                    Get.off(() => SearchResultPage(keyword: _recentKeyword[idx]));
+                  },
+                );
+              },
+              separatorBuilder: (context, idx) {
+                return SizedBox(height: 12,);
+              },
+              itemCount: _recentKeyword.length
+            )
+          else
+            NoDataWidget()
         ],
       ),
     );
@@ -123,7 +168,7 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '가장 많이 검색하고 있어요',
+            '가장 많이 찾고 있어요',
             style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
@@ -138,17 +183,17 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
             itemBuilder: (context, idx) {
               return SearchKeywordListItem(
                 mode: SearchKeywordListItem.MODE_TEAND_KEYWORD,
-                name: _recentKeyword[idx]['name'],
+                name: _trendKeyword[idx].name,
                 num: idx + 1,
                 onTap: () {
-
+                  Get.to(() => DroneSpotDetailPage(id: _trendKeyword[idx].id));
                 },
               );
             },
             separatorBuilder: (context, idx) {
               return SizedBox(height: 12,);
             },
-            itemCount: _recentKeyword.length
+            itemCount: _trendKeyword.length
           )
         ],
       ),
@@ -172,11 +217,182 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
                     SizedBox(height: 24,),
                     _createRecentKeywordSection(),
                     SizedBox(height: 24,),
-                    _createTrendKeywordSection()
+                    _createTrendKeywordSection(),
+                    SizedBox(height: getBottomPaddingWithSafeHeight(context, 24),)
                   ],
                 ),
               ),
             )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+class SearchResultPage extends StatefulWidget {
+  SearchResultPage({
+    required this.keyword
+  });
+
+  String keyword;
+
+  @override
+  State<StatefulWidget> createState() => _SearchResultPageState();
+}
+
+class _SearchResultPageState extends State<SearchResultPage> {
+  late final TextEditingController _textEditingController;
+  late final AuthController _authController;
+
+  List<DroneSpotModel> data = [];
+
+  int _isLoaded = -1;
+
+  Future<void> _loadData() async {
+    _isLoaded = -1;
+    if (mounted) setState(() {});
+
+    final List<DroneSpotModel>? result = await DroneSpotHttp.searchDronespot(
+      _authController,
+      keyword: widget.keyword
+    );
+
+    if (result == null) {
+      _isLoaded = 0;
+    } else {
+      _isLoaded = 1;
+      data = result;
+    }
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    _authController = Get.find<AuthController>();
+    _textEditingController = TextEditingController(
+      text: widget.keyword
+    );
+    _loadData();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
+  Widget _createAppbar() {
+    return PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarBrightness: SystemUiOverlayStyle.dark.statusBarBrightness,
+            statusBarIconBrightness: SystemUiOverlayStyle.dark.statusBarIconBrightness,
+            systemStatusBarContrastEnforced: SystemUiOverlayStyle.dark.systemStatusBarContrastEnforced,
+          ),
+          child: Material(
+            color: Colors.white,
+            child: Semantics(
+              explicitChildNodes: true,
+              child: SafeArea(
+                bottom: false,
+                child: Row(
+                  children: [
+                    SizedBox(width: 12,),
+                    IconButton(
+                      icon: Icon(Icons.arrow_back_outlined),
+                      onPressed: () {
+                        Get.back();
+                      },
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.off(() => DroneSpotSearchPage());
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(6, 16, 0, 16),
+                          child: Text(
+                            widget.keyword,
+                            style: TextStyle(
+                                fontSize: 16
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        )
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget child;
+
+    if (_isLoaded != 1) {
+      if (_isLoaded == -1) {
+        child = LoadDataWidget();
+      } else {
+        child = ErrorDataWidget();
+      }
+    } else {
+      child = data.isNotEmpty ? ListView.separated(
+        padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
+        itemBuilder: (context, idx) {
+          return DroneSpotItem(
+              id: data[idx].id,
+              name: data[idx].name,
+              imageUrl: data[idx].imageUrl,
+              address: data[idx].location.address!,
+              like_count: data[idx].likeCount,
+              review_count: data[idx].reviewCount,
+              camera_level: data[idx].permit.camera,
+              fly_level: data[idx].permit.flight,
+              isLike: data[idx].isLike,
+              onTap: () {
+                Get.to(() => DroneSpotDetailPage(
+                  id: data[idx].id,
+                ));
+              },
+              onChange: (value) {
+                setState(() {
+                  data[idx].isLike = value.isLike;
+                  data[idx].likeCount = value.likeCount;
+                });
+              }
+          );
+        },
+        separatorBuilder: (context, idx) {
+          return SizedBox(height: 12,);
+        },
+        itemCount: data.length
+      ) : NoDataWidget(
+        backgroundColor: Colors.transparent,
+        text: "검색 결과가 없습니다.",
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: Color(0xFFF1F1F5),
+      body: Container(
+        width: double.infinity,
+        child: Column(
+          children: [
+            _createAppbar(),
+            Expanded(
+              child: child
+            ),
           ],
         ),
       ),

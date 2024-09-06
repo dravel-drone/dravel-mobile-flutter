@@ -97,7 +97,7 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
             children: [
               if (widget.img != null)
                 CachedNetworkImage(
-                  imageUrl: widget.img!,
+                  imageUrl: HttpBase.baseUrl + widget.img!,
                   errorWidget: (context, error, obj) {
                     return Container(
                       width: 100,

@@ -172,6 +172,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
         Widget child;
         if (_placeData[idx]['type'] == 0) {
           child = DroneSpotItem(
+            id: 1,
             name: _placeData[idx]['name'],
             imageUrl: _placeData[idx]['img'],
             address: _placeData[idx]['address'],
@@ -180,6 +181,10 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
             camera_level: _placeData[idx]['camera'],
             fly_level: _placeData[idx]['flight'],
             backgroundColor: Color(0xFFF1F1F5),
+            isLike: false,
+            onChange: (value) {
+
+            },
           );
         } else {
           child = PlaceItem(

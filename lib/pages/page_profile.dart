@@ -428,13 +428,18 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
         // controller: _droneSpotController,
         itemBuilder: (context, idx) {
           return DroneSpotItem(
-              name: _droneLikeTestData[idx]['name'],
-              imageUrl: _droneLikeTestData[idx]['img'],
-              address: _droneLikeTestData[idx]['address'],
-              like_count: _droneLikeTestData[idx]['like_count'],
-              review_count: _droneLikeTestData[idx]['review_count'],
-              camera_level: _droneLikeTestData[idx]['camera'],
-              fly_level: _droneLikeTestData[idx]['flight']
+            id: 1,
+            name: _droneLikeTestData[idx]['name'],
+            imageUrl: _droneLikeTestData[idx]['img'],
+            address: _droneLikeTestData[idx]['address'],
+            like_count: _droneLikeTestData[idx]['like_count'],
+            review_count: _droneLikeTestData[idx]['review_count'],
+            camera_level: _droneLikeTestData[idx]['camera'],
+            fly_level: _droneLikeTestData[idx]['flight'],
+            isLike: false,
+            onChange: (value) {
+
+            },
           );
         },
         separatorBuilder: (context, idx) {

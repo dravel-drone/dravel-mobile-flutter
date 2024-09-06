@@ -56,42 +56,76 @@ class KakaoMapPlatform : NSObject, FlutterPlatformView {
     
     func handle(call:FlutterMethodCall, result:FlutterResult){
         switch call.method {
-            case "moveCamera": do {
-                let args = call.arguments as! [String:Any]
-                let lat = args["lat"] as! Double
-                let lon = args["lon"] as! Double
-                let zoomLevel = args["zoomLevel"] as! Int
-                do {
-                    try kakaoMapController.moveCamera(lat: lat, lon: lon, zoomLevel: zoomLevel)
-                } catch {
-                    result(FlutterError(
-                        code: "100",
-                        message: "METHOD ERROR",
-                        details: "moveCamera error occur"))
-                }
-                result(nil)
-            }
-            case "addSpotLabel": do {
-                let args = call.arguments as! [String:Any]
-                let lat = args["lat"] as! Double
-                let lon = args["lon"] as! Double
-                let name = args["name"] as! String
-                let id = args["id"] as! Int
-                do {
-                    try kakaoMapController.addSpotLabel(name: name, lat: lat, lon: lon, id: id)
-                } catch {
-                    result(FlutterError(
-                        code: "110",
-                        message: "METHOD ERROR",
-                        details: "add spot label error occur"))
-                }
-                result(nil)
-            }
-            default:
+        case "moveCamera": do {
+            let args = call.arguments as! [String:Any]
+            let lat = args["lat"] as! Double
+            let lon = args["lon"] as! Double
+            let zoomLevel = args["zoomLevel"] as! Int
+            do {
+                try kakaoMapController.moveCamera(lat: lat, lon: lon, zoomLevel: zoomLevel)
+            } catch {
                 result(FlutterError(
-                    code: "50",
+                    code: "100",
                     message: "METHOD ERROR",
-                    details: "method not exist"))
+                    details: "moveCamera error occur"))
+            }
+            result(nil)
+        }
+        case "addSpotLabel": do {
+            let args = call.arguments as! [String:Any]
+            let lat = args["lat"] as! Double
+            let lon = args["lon"] as! Double
+            let name = args["name"] as! String
+            let id = args["id"] as! Int
+            do {
+                try kakaoMapController.addSpotLabel(name: name, lat: lat, lon: lon, id: id)
+            } catch {
+                result(FlutterError(
+                    code: "110",
+                    message: "METHOD ERROR",
+                    details: "add spot label error occur"))
+            }
+            result(nil)
+        }
+        case "removeAllSpotLabel": do {
+            kakaoMapController.removeAllSpotLabel()
+            result(nil)
+        }
+        case "setLabels": do {
+            let data = call.arguments as! [String: Any]
+            if (data == nil) {
+                result(FlutterError(code: "121", message: "METHOD ERROR", details: "data null error occur"))
+                return
+            }
+            
+            if let labels = data["labels"] as? [[String: Any]] {
+                print("label: \(data)")
+
+                do {
+                    kakaoMapController.removeAllSpotLabel()
+
+                    for item in labels {
+                        let name = item["name"] as? String ?? "Unknown"
+                        let lon = item["lon"] as? Double ?? 0.0
+                        let lat = item["lat"] as? Double ?? 0.0
+                        let id = item["id"] as? Int ?? 0
+
+                        try kakaoMapController.addSpotLabel(name: name, lat: lat, lon: lon, id: id)
+                    }
+
+                    result(nil)
+                } catch {
+                    result(FlutterError(code: "120", message: "METHOD ERROR", details: "setLabels error occur"))
+                }
+            } else {
+                result(FlutterError(code: "121", message: "METHOD ERROR", details: "data null error occur"))
+            }
+        }
+        default:
+            result(FlutterError(
+                code: "50",
+                message: "METHOD ERROR",
+                details: "method not exist"))
         }
     }
 
@@ -395,6 +429,13 @@ class KakaoMapController : UIViewController, MapControllerDelegate, KakaoMapEven
         let poi1 = layer?.addPoi(option: poiOption, at: MapPoint(longitude: lon, latitude: lat))
         poi1?.addPoiTappedEventHandler(target: self, handler: KakaoMapController.poiTappedHandler)
         poi1?.show()
+    }
+    
+    func removeAllSpotLabel() {
+        let mapView: KakaoMap? = mapController?.getView("mapview") as? KakaoMap
+        let manager = mapView!.getLabelManager()
+        let layer = manager.getLabelLayer(layerID: "SpotLayer")
+        layer?.clearAllItems()
     }
     
     func poiTappedHandler(_ param: PoiInteractionEventParam) {

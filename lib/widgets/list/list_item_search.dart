@@ -62,6 +62,8 @@ class SearchKeywordListItem extends StatelessWidget {
             Expanded(
               child: Text(
                 name,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
                 style: TextStyle(
                   color: Colors.black54,
                   fontSize: 14,

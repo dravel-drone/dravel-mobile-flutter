@@ -1,3 +1,5 @@
+import 'package:dravel/model/model_dronespot.dart';
+import 'package:dravel/widgets/list/list_item_dronespot.dart';
 import 'package:flutter/services.dart';
 
 class KakaoMapChannel {
@@ -32,6 +34,16 @@ class KakaoMapChannel {
       'lon': lon,
       'name': name,
       'id': id
+    });
+  }
+
+  Future<void> removeAllSpotLabel() async {
+    await _channel.invokeMethod('removeAllSpotLabel');
+  }
+
+  Future<void> setLabels(List<dynamic> data) async {
+    await _channel.invokeMethod('setLabels', {
+      'labels': data
     });
   }
 }
