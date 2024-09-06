@@ -51,18 +51,22 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
 
     _droneSpotData = result;
 
-    await _kakaoMapChannel.removeAllSpotLabel();
+    List<dynamic> labels = [];
 
-    debugPrint(_droneSpotData.length.toString());
+    // await _kakaoMapChannel.removeAllSpotLabel();
+    //
+    // debugPrint(_droneSpotData.length.toString());
     for (var i in _droneSpotData) {
       debugPrint(i.name);
-      _kakaoMapChannel.addSpotLabel(
-          lat: i.location.lat,
-          lon: i.location.lon,
-          name: i.name,
-          id: i.id
-      );
+      labels.add({
+        'lat': i.location.lat,
+        'lon': i.location.lon,
+        'name': i.name,
+        'id': i.id
+      });
     }
+
+    _kakaoMapChannel.setLabels(labels);
 
     if (mounted) setState(() {});
   }
