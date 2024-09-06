@@ -1,3 +1,5 @@
+import 'package:dravel/api/http_dronespot.dart';
+import 'package:dravel/model/model_dronespot.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/list/list_item_search.dart';
 import 'package:dravel/widgets/no_data.dart';
@@ -15,6 +17,7 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
   late final TextEditingController _searchController;
 
   List<String> _recentKeyword = [];
+  List<TrendDronrspot> _trendKeyword = [];
 
   Future<void> _initSharedPreferences() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -22,9 +25,18 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
     if (mounted) setState(() {});
   }
 
+  Future<void> _initTrend() async {
+    final result = await DroneSpotHttp.getTrendDronespot();
+    if (result == null) return;
+
+    _trendKeyword = result;
+    if (mounted) setState(() {});
+  }
+
   @override
   void initState() {
     _initSharedPreferences();
+    _initTrend();
     _searchController = TextEditingController();
     super.initState();
   }
@@ -146,7 +158,7 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '가장 많이 검색하고 있어요',
+            '가장 많이 찾고 있어요',
             style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
@@ -161,7 +173,7 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
             itemBuilder: (context, idx) {
               return SearchKeywordListItem(
                 mode: SearchKeywordListItem.MODE_TEAND_KEYWORD,
-                name: _recentKeyword[idx],
+                name: _trendKeyword[idx].name,
                 num: idx + 1,
                 onTap: () {
 
@@ -171,7 +183,7 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
             separatorBuilder: (context, idx) {
               return SizedBox(height: 12,);
             },
-            itemCount: _recentKeyword.length
+            itemCount: _trendKeyword.length
           )
         ],
       ),

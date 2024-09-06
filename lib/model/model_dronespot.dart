@@ -152,3 +152,13 @@ class DronespotDetailModel extends DroneSpotModel {
     );
   }
 }
+
+class TrendDronrspot {
+  String name;
+  int id;
+
+  TrendDronrspot({
+    required this.name,
+    required this.id
+  });
+}

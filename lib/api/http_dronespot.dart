@@ -223,4 +223,25 @@ class DroneSpotHttp {
     }
     return null;
   }
+
+  static Future<List<TrendDronrspot>?> getTrendDronespot() async {
+    final url = Uri.https(HttpBase.domain, 'api/v1/dronespot/keyword/popular');
+    final response = await http.get(url);
+
+    if (response.statusCode != 200) {
+      return null;
+    } else {
+      final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+      debugPrint(jsonData.toString());
+
+      List<TrendDronrspot> data = [];
+      for (var i in jsonData) {
+        data.add(TrendDronrspot(
+            name: i['name'],
+            id: i['id']
+        ));
+      }
+      return data;
+    }
+  }
 }
