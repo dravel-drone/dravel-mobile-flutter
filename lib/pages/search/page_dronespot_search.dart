@@ -5,6 +5,7 @@ import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/list/list_item_search.dart';
 import 'package:dravel/widgets/no_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -240,16 +241,93 @@ class SearchResultPage extends StatefulWidget {
 }
 
 class _SearchResultPageState extends State<SearchResultPage> {
+  late final TextEditingController _textEditingController;
+
+  @override
+  void initState() {
+    _textEditingController = TextEditingController(
+      text: widget.keyword
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
+  Widget _createAppbar() {
+    return PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarBrightness: SystemUiOverlayStyle.dark.statusBarBrightness,
+            statusBarIconBrightness: SystemUiOverlayStyle.dark.statusBarIconBrightness,
+            systemStatusBarContrastEnforced: SystemUiOverlayStyle.dark.systemStatusBarContrastEnforced,
+          ),
+          child: Material(
+            color: Colors.white,
+            child: Semantics(
+              explicitChildNodes: true,
+              child: SafeArea(
+                bottom: false,
+                child: Row(
+                  children: [
+                    SizedBox(width: 12,),
+                    IconButton(
+                      icon: Icon(Icons.arrow_back_outlined),
+                      onPressed: () {
+                        Get.back();
+                      },
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.off(() => DroneSpotSearchPage());
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(6, 16, 0, 16),
+                          child: Text(
+                            widget.keyword,
+                            style: TextStyle(
+                                fontSize: 16
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12,),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF1F1F5),
       body: Container(
         width: double.infinity,
-        padding: EdgeInsets.fromLTRB(24, getTopPaddingWithHeight(context, 24), 24, 0),
         child: Column(
           children: [
-            Text(widget.keyword)
+            _createAppbar(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(height: 24,),
+
+                    SizedBox(height: getBottomPaddingWithSafeHeight(context, 24),)
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
