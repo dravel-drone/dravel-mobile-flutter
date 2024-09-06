@@ -1,5 +1,6 @@
 import 'package:dravel/api/http_dronespot.dart';
 import 'package:dravel/model/model_dronespot.dart';
+import 'package:dravel/pages/detail/page_dronespot_detail.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/list/list_item_search.dart';
 import 'package:dravel/widgets/no_data.dart';
@@ -82,6 +83,8 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
               ),
               textInputAction: TextInputAction.search,
               onEditingComplete: () async {
+                FocusScope.of(context).unfocus();
+
                 final String text = _searchController.text;
                 if (text.isEmpty) return;
 
@@ -89,6 +92,8 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
                 if (_recentKeyword.length > 10) _recentKeyword.removeAt(_recentKeyword.length - 1);
                 await _sharedPreferences.setStringList('search', _recentKeyword);
                 setState(() {});
+
+                Get.off(() => SearchResultPage(keyword: text));
               },
               onTapOutside: (e) {
                 FocusScope.of(context).unfocus();
@@ -130,7 +135,7 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
                   mode: SearchKeywordListItem.MODE_RECENT_KEYWORD,
                   name: _recentKeyword[idx],
                   onTap: () {
-
+                    Get.off(() => SearchResultPage(keyword: _recentKeyword[idx]));
                   },
                 );
               },
@@ -176,7 +181,7 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
                 name: _trendKeyword[idx].name,
                 num: idx + 1,
                 onTap: () {
-
+                  Get.to(() => DroneSpotDetailPage(id: _trendKeyword[idx].id));
                 },
               );
             },
@@ -213,6 +218,38 @@ class _DroneSpotSearchPageState extends State<DroneSpotSearchPage> {
                 ),
               ),
             )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+class SearchResultPage extends StatefulWidget {
+  SearchResultPage({
+    required this.keyword
+  });
+
+  String keyword;
+
+  @override
+  State<StatefulWidget> createState() => _SearchResultPageState();
+}
+
+class _SearchResultPageState extends State<SearchResultPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFFF1F1F5),
+      body: Container(
+        width: double.infinity,
+        padding: EdgeInsets.fromLTRB(24, getTopPaddingWithHeight(context, 24), 24, 0),
+        child: Column(
+          children: [
+            Text(widget.keyword)
           ],
         ),
       ),

@@ -244,4 +244,54 @@ class DroneSpotHttp {
       return data;
     }
   }
+  static Future<List<DroneSpotModel>?> searchDronespot(AuthController authController, {
+    int page = 1,
+    int size = 25,
+    String? keyword
+  }) async {
+    final Map<String, dynamic> queryParameter = {};
+    queryParameter['page_num'] = page.toString();
+    queryParameter['size'] = size.toString();
+
+    if (keyword != null) queryParameter['keyword'] = keyword;
+
+    final url = Uri.https(HttpBase.domain, 'api/v1/dronespot/search', queryParameter);
+    // final url = Uri.http(HttpBase.debugUrl, 'api/v1/dronespot/popular');
+
+    int trial = 0;
+    while (trial < 2) {
+      final accessKey = await HttpBase.getAccessKey();
+      Map<String, String> headers = {};
+      if (accessKey != null) {
+        headers['Authorization'] = 'Bearer $accessKey';
+      }
+
+      // debugPrint(url.);
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode != 200) {
+        if (response.statusCode == 401 && trial == 0) {
+          debugPrint("Accesstoken Expired");
+          if (!await authController.refreshAccessToken()) {
+            return null;
+          }
+          trial += 1;
+          continue;
+        } else {
+          return null;
+        }
+      } else {
+        debugPrint(utf8.decode(response.bodyBytes));
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        debugPrint(jsonData.toString());
+
+        List<DroneSpotModel> data = [];
+        for (var i in jsonData) {
+          data.add(DroneSpotModel.fromJson(i));
+        }
+        return data;
+      }
+    }
+    return null;
+  }
 }
