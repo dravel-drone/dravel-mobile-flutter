@@ -277,11 +277,13 @@ class DroneSpotHttp {
           }
           trial += 1;
           continue;
+        } if (response.statusCode == 404) {
+          return [];
         } else {
+          debugPrint(utf8.decode(response.bodyBytes));
           return null;
         }
       } else {
-        debugPrint(utf8.decode(response.bodyBytes));
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
         debugPrint(jsonData.toString());
 

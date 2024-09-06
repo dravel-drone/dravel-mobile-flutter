@@ -1,8 +1,12 @@
 import 'package:dravel/api/http_dronespot.dart';
+import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/model/model_dronespot.dart';
 import 'package:dravel/pages/detail/page_dronespot_detail.dart';
 import 'package:dravel/utils/util_ui.dart';
+import 'package:dravel/widgets/error_data.dart';
+import 'package:dravel/widgets/list/list_item_dronespot.dart';
 import 'package:dravel/widgets/list/list_item_search.dart';
+import 'package:dravel/widgets/load_data.dart';
 import 'package:dravel/widgets/no_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -242,12 +246,37 @@ class SearchResultPage extends StatefulWidget {
 
 class _SearchResultPageState extends State<SearchResultPage> {
   late final TextEditingController _textEditingController;
+  late final AuthController _authController;
+
+  List<DroneSpotModel> data = [];
+
+  int _isLoaded = -1;
+
+  Future<void> _loadData() async {
+    _isLoaded = -1;
+    if (mounted) setState(() {});
+
+    final List<DroneSpotModel>? result = await DroneSpotHttp.searchDronespot(
+      _authController,
+      keyword: widget.keyword
+    );
+
+    if (result == null) {
+      _isLoaded = 0;
+    } else {
+      _isLoaded = 1;
+      data = result;
+    }
+    if (mounted) setState(() {});
+  }
 
   @override
   void initState() {
+    _authController = Get.find<AuthController>();
     _textEditingController = TextEditingController(
       text: widget.keyword
     );
+    _loadData();
     super.initState();
   }
 
@@ -298,7 +327,6 @@ class _SearchResultPageState extends State<SearchResultPage> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12,),
                   ],
                 ),
               ),
@@ -310,6 +338,51 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget child;
+
+    if (_isLoaded != 1) {
+      if (_isLoaded == -1) {
+        child = LoadDataWidget();
+      } else {
+        child = ErrorDataWidget();
+      }
+    } else {
+      child = data.isNotEmpty ? ListView.separated(
+        padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
+        itemBuilder: (context, idx) {
+          return DroneSpotItem(
+              id: data[idx].id,
+              name: data[idx].name,
+              imageUrl: data[idx].imageUrl,
+              address: data[idx].location.address!,
+              like_count: data[idx].likeCount,
+              review_count: data[idx].reviewCount,
+              camera_level: data[idx].permit.camera,
+              fly_level: data[idx].permit.flight,
+              isLike: data[idx].isLike,
+              onTap: () {
+                Get.to(() => DroneSpotDetailPage(
+                  id: data[idx].id,
+                ));
+              },
+              onChange: (value) {
+                setState(() {
+                  data[idx].isLike = value.isLike;
+                  data[idx].likeCount = value.likeCount;
+                });
+              }
+          );
+        },
+        separatorBuilder: (context, idx) {
+          return SizedBox(height: 12,);
+        },
+        itemCount: data.length
+      ) : NoDataWidget(
+        backgroundColor: Colors.transparent,
+        text: "검색 결과가 없습니다.",
+      );
+    }
+
     return Scaffold(
       backgroundColor: Color(0xFFF1F1F5),
       body: Container(
@@ -318,16 +391,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
           children: [
             _createAppbar(),
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(height: 24,),
-
-                    SizedBox(height: getBottomPaddingWithSafeHeight(context, 24),)
-                  ],
-                ),
-              ),
-            )
+              child: child
+            ),
           ],
         ),
       ),
