@@ -8,6 +8,12 @@ import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class CourseDetailPage extends StatefulWidget {
+  CourseDetailPage({
+    required this.id
+  });
+
+  int id;
+
   @override
   State<StatefulWidget> createState() => _CourseDetailPageState();
 }
