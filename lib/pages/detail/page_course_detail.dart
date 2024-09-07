@@ -1,8 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dravel/api/http_course.dart';
+import 'package:dravel/model/model_course.dart';
 import 'package:dravel/utils/util_ui.dart';
+import 'package:dravel/widgets/appbar/appbar_main.dart';
+import 'package:dravel/widgets/error_data.dart';
 import 'package:dravel/widgets/list/list_item_dronespot.dart';
 import 'package:dravel/widgets/list/list_item_place.dart';
+import 'package:dravel/widgets/load_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -67,6 +72,19 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
   int _selectedIdx = 0;
   bool _isShrink = false;
 
+  int _isLoaded = -1;
+
+  Future<void> _loadData() async {
+    CourseModel? result = await CourseHttp.getCourseDetail(id: widget.id);
+
+    if (result == null) {
+      _isLoaded = 0;
+    } else {
+      _isLoaded = 1;
+    }
+    if (mounted) setState(() {});
+  }
+
   @override
   void initState() {
     _sliverScrollController = ScrollController();
@@ -76,6 +94,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
             _sliverScrollController.offset > (230 - kToolbarHeight);
       });
     });
+    _loadData();
     super.initState();
   }
 
@@ -231,6 +250,44 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoaded != 1) {
+      if (_isLoaded == -1) {
+        return Scaffold(
+          appBar: CustomAppbar(
+            title: '코스 상세정보',
+              textColor: Colors.black,
+              leading: IconButton(
+                icon: Icon(
+                    Icons.arrow_back_outlined,
+                    color: Colors.black
+                ),
+                onPressed: () {
+                  Get.back();
+                },
+              )
+          ),
+          body: LoadDataWidget(),
+        );
+      } else {
+        return Scaffold(
+          appBar: CustomAppbar(
+              title: '코스 상세정보',
+              textColor: Colors.black,
+              leading: IconButton(
+                icon: Icon(
+                    Icons.arrow_back_outlined,
+                    color: Colors.black
+                ),
+                onPressed: () {
+                  Get.back();
+                },
+              )
+          ),
+          body: ErrorDataWidget(),
+        );
+      }
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
