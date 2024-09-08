@@ -18,3 +18,12 @@ String formatTime(int minute) {
   time += '${minute % 60}m';
   return time;
 }
+
+String formatTimeKor(int minute) {
+  String time = '';
+  if (minute ~/ 60 > 0) {
+    time += '${minute ~/ 60}시간 ';
+  }
+  time += '${minute % 60}분';
+  return time;
+}

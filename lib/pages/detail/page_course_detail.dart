@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dravel/api/http_base.dart';
 import 'package:dravel/api/http_course.dart';
 import 'package:dravel/model/model_course.dart';
+import 'package:dravel/model/model_dronespot.dart';
 import 'package:dravel/model/model_place.dart';
+import 'package:dravel/utils/util_map.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/error_data.dart';
@@ -28,7 +31,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
   late final ScrollController _sliverScrollController;
 
   CourseDetailModel? _courseData;
-  List<String> _images = [];
+  List<String?> _images = [];
 
   int _selectedIdx = 0;
   bool _isShrink = false;
@@ -46,9 +49,11 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
       _images.clear();
       for (var place in _courseData!.places) {
         if (place is PlaceModel) {
-
+          _images.add(place.photoUrl);
+        } else if (place is DroneSpotModel) {
+          _images.add(place.imageUrl);
         } else {
-
+          _images.add(null);
         }
       }
     }
@@ -86,14 +91,26 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
               height: constraints.maxHeight,
               width: constraints.maxWidth,
               child: CarouselSlider(
-                items: List.generate(_images.length, (idx) => CachedNetworkImage(
-                  imageUrl: _images[idx],
-                  fit: BoxFit.cover,
-                  height: constraints.maxHeight,
-                  width: constraints.maxWidth,
-                  color: Color(0x40000000),
-                  colorBlendMode: BlendMode.darken,
-                )),
+                items: List.generate(_images.length, (idx) {
+                  if (_images[idx] != null) {
+                    return CachedNetworkImage(
+                      imageUrl: HttpBase.baseUrl + _images[idx]!,
+                      fit: BoxFit.cover,
+                      height: constraints.maxHeight,
+                      width: constraints.maxWidth,
+                      color: Color(0x40000000),
+                      colorBlendMode: BlendMode.darken,
+                    );
+                  } else {
+                    return Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: getRandomGradientColor(idx + 213434)
+                        )
+                      ),
+                    );
+                  }
+                }),
                 options: CarouselOptions(
                   viewportFraction: 1,
                   height: constraints.maxHeight,
@@ -137,7 +154,9 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '2개의 경유지 / 8.2km / 4시간 30분',
+            '${_courseData!.places.length}개의 경유지 /'
+                ' ${formatDistance(_courseData!.distance)} /'
+                ' ${formatTimeKor(_courseData!.duration)}',
             style: TextStyle(
               height: 1,
               fontSize: 16,
@@ -146,9 +165,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
           ),
           SizedBox(height: 12,),
           Text(
-            '''모든 국민은 신체의 자유를 가진다. 누구든지 법률에 의하지 아니하고는 체포·구속·압수·수색 또는 심문을 받지 아니하며, 법률과 적법한 절차에 의하지 아니하고는 처벌·보안처분 또는 강제노역을 받지 아니한다. 법률은 특별한 규정이 없는 한 공포한 날로부터 20일을 경과함으로써 효력을 발생한다.
-
-모든 국민은 신속한 재판을 받을 권리를 가진다. 형사피고인은 상당한 이유가 없는 한 지체없이 공개재판을 받을 권리를 가진다. 국가는 농·어민과 중소기업의 자조조직을 육성하여야 하며, 그 자율적 활동과 발전을 보장한다. 의원을 제명하려면 국회재적의원 3분의 2 이상의 찬성이 있어야 한다. 대통령은 법률에서 구체적으로 범위를 정하여 위임받은 사항과 법률을 집행하기 위하여 필요한 사항에 관하여 대통령령을 발할 수 있다.''',
+            _courseData!.content,
             style: TextStyle(
               height: 1.2,
               color: Colors.black87,
@@ -166,36 +183,39 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
       padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
       itemBuilder: (context, idx) {
         Widget child;
-        if (_placeData[idx]['type'] == 0) {
+        final item = _courseData!.places[idx];
+        if (item is DroneSpotModel) {
           child = DroneSpotItem(
-            id: 1,
-            name: _placeData[idx]['name'],
-            imageUrl: _placeData[idx]['img'],
-            address: _placeData[idx]['address'],
-            like_count: _placeData[idx]['like_count'],
-            review_count: _placeData[idx]['review_count'],
-            camera_level: _placeData[idx]['camera'],
-            fly_level: _placeData[idx]['flight'],
+            id: item.id,
+            name: item.name,
+            imageUrl: item.imageUrl,
+            address: item.location.address!,
+            like_count: item.likeCount,
+            review_count: item.reviewCount,
+            camera_level: item.permit.camera,
+            fly_level: item.permit.flight,
             backgroundColor: Color(0xFFF1F1F5),
             isLike: false,
             onChange: (value) {
 
             },
           );
-        } else {
+        } else if (item is PlaceModel) {
           child = PlaceItem(
-            id: 3,
-            name: _placeData[idx]['name'],
-            distance: _placeData[idx]['distance'],
-            message: _placeData[idx]['message'],
-            imageUrl: _placeData[idx]['img'],
-            address: _placeData[idx]['location'],
+            id: item.id,
+            name: item.name,
+            distance: 1,
+            message: item.comment,
+            imageUrl: item.photoUrl,
+            address: item.location.address ?? '',
             backgroundColor: Color(0xFFF1F1F5),
           );
+        } else {
+          child = SizedBox();
         }
         String text = '${idx + 1}번째 경유지';
         if (idx == 0) text = '출발지';
-        if (idx == _placeData.length - 1) text = '마무리';
+        if (idx == _courseData!.places.length - 1) text = '마무리';
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -215,7 +235,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
       separatorBuilder: (context, idx) {
         return SizedBox(height: 18,);
       },
-      itemCount: _placeData.length
+      itemCount: _courseData!.places.length
     );
   }
 
@@ -286,7 +306,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
               title: Align(
                 alignment: Alignment.topCenter,
                 child: Text(
-                  "코스 이름",
+                  _courseData!.name,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
