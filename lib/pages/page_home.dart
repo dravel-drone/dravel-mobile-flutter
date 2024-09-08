@@ -255,7 +255,9 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                 distance: _courseData!.distance,
                 duration: _courseData!.duration,
                 onTap: () {
-                  Get.to(() => CourseDetailPage());
+                  Get.to(() => CourseDetailPage(
+                    id: _courseData!.id,
+                  ));
                 },
               )
           ],
