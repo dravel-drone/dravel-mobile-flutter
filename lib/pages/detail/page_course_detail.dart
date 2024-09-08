@@ -5,6 +5,7 @@ import 'package:dravel/api/http_course.dart';
 import 'package:dravel/model/model_course.dart';
 import 'package:dravel/model/model_dronespot.dart';
 import 'package:dravel/model/model_place.dart';
+import 'package:dravel/pages/detail/page_dronespot_detail.dart';
 import 'package:dravel/utils/util_map.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
@@ -198,6 +199,9 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
             isLike: false,
             onChange: (value) {
 
+            },
+            onTap: () {
+              Get.to(() => DroneSpotDetailPage(id: item.id));
             },
           );
         } else if (item is PlaceModel) {
