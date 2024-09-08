@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dravel/api/http_course.dart';
 import 'package:dravel/model/model_course.dart';
+import 'package:dravel/model/model_place.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/error_data.dart';
@@ -26,48 +27,8 @@ class CourseDetailPage extends StatefulWidget {
 class _CourseDetailPageState extends State<CourseDetailPage> {
   late final ScrollController _sliverScrollController;
 
-  List<String> _images = [
-    'https://plus.unsplash.com/premium_photo-1675359655401-27e0b11bef70?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://plus.unsplash.com/premium_photo-1664801768830-46734d0f0848?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1695321924057-91977a88eae1?q=80&w=1750&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-  ];
-
-  List<Map<String, dynamic>> _placeData = [
-    {
-      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '성산일출봉',
-      'message': '친절한 서비스와 오션뷰룸이 인기',
-      'location': '서귀포시 한다리',
-      'distance': 2434,
-      'type': 1
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '성산일출봉',
-      'message': '친절한 서비스와 오션뷰룸이 인기',
-      'location': '서귀포시 한다리',
-      'distance': 2434,
-      'type': 1
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1476385822777-70eabacbd41f?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '성산일출봉',
-      'message': '친절한 서비스와 오션뷰룸이 인기',
-      'location': '서귀포시 한다리',
-      'distance': 2434,
-      'type': 1
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '부산항',
-      'like_count': 234,
-      'review_count': 4354,
-      'flight': 2,
-      'camera': 2,
-      'address': '경상남도 부산시',
-      'type': 0
-    },
-  ];
+  CourseDetailModel? _courseData;
+  List<String> _images = [];
 
   int _selectedIdx = 0;
   bool _isShrink = false;
@@ -75,13 +36,23 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
   int _isLoaded = -1;
 
   Future<void> _loadData() async {
-    CourseModel? result = await CourseHttp.getCourseDetail(id: widget.id);
+    CourseDetailModel? result = await CourseHttp.getCourseDetail(id: widget.id);
 
+    _courseData = result;
     if (result == null) {
       _isLoaded = 0;
     } else {
       _isLoaded = 1;
+      _images.clear();
+      for (var place in _courseData!.places) {
+        if (place is PlaceModel) {
+
+        } else {
+
+        }
+      }
     }
+
     if (mounted) setState(() {});
   }
 

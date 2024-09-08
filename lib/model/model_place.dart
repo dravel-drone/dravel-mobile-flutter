@@ -16,6 +16,23 @@ class PlaceModel {
     this.photoUrl,
     this.placeType
   });
+
+  factory PlaceModel.fromJson(Map<String, dynamic> jsonData) {
+    final location = LocationModel(
+      lat: jsonData['location']['lat'],
+      lon: jsonData['location']['lon'],
+      address: jsonData['location']['address'],
+    );
+
+    return PlaceModel(
+        name: jsonData['name'],
+        id: jsonData['id'],
+        comment: jsonData['comment'],
+        photoUrl: jsonData['photo_url'],
+        placeType: jsonData['place_type_id'],
+        location: location
+    );
+  }
 }
 
 class DronespotPlaceModel {
@@ -28,38 +45,11 @@ class DronespotPlaceModel {
   });
 
   factory DronespotPlaceModel.fromJson(Map<String, dynamic> jsonData) {
-    final accommodationList = List.generate(jsonData['accommodations'].length, (idx) {
-      final location = LocationModel(
-        lat: jsonData['accommodations'][idx]['location']['lat'],
-        lon: jsonData['accommodations'][idx]['location']['lon'],
-        address: jsonData['accommodations'][idx]['location']['address'],
-      );
+    final accommodationList = List.generate(jsonData['accommodations'].length, (idx) =>
+        PlaceModel.fromJson(jsonData['accommodations'][idx]));
 
-      return PlaceModel(
-        name: jsonData['accommodations'][idx]['name'],
-        id: jsonData['accommodations'][idx]['id'],
-        comment: jsonData['accommodations'][idx]['comment'],
-        photoUrl: jsonData['accommodations'][idx]['photo_url'],
-        placeType: jsonData['accommodations'][idx]['place_type_id'],
-        location: location
-      );
-    });
-    final restaurantList = List.generate(jsonData['restaurants'].length, (idx) {
-      final location = LocationModel(
-        lat: jsonData['restaurants'][idx]['location']['lat'],
-        lon: jsonData['restaurants'][idx]['location']['lon'],
-        address: jsonData['restaurants'][idx]['location']['address'],
-      );
-
-      return PlaceModel(
-        name: jsonData['restaurants'][idx]['name'],
-        id: jsonData['restaurants'][idx]['id'],
-        comment: jsonData['restaurants'][idx]['comment'],
-        photoUrl: jsonData['restaurants'][idx]['photo_url'],
-        placeType: jsonData['restaurants'][idx]['place_type_id'],
-        location: location
-      );
-    });
+    final restaurantList = List.generate(jsonData['restaurants'].length, (idx) =>
+        PlaceModel.fromJson(jsonData['restaurants'][idx]));
 
     return DronespotPlaceModel(
       accommodations: accommodationList,
