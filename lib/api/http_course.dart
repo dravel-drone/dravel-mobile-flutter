@@ -19,4 +19,19 @@ class CourseHttp {
 
     return CourseModel.fromJson(jsonData);
   }
+
+  static Future<CourseDetailModel?> getCourseDetail({
+    required int id
+  }) async {
+    final url = Uri.https(HttpBase.domain, 'api/v1/course/$id');
+
+    final response = await http.get(url);
+
+    if (response.statusCode != 200) return null;
+
+    final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+    debugPrint(jsonData.toString());
+
+    return CourseDetailModel.fromJson(jsonData);
+  }
 }
