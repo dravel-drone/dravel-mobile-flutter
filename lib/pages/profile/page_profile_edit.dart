@@ -39,6 +39,17 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                   width: 120,
                   height: 120,
                   fit: BoxFit.cover,
+                  errorWidget: (context, error, obj) {
+                    return Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: getRandomGradientColor(457848)
+                          )
+                      ),
+                    );
+                  },
                   imageUrl: "https://images.unsplash.com/photo-1498141321056-776a06214e24?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                 ) :
                 Image.file(

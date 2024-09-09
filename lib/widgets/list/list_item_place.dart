@@ -47,6 +47,17 @@ class PlaceItem extends StatelessWidget {
                   height: double.infinity,
                   width: 85,
                   fit: BoxFit.cover,
+                  errorWidget: (context, error, obj) {
+                    return Container(
+                      width: 85,
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: getRandomGradientColor(id + 6892163)
+                          )
+                      ),
+                    );
+                  },
                   imageUrl: imageUrl!,
                 ),
               )

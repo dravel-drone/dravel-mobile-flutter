@@ -62,6 +62,17 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
       photo = CachedNetworkImage(
         height: 120,
         width: 120,
+        errorWidget: (context, error, obj) {
+          return Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: getRandomGradientColor(widget.id + 305952)
+                )
+            ),
+          );
+        },
         imageUrl: HttpBase.baseUrl + _data.imageUrl!,
         fit: BoxFit.cover,
       );
