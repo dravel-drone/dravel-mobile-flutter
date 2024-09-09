@@ -103,6 +103,14 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                         bool? result = await DroneSpotHttp.unlikeDronespot(_authController, id: widget.id);
 
                         if (result == null || !result) {
+                          if (Get.isSnackbarOpen) Get.back();
+                          Get.showSnackbar(
+                              GetSnackBar(
+                                backgroundColor: Colors.red,
+                                message: "좋아요 과정에서 오류가 발생했습니다.",
+                                duration: Duration(seconds: 1),
+                              )
+                          );
                           return;
                         }
                         setState(() {
@@ -113,6 +121,14 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                         bool? result = await DroneSpotHttp.likeDronespot(_authController, id: widget.id);
 
                         if (result == null || !result) {
+                          if (Get.isSnackbarOpen) Get.back();
+                          Get.showSnackbar(
+                              GetSnackBar(
+                                backgroundColor: Colors.red,
+                                message: "좋아요 과정에서 오류가 발생했습니다.",
+                                duration: Duration(seconds: 1),
+                              )
+                          );
                           return;
                         }
                         setState(() {
