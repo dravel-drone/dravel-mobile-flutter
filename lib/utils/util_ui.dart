@@ -106,9 +106,20 @@ Widget getPicturePermitWidget(int level, {
 List<Color> getRandomGradientColor(int seed) {
   List<List<Color>> colors = [
     [
-      Color(0xFF12c2e9),
-      Color(0xFFc471ed),
-      Color(0xFFf64f59),
+      Color(0xFF544a7d),
+      Color(0xFFffd452),
+    ],
+    [
+      Color(0xFF8E2DE2),
+      Color(0xFF4A00E0),
+    ],
+    [
+      Color(0xFF000046),
+      Color(0xFF1CB5E0),
+    ],
+    [
+      Color(0xFF00416A),
+      Color(0xFFE4E5E6),
     ],
     [
       Color(0xFF8360c3),

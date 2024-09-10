@@ -62,6 +62,17 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
       photo = CachedNetworkImage(
         height: 120,
         width: 120,
+        errorWidget: (context, error, obj) {
+          return Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: getRandomGradientColor(widget.id + 305952)
+                )
+            ),
+          );
+        },
         imageUrl: HttpBase.baseUrl + _data.imageUrl!,
         fit: BoxFit.cover,
       );
@@ -103,6 +114,14 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                         bool? result = await DroneSpotHttp.unlikeDronespot(_authController, id: widget.id);
 
                         if (result == null || !result) {
+                          if (Get.isSnackbarOpen) Get.back();
+                          Get.showSnackbar(
+                              GetSnackBar(
+                                backgroundColor: Colors.red,
+                                message: "좋아요 과정에서 오류가 발생했습니다.",
+                                duration: Duration(seconds: 1),
+                              )
+                          );
                           return;
                         }
                         setState(() {
@@ -113,6 +132,14 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                         bool? result = await DroneSpotHttp.likeDronespot(_authController, id: widget.id);
 
                         if (result == null || !result) {
+                          if (Get.isSnackbarOpen) Get.back();
+                          Get.showSnackbar(
+                              GetSnackBar(
+                                backgroundColor: Colors.red,
+                                message: "좋아요 과정에서 오류가 발생했습니다.",
+                                duration: Duration(seconds: 1),
+                              )
+                          );
                           return;
                         }
                         setState(() {
@@ -428,7 +455,10 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                 return PlaceItem(
                   id: _data.places.restaurants[idx].id,
                   name: _data.places.restaurants[idx].name,
-                  distance: 32,
+                  location: PlaceLocation(
+                      lat: _data.places.restaurants[idx].location.lat,
+                      lng: _data.places.restaurants[idx].location.lon
+                  ),
                   message: _data.places.restaurants[idx].comment,
                   imageUrl: _data.places.restaurants[idx].photoUrl,
                   address: _data.places.restaurants[idx].location.address!,
@@ -437,7 +467,10 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                 return PlaceItem(
                   id: _data.places.accommodations[idx].id,
                   name: _data.places.accommodations[idx].name,
-                  distance: 32,
+                  location: PlaceLocation(
+                      lat: _data.places.restaurants[idx].location.lat,
+                      lng: _data.places.restaurants[idx].location.lon
+                  ),
                   message: _data.places.accommodations[idx].comment,
                   imageUrl: _data.places.accommodations[idx].photoUrl,
                   address: _data.places.accommodations[idx].location.address!,

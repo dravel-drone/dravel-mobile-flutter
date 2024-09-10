@@ -62,7 +62,10 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     }
 
     _recommendReviewData = result;
-    if (_recommendReviewData.length > 3) {
+    if (_recommendReviewData.isNotEmpty && _recommendReviewData.length <= 3) {
+      _maxReviewCount = _recommendReviewData.length;
+    }
+    else if (_recommendReviewData.length > 3) {
       _maxReviewCount = 3;
     }
     if (mounted) setState(() {});

@@ -20,8 +20,13 @@ class AuthController extends GetxController {
   }
 
   Future<bool> checkLogin() async {
-    return await _secureStorage.read(key: 'access') != null
-        && await _secureStorage.read(key: 'refresh') != null;
+    bool isLogin = await _secureStorage.read(key: 'access') != null
+        && await _secureStorage.read(key: 'refresh') != null
+        && await _secureStorage.read(key: 'uid') != null;
+
+    if (isLogin) userUid.value = await _secureStorage.read(key: 'uid');
+
+    return isLogin;
   }
 
   Future<AuthKeyModel?> login({

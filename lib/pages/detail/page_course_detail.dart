@@ -101,6 +101,17 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                       width: constraints.maxWidth,
                       color: Color(0x40000000),
                       colorBlendMode: BlendMode.darken,
+                      errorWidget: (context, error, obj) {
+                        return Container(
+                          height: constraints.maxHeight,
+                          width: constraints.maxWidth,
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  colors: getRandomGradientColor(widget.id + 56573)
+                              )
+                          ),
+                        );
+                      },
                     );
                   } else {
                     return Container(
@@ -208,7 +219,10 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
           child = PlaceItem(
             id: item.id,
             name: item.name,
-            distance: 1,
+            location: PlaceLocation(
+              lat: item.location.lat,
+              lng: item.location.lon
+            ),
             message: item.comment,
             imageUrl: item.photoUrl,
             address: item.location.address ?? '',

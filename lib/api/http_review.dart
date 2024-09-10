@@ -194,4 +194,46 @@ class ReviewHttp {
     }
     return null;
   }
+
+  static Future<List<DronespotReviewDetailModel>?> getLikeReview(
+    AuthController authController,
+  ) async {
+
+    int trial = 0;
+    while (trial < 2) {
+      final accessKey = await HttpBase.getAccessKey();
+      Map<String, String> headers = {};
+      if (accessKey != null) {
+        headers['Authorization'] = 'Bearer $accessKey';
+      }
+      final url = Uri.https(HttpBase.domain, 'api/v1/review/like/${authController.userUid.value}');
+
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode != 200) {
+        if (response.statusCode == 401 && trial == 0) {
+          debugPrint("Accesstoken Expired");
+          if (!await authController.refreshAccessToken()) {
+            return null;
+          }
+          trial += 1;
+          continue;
+        } else {
+          debugPrint(utf8.decode(response.bodyBytes));
+          return null;
+        }
+      } else {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        debugPrint(jsonData.toString());
+
+        List<DronespotReviewDetailModel> data = [];
+        for (var i in jsonData) {
+          data.add(DronespotReviewDetailModel.fromJson(i));
+        }
+
+        return data;
+      }
+    }
+    return null;
+  }
 }
