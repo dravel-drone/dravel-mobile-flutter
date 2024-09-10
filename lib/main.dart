@@ -39,7 +39,7 @@ void main() async {
   final authController = Get.find<AuthController>();
   final locationController = Get.find<LocationController>();
 
-  bool locationEnable = await locationController.checkPermission();
+  await locationController.initLocation();
 
   runApp(MyApp(
     isLogin: await authController.checkLogin(),
