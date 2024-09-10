@@ -1,9 +1,23 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dravel/controller/controller_location.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 
+import '../../utils/util_map.dart';
 import '../../utils/util_ui.dart';
+
+class PlaceLocation {
+  double lat;
+  double lng;
+
+  PlaceLocation({
+    required this.lat,
+    required this.lng,
+  });
+}
 
 class PlaceItem extends StatelessWidget {
   PlaceItem({
@@ -12,7 +26,7 @@ class PlaceItem extends StatelessWidget {
     this.imageUrl,
     required this.address,
     this.message,
-    required this.distance,
+    required this.location,
     this.backgroundColor = Colors.white
   });
 
@@ -21,10 +35,12 @@ class PlaceItem extends StatelessWidget {
   String? message;
   String address;
 
-  int distance;
+  PlaceLocation location;
   Color backgroundColor;
 
   int id;
+
+  final LocationController _locationController = Get.find<LocationController>();
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +63,17 @@ class PlaceItem extends StatelessWidget {
                   height: double.infinity,
                   width: 85,
                   fit: BoxFit.cover,
+                  errorWidget: (context, error, obj) {
+                    return Container(
+                      width: 85,
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: getRandomGradientColor(id + 6892163)
+                          )
+                      ),
+                    );
+                  },
                   imageUrl: imageUrl!,
                 ),
               )
@@ -83,13 +110,29 @@ class PlaceItem extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Text(
-                          '${distance}m',
-                          style: TextStyle(
-                              color: Color(0xFF0075FF),
-                              fontSize: 14
-                          ),
-                        )
+                        Obx(() {
+                          if (_locationController.position.value == null) {
+                            return const SizedBox();
+                          }
+                          debugPrint(
+                            'place: ${location.lat} ${location.lng} '
+                                'my: ${_locationController.position.value!.latitude} ${_locationController.position.value!.longitude}'
+                          );
+                          return Text(
+                            formatDistance(
+                              Geolocator.distanceBetween(
+                                location.lat,
+                                location.lng,
+                                _locationController.position.value!.latitude,
+                                _locationController.position.value!.longitude
+                              ).round()
+                            ),
+                            style: TextStyle(
+                                color: Color(0xFF0075FF),
+                                fontSize: 14
+                            ),
+                          );
+                        })
                       ],
                     ),
                     Text(

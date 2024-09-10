@@ -81,6 +81,17 @@ class _DroneSpotItemState extends State<DroneSpotItem> {
                     height: double.infinity,
                     width: 110,
                     fit: BoxFit.cover,
+                    errorWidget: (context, error, obj) {
+                      return Container(
+                        width: 110,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: getRandomGradientColor(widget.id + 895664)
+                            )
+                        ),
+                      );
+                    },
                     imageUrl: HttpBase.baseUrl + widget.imageUrl!,
                   ),
                 )

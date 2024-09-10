@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dravel/controller/controller_auth.dart';
+import 'package:dravel/controller/controller_location.dart';
 import 'package:dravel/pages/account/page_login.dart';
 import 'package:dravel/pages/page_main_navigation.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +35,14 @@ void main() async {
   }
 
   Get.put(AuthController());
-  final controller = Get.find<AuthController>();
+  Get.put(LocationController());
+  final authController = Get.find<AuthController>();
+  final locationController = Get.find<LocationController>();
+
+  await locationController.initLocation();
+
   runApp(MyApp(
-    isLogin: await controller.checkLogin(),
+    isLogin: await authController.checkLogin(),
   ));
 }
 

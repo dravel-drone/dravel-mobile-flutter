@@ -52,6 +52,17 @@ class CourseItem extends StatelessWidget {
                     fit: BoxFit.cover,
                     width: double.infinity,
                     height: double.infinity,
+                    errorWidget: (context, error, obj) {
+                      return Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: getRandomGradientColor(id + 547854)
+                            )
+                        ),
+                      );
+                    },
                   ),
                 )
               else

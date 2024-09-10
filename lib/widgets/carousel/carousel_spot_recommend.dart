@@ -45,6 +45,15 @@ class DroneSpotRecommendCard extends StatelessWidget{
                     child: CachedNetworkImage(
                       imageUrl: HttpBase.baseUrl + imageUrl!,
                       fit: BoxFit.cover,
+                      errorWidget: (context, error, obj) {
+                        return Container(
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  colors: getRandomGradientColor(id + 1923433)
+                              )
+                          ),
+                        );
+                      },
                     ),
                   )
                 else

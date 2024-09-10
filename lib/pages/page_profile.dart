@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../utils/util_ui.dart';
+
 class ProfilePage extends StatefulWidget {
   ProfilePage({
     this.pageMode = false
@@ -250,6 +252,17 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                   width: 110,
                   height: 110,
                   fit: BoxFit.cover,
+                  errorWidget: (context, error, obj) {
+                    return Container(
+                      width: 110,
+                      height: 110,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: getRandomGradientColor(78924275)
+                          )
+                      ),
+                    );
+                  },
                   imageUrl: "https://images.unsplash.com/photo-1498141321056-776a06214e24?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                 ),
               ),

@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/pages/profile/page_follow_list.dart';
 import 'package:flutter/material.dart';
 
+import '../../utils/util_ui.dart';
+
 class _FollowListItem extends StatelessWidget {
   _FollowListItem({
     required this.url,
@@ -32,6 +34,17 @@ class _FollowListItem extends StatelessWidget {
           child: CachedNetworkImage(
             width: 48,
             height: 48,
+            errorWidget: (context, error, obj) {
+              return Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        colors: getRandomGradientColor(658954)
+                    )
+                ),
+              );
+            },
             fit: BoxFit.cover,
             imageUrl: url,
           ),

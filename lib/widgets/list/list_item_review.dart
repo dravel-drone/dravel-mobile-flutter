@@ -374,6 +374,14 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                                 bool? result = await ReviewHttp.unlikeReview(_authController, id: widget.id);
 
                                 if (result == null || !result) {
+                                  if (Get.isSnackbarOpen) Get.back();
+                                  Get.showSnackbar(
+                                    GetSnackBar(
+                                      backgroundColor: Colors.red,
+                                      message: "좋아요 과정에서 오류가 발생했습니다.",
+                                      duration: Duration(seconds: 1),
+                                    )
+                                  );
                                   return;
                                 }
                                 setState(() {
@@ -388,6 +396,14 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                                 bool? result = await ReviewHttp.likeReview(_authController, id: widget.id);
 
                                 if (result == null || !result) {
+                                  if (Get.isSnackbarOpen) Get.back();
+                                  Get.showSnackbar(
+                                      GetSnackBar(
+                                        backgroundColor: Colors.red,
+                                        message: "좋아요 과정에서 오류가 발생했습니다.",
+                                        duration: Duration(seconds: 1),
+                                      )
+                                  );
                                   return;
                                 }
                                 setState(() {
