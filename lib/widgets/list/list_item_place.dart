@@ -114,6 +114,10 @@ class PlaceItem extends StatelessWidget {
                           if (_locationController.position.value == null) {
                             return const SizedBox();
                           }
+                          debugPrint(
+                            'place: ${location.lat} ${location.lng} '
+                                'my: ${_locationController.position.value!.latitude} ${_locationController.position.value!.longitude}'
+                          );
                           return Text(
                             formatDistance(
                               Geolocator.distanceBetween(

@@ -456,8 +456,8 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                   id: _data.places.restaurants[idx].id,
                   name: _data.places.restaurants[idx].name,
                   location: PlaceLocation(
-                      lat: 37.45344,
-                      lng: 127.23423
+                      lat: _data.places.restaurants[idx].location.lat,
+                      lng: _data.places.restaurants[idx].location.lon
                   ),
                   message: _data.places.restaurants[idx].comment,
                   imageUrl: _data.places.restaurants[idx].photoUrl,
@@ -468,8 +468,8 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                   id: _data.places.accommodations[idx].id,
                   name: _data.places.accommodations[idx].name,
                   location: PlaceLocation(
-                      lat: 37.45344,
-                      lng: 127.23423
+                      lat: _data.places.restaurants[idx].location.lat,
+                      lng: _data.places.restaurants[idx].location.lon
                   ),
                   message: _data.places.accommodations[idx].comment,
                   imageUrl: _data.places.accommodations[idx].photoUrl,
