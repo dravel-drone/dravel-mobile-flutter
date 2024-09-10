@@ -1,9 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dravel/api/http_dronespot.dart';
+import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/list/list_item_dronespot.dart';
 import 'package:dravel/widgets/list/list_item_review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+
+import '../model/model_dronespot.dart';
+import 'detail/page_dronespot_detail.dart';
 
 class FavoritePage extends StatefulWidget {
   @override
@@ -11,68 +17,15 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  late final AuthController _authController;
+
   late final TabController _tabController;
   late final ScrollController _droneSpotController;
   late final ScrollController _reviewController;
 
   int _selectedTab = 0;
 
-  List<dynamic> _droneLikeTestData = [
-    {
-      'img': 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '거제도',
-      'like_count': 234,
-      'review_count': 4354,
-      'flight': 0,
-      'camera': 2,
-      'address': '경상남도 거제시'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1485086806232-72035a9f951c?q=80&w=1635&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '두바이',
-      'like_count': 4353,
-      'review_count': 123,
-      'flight': 1,
-      'camera': 1,
-      'address': '경상남도 두바이시'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '부산항',
-      'like_count': 234,
-      'review_count': 4354,
-      'flight': 2,
-      'camera': 2,
-      'address': '경상남도 부산시'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '거제도',
-      'like_count': 234,
-      'review_count': 4354,
-      'flight': 0,
-      'camera': 2,
-      'address': '경상남도 거제시'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1485086806232-72035a9f951c?q=80&w=1635&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '두바이',
-      'like_count': 4353,
-      'review_count': 123,
-      'flight': 1,
-      'camera': 1,
-      'address': '경상남도 두바이시'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '부산항',
-      'like_count': 234,
-      'review_count': 4354,
-      'flight': 2,
-      'camera': 2,
-      'address': '경상남도 부산시'
-    },
-  ];
+  List<DroneSpotModel> _droneLikeData = [];
 
 
   List<dynamic> _reviewLikeTestData = [
@@ -318,14 +271,32 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
     },
   ];
 
+  Future<void> _getLikeDronespot() async {
+    List<DroneSpotModel>? result = await DroneSpotHttp.getLikedDronespot(_authController);
+
+    if (result == null) {
+      _droneLikeData = [];
+    } else {
+      _droneLikeData = result;
+    }
+
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _initData() async {
+    await _getLikeDronespot();
+  }
+
   @override
   void initState() {
+    _authController = Get.find<AuthController>();
     _tabController = TabController(
       length: 2,
       vsync: this
     );
     _reviewController = ScrollController();
     _droneSpotController = ScrollController();
+    _initData();
     super.initState();
   }
 
@@ -398,24 +369,32 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
       controller: _droneSpotController,
       itemBuilder: (context, idx) {
         return DroneSpotItem(
-          id: 1,
-          name: _droneLikeTestData[idx]['name'],
-          imageUrl: _droneLikeTestData[idx]['img'],
-          address: _droneLikeTestData[idx]['address'],
-          like_count: _droneLikeTestData[idx]['like_count'],
-          review_count: _droneLikeTestData[idx]['review_count'],
-          camera_level: _droneLikeTestData[idx]['camera'],
-          fly_level: _droneLikeTestData[idx]['flight'],
-          isLike: false,
-          onChange: (value) {
-
-          },
+            id: _droneLikeData[idx].id,
+            name: _droneLikeData[idx].name,
+            imageUrl: _droneLikeData[idx].imageUrl,
+            address: _droneLikeData[idx].location.address!,
+            like_count: _droneLikeData[idx].likeCount,
+            review_count: _droneLikeData[idx].reviewCount,
+            camera_level: _droneLikeData[idx].permit.camera,
+            fly_level: _droneLikeData[idx].permit.flight,
+            isLike: _droneLikeData[idx].isLike,
+            onTap: () {
+              Get.to(() => DroneSpotDetailPage(
+                id: _droneLikeData[idx].id,
+              ));
+            },
+            onChange: (value) {
+              setState(() {
+                _droneLikeData[idx].isLike = value.isLike;
+                _droneLikeData[idx].likeCount = value.likeCount;
+              });
+            }
         );
       },
       separatorBuilder: (context, idx) {
         return SizedBox(height: 12,);
       },
-      itemCount: _droneLikeTestData.length
+      itemCount: _droneLikeData.length
     );
   }
 
