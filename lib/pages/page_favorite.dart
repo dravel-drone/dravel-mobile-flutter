@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/api/http_dronespot.dart';
+import 'package:dravel/api/http_review.dart';
 import 'package:dravel/controller/controller_auth.dart';
+import 'package:dravel/model/model_review.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/list/list_item_dronespot.dart';
 import 'package:dravel/widgets/list/list_item_review.dart';
@@ -28,248 +30,7 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
   List<DroneSpotModel> _droneLikeData = [];
 
 
-  List<dynamic> _reviewLikeTestData = [
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1675359655401-27e0b11bef70?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '강릉',
-      'is_like': false,
-      'like_count': 234,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-07-05',
-      'drone': '매빅 에어2'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1664801768830-46734d0f0848?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '아늘기',
-      'place': '신안',
-      'is_like': true,
-      'like_count': 394,
-      'content': '테스트',
-      'write_date': '2023-11-05',
-      'drone': '매빅 미니4 PRO'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1465447142348-e9952c393450?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '서울',
-      'is_like': false,
-      'like_count': 345,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-02-17',
-      'drone': '매빅 에어3'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1675359655401-27e0b11bef70?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '강릉',
-      'is_like': false,
-      'like_count': 234,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-07-05',
-      'drone': '매빅 에어2'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1664801768830-46734d0f0848?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '아늘기',
-      'place': '신안',
-      'is_like': true,
-      'like_count': 394,
-      'content': '테스트',
-      'write_date': '2023-11-05',
-      'drone': '매빅 미니4 PRO'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1465447142348-e9952c393450?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '서울',
-      'is_like': false,
-      'like_count': 345,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-02-17',
-      'drone': '매빅 에어3'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1675359655401-27e0b11bef70?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '강릉',
-      'is_like': false,
-      'like_count': 234,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-07-05',
-      'drone': '매빅 에어2'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1664801768830-46734d0f0848?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '아늘기',
-      'place': '신안',
-      'is_like': true,
-      'like_count': 394,
-      'content': '테스트',
-      'write_date': '2023-11-05',
-      'drone': '매빅 미니4 PRO'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1465447142348-e9952c393450?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '서울',
-      'is_like': false,
-      'like_count': 345,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-02-17',
-      'drone': '매빅 에어3'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1675359655401-27e0b11bef70?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '강릉',
-      'is_like': false,
-      'like_count': 234,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-07-05',
-      'drone': '매빅 에어2'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1664801768830-46734d0f0848?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '아늘기',
-      'place': '신안',
-      'is_like': true,
-      'like_count': 394,
-      'content': '테스트',
-      'write_date': '2023-11-05',
-      'drone': '매빅 미니4 PRO'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1465447142348-e9952c393450?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '서울',
-      'is_like': false,
-      'like_count': 345,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-02-17',
-      'drone': '매빅 에어3'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1675359655401-27e0b11bef70?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '강릉',
-      'is_like': false,
-      'like_count': 234,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-07-05',
-      'drone': '매빅 에어2'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1664801768830-46734d0f0848?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '아늘기',
-      'place': '신안',
-      'is_like': true,
-      'like_count': 394,
-      'content': '테스트',
-      'write_date': '2023-11-05',
-      'drone': '매빅 미니4 PRO'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1465447142348-e9952c393450?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '서울',
-      'is_like': false,
-      'like_count': 345,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-02-17',
-      'drone': '매빅 에어3'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1675359655401-27e0b11bef70?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '강릉',
-      'is_like': false,
-      'like_count': 234,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-07-05',
-      'drone': '매빅 에어2'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1664801768830-46734d0f0848?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '아늘기',
-      'place': '신안',
-      'is_like': true,
-      'like_count': 394,
-      'content': '테스트',
-      'write_date': '2023-11-05',
-      'drone': '매빅 미니4 PRO'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1465447142348-e9952c393450?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '서울',
-      'is_like': false,
-      'like_count': 345,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-02-17',
-      'drone': '매빅 에어3'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1675359655401-27e0b11bef70?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '강릉',
-      'is_like': false,
-      'like_count': 234,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-07-05',
-      'drone': '매빅 에어2'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1664801768830-46734d0f0848?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '아늘기',
-      'place': '신안',
-      'is_like': true,
-      'like_count': 394,
-      'content': '테스트',
-      'write_date': '2023-11-05',
-      'drone': '매빅 미니4 PRO'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1465447142348-e9952c393450?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '서울',
-      'is_like': false,
-      'like_count': 345,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-02-17',
-      'drone': '매빅 에어3'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1675359655401-27e0b11bef70?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '강릉',
-      'is_like': false,
-      'like_count': 234,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-07-05',
-      'drone': '매빅 에어2'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1664801768830-46734d0f0848?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '아늘기',
-      'place': '신안',
-      'is_like': true,
-      'like_count': 394,
-      'content': '테스트',
-      'write_date': '2023-11-05',
-      'drone': '매빅 미니4 PRO'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1465447142348-e9952c393450?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '서울',
-      'is_like': false,
-      'like_count': 345,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-02-17',
-      'drone': '매빅 에어3'
-    },
-  ];
+  List<DronespotReviewDetailModel> _reviewLikeData = [];
 
   Future<void> _getLikeDronespot() async {
     List<DroneSpotModel>? result = await DroneSpotHttp.getLikedDronespot(_authController);
@@ -283,8 +44,21 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
     if (mounted) setState(() {});
   }
 
+  Future<void> _getLikeReview() async {
+    List<DronespotReviewDetailModel>? result = await ReviewHttp.getLikeReview(_authController);
+
+    if (result == null) {
+      _reviewLikeData = [];
+    } else {
+      _reviewLikeData = result;
+    }
+
+    if (mounted) setState(() {});
+  }
+
   Future<void> _initData() async {
     await _getLikeDronespot();
+    await _getLikeReview();
   }
 
   @override
@@ -406,23 +180,25 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
       controller: _reviewController,
       itemBuilder: (context, idx) {
         return ReviewFullItem(
-          id: 32,
-          img: _reviewLikeTestData[idx]['img'],
-          name: _reviewLikeTestData[idx]['name'],
-          place: _reviewLikeTestData[idx]['place'],
-          content: _reviewLikeTestData[idx]['content'],
-          likeCount: _reviewLikeTestData[idx]['like_count'],
-          drone: _reviewLikeTestData[idx]['drone'],
-          date: _reviewLikeTestData[idx]['write_date'],
+          id: _reviewLikeData[idx].id,
+          img: _reviewLikeData[idx].photoUrl,
+          name: _reviewLikeData[idx].writer?.name,
+          place: _reviewLikeData[idx].placeName,
+          content: _reviewLikeData[idx].comment,
+          likeCount: _reviewLikeData[idx].likeCount,
+          drone: _reviewLikeData[idx].drone,
+          date: _reviewLikeData[idx].date,
+          isLike: _reviewLikeData[idx].isLike,
           onChange: (value) {
-
+            _reviewLikeData[idx].isLike = value.isLike;
+            _reviewLikeData[idx].likeCount = value.likeCount;
           },
-        );;
+        );
       },
       separatorBuilder: (context, idx) {
         return SizedBox(height: 12,);
       },
-      itemCount: _reviewLikeTestData.length
+      itemCount: _reviewLikeData.length
     );
   }
 
@@ -448,5 +224,5 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 }
