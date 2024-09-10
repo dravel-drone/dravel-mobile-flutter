@@ -219,7 +219,10 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
           child = PlaceItem(
             id: item.id,
             name: item.name,
-            distance: 1,
+            location: PlaceLocation(
+              lat: item.location.lat,
+              lng: item.location.lon
+            ),
             message: item.comment,
             imageUrl: item.photoUrl,
             address: item.location.address ?? '',

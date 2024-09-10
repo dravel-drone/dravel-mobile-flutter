@@ -51,7 +51,6 @@ class LocationController extends GetxController {
     const LocationSettings locationSettings = LocationSettings(
       accuracy: LocationAccuracy.high,
       distanceFilter: 100,
-      timeLimit: Duration(seconds: 30)
     );
 
     positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position? position) {
