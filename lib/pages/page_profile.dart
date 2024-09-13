@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/api/http_profile.dart';
+import 'package:dravel/api/http_review.dart';
 import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/model/model_profile.dart';
 import 'package:dravel/pages/account/page_login.dart';
@@ -15,14 +16,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../api/http_dronespot.dart';
+import '../model/model_dronespot.dart';
+import '../model/model_review.dart';
 import '../utils/util_ui.dart';
+import 'detail/page_dronespot_detail.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({
-    this.pageMode = false
+    this.pageMode = false,
+    this.uid
   });
 
   bool pageMode;
+  String? uid;
 
   @override
   State<StatefulWidget> createState() => _ProfilePageState();
@@ -36,134 +43,18 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
 
   late final AuthController _authController;
 
-  List<dynamic> _droneLikeTestData = [
-    {
-      'img': 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '거제도',
-      'like_count': 234,
-      'review_count': 4354,
-      'flight': 0,
-      'camera': 2,
-      'address': '경상남도 거제시'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1485086806232-72035a9f951c?q=80&w=1635&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '두바이',
-      'like_count': 4353,
-      'review_count': 123,
-      'flight': 1,
-      'camera': 1,
-      'address': '경상남도 두바이시'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '부산항',
-      'like_count': 234,
-      'review_count': 4354,
-      'flight': 2,
-      'camera': 2,
-      'address': '경상남도 부산시'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1500531279542-fc8490c8ea4d?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '거제도',
-      'like_count': 234,
-      'review_count': 4354,
-      'flight': 0,
-      'camera': 2,
-      'address': '경상남도 거제시'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1485086806232-72035a9f951c?q=80&w=1635&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '두바이',
-      'like_count': 4353,
-      'review_count': 123,
-      'flight': 1,
-      'camera': 1,
-      'address': '경상남도 두바이시'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '부산항',
-      'like_count': 234,
-      'review_count': 4354,
-      'flight': 2,
-      'camera': 2,
-      'address': '경상남도 부산시'
-    },
-  ];
-
-
-  List<dynamic> _reviewLikeTestData = [
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1675359655401-27e0b11bef70?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '강릉',
-      'is_like': false,
-      'like_count': 234,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-07-05',
-      'drone': '매빅 에어2'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1664801768830-46734d0f0848?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '아늘기',
-      'place': '신안',
-      'is_like': true,
-      'like_count': 394,
-      'content': '테스트',
-      'write_date': '2023-11-05',
-      'drone': '매빅 미니4 PRO'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1465447142348-e9952c393450?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '서울',
-      'is_like': false,
-      'like_count': 345,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-02-17',
-      'drone': '매빅 에어3'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1675359655401-27e0b11bef70?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '강릉',
-      'is_like': false,
-      'like_count': 234,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-07-05',
-      'drone': '매빅 에어2'
-    },
-    {
-      'img': 'https://plus.unsplash.com/premium_photo-1664801768830-46734d0f0848?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '아늘기',
-      'place': '신안',
-      'is_like': true,
-      'like_count': 394,
-      'content': '테스트',
-      'write_date': '2023-11-05',
-      'drone': '매빅 미니4 PRO'
-    },
-    {
-      'img': 'https://images.unsplash.com/photo-1465447142348-e9952c393450?q=80&w=1674&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-      'name': '네릳으',
-      'place': '서울',
-      'is_like': false,
-      'like_count': 345,
-      'content': '지방자치단체는 주민의 복리에 관한 사무를 처리하고 재산을 관리하며, 법령의 범위안에서 자치에 관한 규정을 제정할 수 있다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 예비비는 총액으로 국회의 의결을 얻어야 한다. 예비비의 지출은 차기국회의 승인을 얻어야 한다. 국가는 농지에 관하여 경자유전의 원칙이 달성될 수 있도록 노력하여야 하며, 농지의 소작제도는 금지된다.',
-      'write_date': '2024-02-17',
-      'drone': '매빅 에어3'
-    },
-  ];
+  List<DronespotReviewDetailModel> _reviewData = [];
+  List<DroneSpotModel> _dronespotData = [];
 
   late ProfileModel _profile;
 
   int _isProfileLoading = -1;
+  int _isReviewLoading = -1;
+  int _isDronespotLoading = -1;
 
-  Future<void> _getProfile() async {
+  Future<bool> _getProfile() async {
     ProfileModel? result = await ProfileHttp.getUserProfile(
-        _authController, uid: _authController.userUid.value!);
+        _authController, uid: widget.uid ?? _authController.userUid.value!);
 
     if (result == null) {
       _isProfileLoading = 0;
@@ -173,10 +64,51 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
     }
 
     if (mounted) setState(() {});
+    return result != null;
+  }
+
+  Future<void> _getReview() async {
+    _isReviewLoading = -1;
+    if (mounted) setState(() {});
+
+    List<DronespotReviewDetailModel>? result = await ReviewHttp.getUserReview(
+        _authController, uid: widget.uid ?? _authController.userUid.value!
+    );
+
+    if (result == null) {
+      _isReviewLoading = 0;
+    } else {
+      _isReviewLoading = 1;
+      _reviewData = result;
+    }
+
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _getDronespot() async {
+    _isDronespotLoading = -1;
+    if (mounted) setState(() {});
+
+    List<DroneSpotModel>? result = await DroneSpotHttp.getUserDronespot(
+        _authController, uid: widget.uid ?? _authController.userUid.value!
+    );
+
+    if (result == null) {
+      _isDronespotLoading = 0;
+    } else {
+      _isDronespotLoading = 1;
+      _dronespotData = result;
+    }
+
+    if (mounted) setState(() {});
   }
 
   Future<void> _initData() async {
-    await _getProfile();
+    bool result = await _getProfile();
+    if (!result) return;
+
+    await _getReview();
+    await _getDronespot();
   }
 
   @override
@@ -452,23 +384,25 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
         // controller: _reviewController,
         itemBuilder: (context, idx) {
           return ReviewFullItem(
-            id: 32,
-            img: _reviewLikeTestData[idx]['img'],
-            name: _reviewLikeTestData[idx]['name'],
-            place: _reviewLikeTestData[idx]['place'],
-            content: _reviewLikeTestData[idx]['content'],
-            likeCount: _reviewLikeTestData[idx]['like_count'],
-            drone: _reviewLikeTestData[idx]['drone'],
-            date: _reviewLikeTestData[idx]['write_date'],
+            id: _reviewData[idx].id,
+            img: _reviewData[idx].photoUrl,
+            name: _reviewData[idx].writer?.name,
+            place: _reviewData[idx].placeName,
+            content: _reviewData[idx].comment,
+            likeCount: _reviewData[idx].likeCount,
+            drone: _reviewData[idx].drone,
+            date: _reviewData[idx].date,
+            isLike: _reviewData[idx].isLike,
             onChange: (value) {
-
+              _reviewData[idx].isLike = value.isLike;
+              _reviewData[idx].likeCount = value.likeCount;
             },
-          );;
+          );
         },
         separatorBuilder: (context, idx) {
           return SizedBox(height: 12,);
         },
-        itemCount: _reviewLikeTestData.length
+        itemCount: _reviewData.length
     );
   }
 
@@ -480,24 +414,32 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
         // controller: _droneSpotController,
         itemBuilder: (context, idx) {
           return DroneSpotItem(
-            id: 1,
-            name: _droneLikeTestData[idx]['name'],
-            imageUrl: _droneLikeTestData[idx]['img'],
-            address: _droneLikeTestData[idx]['address'],
-            like_count: _droneLikeTestData[idx]['like_count'],
-            review_count: _droneLikeTestData[idx]['review_count'],
-            camera_level: _droneLikeTestData[idx]['camera'],
-            fly_level: _droneLikeTestData[idx]['flight'],
-            isLike: false,
-            onChange: (value) {
-
-            },
+              id: _dronespotData[idx].id,
+              name: _dronespotData[idx].name,
+              imageUrl: _dronespotData[idx].imageUrl,
+              address: _dronespotData[idx].location.address!,
+              like_count: _dronespotData[idx].likeCount,
+              review_count: _dronespotData[idx].reviewCount,
+              camera_level: _dronespotData[idx].permit.camera,
+              fly_level: _dronespotData[idx].permit.flight,
+              isLike: _dronespotData[idx].isLike,
+              onTap: () {
+                Get.to(() => DroneSpotDetailPage(
+                  id: _dronespotData[idx].id,
+                ));
+              },
+              onChange: (value) {
+                setState(() {
+                  _dronespotData[idx].isLike = value.isLike;
+                  _dronespotData[idx].likeCount = value.likeCount;
+                });
+              }
           );
         },
         separatorBuilder: (context, idx) {
           return SizedBox(height: 12,);
         },
-        itemCount: _droneLikeTestData.length
+        itemCount: _dronespotData.length
     );
   }
 
