@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/pages/profile/page_follow_list.dart';
 import 'package:flutter/material.dart';
 
+import '../../api/http_base.dart';
 import '../../utils/util_ui.dart';
 
 class _FollowListItem extends StatelessWidget {
@@ -13,12 +14,14 @@ class _FollowListItem extends StatelessWidget {
     required this.drone,
     required this.buttonText,
     required this.onTap,
+    required this.uid,
     this.buttonBackgroundColor = Colors.white
   });
 
-  String url;
+  String? url;
   String name;
   String drone;
+  String uid;
 
   String buttonText;
   Color buttonBackgroundColor;
@@ -31,7 +34,7 @@ class _FollowListItem extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(200),
-          child: CachedNetworkImage(
+          child: url != null ? CachedNetworkImage(
             width: 48,
             height: 48,
             errorWidget: (context, error, obj) {
@@ -40,13 +43,21 @@ class _FollowListItem extends StatelessWidget {
                 height: 48,
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
-                        colors: getRandomGradientColor(658954)
+                        colors: getRandomGradientColor(uid.hashCode)
                     )
                 ),
               );
             },
             fit: BoxFit.cover,
-            imageUrl: url,
+            imageUrl: HttpBase.baseUrl +  url!,
+          ) : Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: getRandomGradientColor(uid.hashCode)
+                )
+            ),
           ),
         ),
         SizedBox(width: 12,),
@@ -105,11 +116,13 @@ class FollowerListItem extends StatefulWidget {
     required this.url,
     required this.name,
     required this.drone,
+    required this.uid,
   });
 
-  String url;
+  String? url;
   String name;
   String drone;
+  String uid;
 
   @override
   State<StatefulWidget> createState() => _FollowerListItemState();
@@ -122,6 +135,7 @@ class _FollowerListItemState extends State<FollowerListItem> {
       url: widget.url,
       name: widget.name,
       drone: widget.drone,
+      uid: widget.uid,
       buttonText: '삭제',
       onTap: () {
 
@@ -136,12 +150,14 @@ class FollowingListItem extends StatefulWidget {
     required this.url,
     required this.name,
     required this.drone,
+    required this.uid,
     this.isFollow = true
   });
 
-  String url;
+  String? url;
   String name;
   String drone;
+  String uid;
 
   bool isFollow;
 
@@ -156,6 +172,7 @@ class _FollowingListItemState extends State<FollowingListItem> {
       url: widget.url,
       name: widget.name,
       drone: widget.drone,
+      uid: widget.uid,
       buttonText: widget.isFollow ? '언팔로우' : '팔로우',
       onTap: () {
 

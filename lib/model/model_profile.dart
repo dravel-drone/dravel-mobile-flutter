@@ -35,3 +35,32 @@ class ProfileModel {
     );
   }
 }
+
+class FollowModel {
+  String uid;
+  String name;
+  String email;
+  String? imageUrl;
+  String? oneLiner;
+  String? drone;
+
+  FollowModel({
+    required this.uid,
+    required this.name,
+    required this.email,
+    this.oneLiner,
+    this.drone,
+    this.imageUrl,
+  });
+
+  factory FollowModel.fromJson(Map<String, dynamic> jsonData) {
+    return FollowModel(
+        uid: jsonData['uid'],
+        name: jsonData['name'],
+      email: jsonData['email'],
+        imageUrl: jsonData['image'],
+        oneLiner: jsonData['one_liner'],
+        drone: jsonData['drone'],
+    );
+  }
+}
