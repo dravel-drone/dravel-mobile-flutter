@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../api/http_base.dart';
 import '../api/http_dronespot.dart';
 import '../model/model_dronespot.dart';
 import '../model/model_review.dart';
@@ -53,6 +54,9 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   int _isDronespotLoading = -1;
 
   Future<bool> _getProfile() async {
+    _isProfileLoading = -1;
+    if (mounted) setState(() {});
+
     ProfileModel? result = await ProfileHttp.getUserProfile(
         _authController, uid: widget.uid ?? _authController.userUid.value!);
 
@@ -223,7 +227,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                       ),
                     );
                   },
-                  imageUrl: _profile.imageUrl!,
+                  imageUrl: HttpBase.baseUrl + _profile.imageUrl!,
                 ) : Container(
                   width: 110,
                   height: 110,
@@ -323,31 +327,36 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
           SizedBox(
             height: 12,
           ),
-          GestureDetector(
-            onTap: () {
-              Get.to(() => ProfileEditPage());
-            },
-            child: Container(
-              height: 34,
-              decoration: BoxDecoration(
-                  color: Color(0xFFF1F1F5),
-                  borderRadius: BorderRadius.circular(12)
-              ),
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(18, 7, 18, 7),
-                child: Center(
-                  child: Text(
-                    '프로필 편집',
-                    style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 12,
-                        height: 1
+          if (!widget.pageMode)
+            GestureDetector(
+              onTap: () {
+                Get.to(() => ProfileEditPage(
+                  profileModel: _profile,
+                ))!.then((value)  {
+                  _initData();
+                });
+              },
+              child: Container(
+                height: 34,
+                decoration: BoxDecoration(
+                    color: Color(0xFFF1F1F5),
+                    borderRadius: BorderRadius.circular(12)
+                ),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(18, 7, 18, 7),
+                  child: Center(
+                    child: Text(
+                      '프로필 편집',
+                      style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 12,
+                          height: 1
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          )
+            )
         ],
       ),
     );
