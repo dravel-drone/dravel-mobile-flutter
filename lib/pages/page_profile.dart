@@ -1,11 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dravel/api/http_profile.dart';
 import 'package:dravel/controller/controller_auth.dart';
+import 'package:dravel/model/model_profile.dart';
 import 'package:dravel/pages/account/page_login.dart';
 import 'package:dravel/pages/profile/page_follow_list.dart';
 import 'package:dravel/pages/profile/page_profile_edit.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
+import 'package:dravel/widgets/error_data.dart';
 import 'package:dravel/widgets/list/list_item_dronespot.dart';
 import 'package:dravel/widgets/list/list_item_review.dart';
+import 'package:dravel/widgets/load_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -153,6 +157,28 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
     },
   ];
 
+  late ProfileModel _profile;
+
+  int _isProfileLoading = -1;
+
+  Future<void> _getProfile() async {
+    ProfileModel? result = await ProfileHttp.getUserProfile(
+        _authController, uid: _authController.userUid.value!);
+
+    if (result == null) {
+      _isProfileLoading = 0;
+    } else {
+      _isProfileLoading = 1;
+      _profile = result;
+    }
+
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _initData() async {
+    await _getProfile();
+  }
+
   @override
   void initState() {
     _authController = Get.find<AuthController>();
@@ -160,6 +186,8 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
     _reviewController = ScrollController();
     _droneSpotController = ScrollController();
     _nestedController = ScrollController();
+
+    _initData();
     super.initState();
   }
 
@@ -280,7 +308,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                           fit: FlexFit.tight,
                           child: _createProfileInfoText(
                               name: '게시물',
-                              value: '6'
+                              value: _profile.postCount.toString()
                           ),
                         ),
                         Flexible(
@@ -294,7 +322,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                               },
                               child: _createProfileInfoText(
                                   name: '팔로워',
-                                  value: '120'
+                                  value: _profile.followerCount.toString()
                               ),
                             )
                         ),
@@ -309,7 +337,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                               },
                               child: _createProfileInfoText(
                                   name: '팔로잉',
-                                  value: '390'
+                                  value: _profile.followingCount.toString()
                               )
                             )
                         ),
@@ -464,12 +492,65 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    Widget child;
+    if (_isProfileLoading != 1) {
+      if (_isProfileLoading == -1) {
+        child = LoadDataWidget();
+      } else {
+        child = ErrorDataWidget();
+      }
+      return SafeArea(
+        top: false,
+        child: Column(
+          children: [
+            PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight),
+              child: AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarBrightness: SystemUiOverlayStyle.dark.statusBarBrightness,
+                  statusBarIconBrightness: SystemUiOverlayStyle.dark.statusBarIconBrightness,
+                  systemStatusBarContrastEnforced: SystemUiOverlayStyle.dark.systemStatusBarContrastEnforced,
+                ),
+                child: Material(
+                  color: Colors.white,
+                  child: Semantics(
+                    explicitChildNodes: true,
+                    child: SafeArea(
+                      bottom: false,
+                      child: CustomAppbar(
+                        backgroundColor: Colors.white,
+                        surfaceTintColor: Colors.white,
+                        title: "계정 정보",
+                        textColor: Colors.black,
+                        leading: !widget.pageMode ? IconButton(
+                          icon: Icon(Icons.arrow_back_outlined),
+                          onPressed: () {
+                            // Get.back();
+                          },
+                        ) : null,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ),
+            Expanded(
+              child: Center(
+                child: child,
+              ),
+            )
+          ],
+        ),
+      );
+    }
+
     return SafeArea(
       top: false,
       child: NestedScrollView(
         controller: _nestedController,
         headerSliverBuilder: (context, value) {
-          return [
+            return [
             _createAppbar(),
             SliverPersistentHeader(
               pinned: false,
