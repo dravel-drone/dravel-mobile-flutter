@@ -206,14 +206,14 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.white,
       title: Text(
-        "계정 이름",
+        _profile.name,
         style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
             color: Colors.black
         ),
       ),
-      leading: !widget.pageMode ? IconButton(
+      leading: widget.pageMode ? IconButton(
         icon: Icon(Icons.arrow_back_outlined),
         onPressed: () {
           // Get.back();
@@ -276,7 +276,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(200),
-                child: CachedNetworkImage(
+                child: _profile.imageUrl != null ? CachedNetworkImage(
                   width: 110,
                   height: 110,
                   fit: BoxFit.cover,
@@ -286,12 +286,20 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                       height: 110,
                       decoration: BoxDecoration(
                           gradient: LinearGradient(
-                              colors: getRandomGradientColor(78924275)
+                              colors: getRandomGradientColor(_profile.uid.hashCode)
                           )
                       ),
                     );
                   },
-                  imageUrl: "https://images.unsplash.com/photo-1498141321056-776a06214e24?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  imageUrl: _profile.imageUrl!,
+                ) : Container(
+                  width: 110,
+                  height: 110,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: getRandomGradientColor(_profile.uid.hashCode)
+                      )
+                  ),
                 ),
               ),
               SizedBox(
@@ -344,19 +352,21 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                       ],
                     ),
                     SizedBox(height: 16,),
-                    Text(
-                      '한줄 소개',
-                      style: TextStyle(
-                          height: 1,
-                          color: Colors.black,
-                          fontSize: 14
+                    if (_profile.oneLiner != null)
+                      Text(
+                        '한줄 소개',
+                        style: TextStyle(
+                            height: 1,
+                            color: Colors.black,
+                            fontSize: 14
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 4,
-                    ),
+                    if (_profile.oneLiner != null)
+                      SizedBox(
+                        height: 4,
+                      ),
                     Text(
-                      '프론트엔드 개발자, 여행 블로거',
+                      _profile.oneLiner ?? '',
                       style: TextStyle(
                           height: 1,
                           color: Colors.black54
@@ -366,7 +376,8 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                       height: 6,
                     ),
                     Text(
-                      '대표 드론 - DJI 매빅 4 PRO',
+                      _profile.drone != null
+                          ? '대표 드론 - ${_profile.drone}' : '',
                       style: TextStyle(
                           height: 1,
                           color: Colors.black54
@@ -523,7 +534,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                         surfaceTintColor: Colors.white,
                         title: "계정 정보",
                         textColor: Colors.black,
-                        leading: !widget.pageMode ? IconButton(
+                        leading: widget.pageMode ? IconButton(
                           icon: Icon(Icons.arrow_back_outlined),
                           onPressed: () {
                             // Get.back();
