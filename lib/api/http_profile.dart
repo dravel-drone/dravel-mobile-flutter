@@ -161,7 +161,7 @@ class ProfileHttp {
 
         List<FollowModel> data = [];
         for (var i in jsonData) {
-          data.add(FollowModel.fromJson(i));
+          data.add(FollowModel.fromJson(i, isFollow: true));
         }
 
         return data;

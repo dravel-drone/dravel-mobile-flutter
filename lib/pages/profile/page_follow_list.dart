@@ -74,7 +74,7 @@ class _FollowListPageState extends State<FollowListPage> {
           url: _followerData[idx].imageUrl,
           name: _followerData[idx].name,
           uid: _followerData[idx].uid,
-          drone: _followerData[idx].drone ?? ''
+          drone: _followerData[idx].drone ?? '',
         );
       },
       separatorBuilder: (context, idx) {
@@ -90,10 +90,11 @@ class _FollowListPageState extends State<FollowListPage> {
         padding: EdgeInsets.fromLTRB(24, 24, 24, getBottomPaddingWithSafeHeight(context, 24)),
         itemBuilder: (context, idx) {
           return FollowingListItem(
-              url: _followingData[idx].imageUrl,
-              name: _followingData[idx].name,
-              uid: _followingData[idx].uid,
-              drone: _followingData[idx].drone ?? ''
+            url: _followingData[idx].imageUrl,
+            name: _followingData[idx].name,
+            uid: _followingData[idx].uid,
+            drone: _followingData[idx].drone ?? '',
+            isFollow: _followingData[idx].isFollow,
           );
         },
         separatorBuilder: (context, idx) {

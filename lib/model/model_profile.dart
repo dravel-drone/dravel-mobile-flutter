@@ -43,6 +43,7 @@ class FollowModel {
   String? imageUrl;
   String? oneLiner;
   String? drone;
+  bool isFollow;
 
   FollowModel({
     required this.uid,
@@ -51,16 +52,20 @@ class FollowModel {
     this.oneLiner,
     this.drone,
     this.imageUrl,
+    this.isFollow = false
   });
 
-  factory FollowModel.fromJson(Map<String, dynamic> jsonData) {
+  factory FollowModel.fromJson(Map<String, dynamic> jsonData, {
+    bool isFollow = false
+  }) {
     return FollowModel(
-        uid: jsonData['uid'],
-        name: jsonData['name'],
+      uid: jsonData['uid'],
+      name: jsonData['name'],
       email: jsonData['email'],
-        imageUrl: jsonData['image'],
-        oneLiner: jsonData['one_liner'],
-        drone: jsonData['drone'],
+      imageUrl: jsonData['image'],
+      oneLiner: jsonData['one_liner'],
+      drone: jsonData['drone'],
+      isFollow: isFollow
     );
   }
 }

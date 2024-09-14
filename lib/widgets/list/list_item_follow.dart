@@ -15,7 +15,8 @@ class _FollowListItem extends StatelessWidget {
     required this.buttonText,
     required this.onTap,
     required this.uid,
-    this.buttonBackgroundColor = Colors.white
+    this.buttonBackgroundColor = Colors.white,
+    this.buttonTextColor = Colors.black54
   });
 
   String? url;
@@ -25,6 +26,7 @@ class _FollowListItem extends StatelessWidget {
 
   String buttonText;
   Color buttonBackgroundColor;
+  Color buttonTextColor;
   Function() onTap;
 
   @override
@@ -98,7 +100,7 @@ class _FollowListItem extends StatelessWidget {
                 buttonText,
                 style: TextStyle(
                     fontSize: 12,
-                    color: Colors.black54,
+                    color: buttonTextColor,
                     height: 1
                 ),
               ),
@@ -174,8 +176,12 @@ class _FollowingListItemState extends State<FollowingListItem> {
       drone: widget.drone,
       uid: widget.uid,
       buttonText: widget.isFollow ? '언팔로우' : '팔로우',
+      buttonBackgroundColor: widget.isFollow ? Colors.white : Colors.black87,
+      buttonTextColor: widget.isFollow ? Colors.black54 : Colors.white,
       onTap: () {
-
+        setState(() {
+          widget.isFollow = !widget.isFollow;
+        });
       }
     );
   }
