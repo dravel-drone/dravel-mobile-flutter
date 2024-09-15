@@ -51,31 +51,12 @@ class ReviewRecommendItem extends StatefulWidget {
 
 class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
   late final AuthController _authController;
-
-  final GlobalKey _secondChildKey = GlobalKey();
-  double _secondChildHeight = 0;
-
   bool mode = false;
 
   @override
   void initState() {
     _authController = Get.find<AuthController>();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _afterLayout();
-    });
     super.initState();
-  }
-
-  void _afterLayout() {
-    final RenderBox renderBox = _secondChildKey.currentContext?.findRenderObject() as RenderBox;
-    if (renderBox != null) {
-      final height = renderBox.size.height;
-      print(height);
-      setState(() {
-        _secondChildHeight = height + 100;
-      });
-    }
   }
 
   @override
@@ -85,15 +66,12 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
       child: GestureDetector(
         onTap: () {
           setState(() {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _afterLayout();
-            });
             mode = !mode;
           });
         },
-        child: Container(
+        child: !mode ? Container(
           width: double.infinity,
-          height: _secondChildHeight > 0 ? _secondChildHeight : null,
+          height: 150,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
             color: Color(0xFFF1F1F5),
@@ -106,7 +84,7 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                   errorWidget: (context, error, obj) {
                     return Container(
                       width: 100,
-                      height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                      height: double.infinity,
                       decoration: BoxDecoration(
                           gradient: LinearGradient(
                               colors: getRandomGradientColor(widget.id + 43564745)
@@ -115,13 +93,13 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                     );
                   },
                   width: 100,
-                  height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                  height: double.infinity,
                   fit: BoxFit.cover,
                 )
               else
                 Container(
                   width: 100,
-                  height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                  height: double.infinity,
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                           colors: getRandomGradientColor(widget.id + 43564745)
@@ -155,16 +133,6 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                               ),
                             ),
                           ),
-                          // _recommendReviewTestData[idx]['is_like'] ?
-                          //   Icon(
-                          //     Icons.favorite,
-                          //     color: Color(0xFF0075FF),
-                          //     size: 16,
-                          //   ) : Icon(
-                          //     Icons.favorite_border,
-                          //     color: Colors.black54,
-                          //     size: 16,
-                          //   ),
                           GestureDetector(
                             onTap: () async {
                               if (widget.isLike) {
@@ -232,13 +200,13 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                       ),
                       Text(
                         widget.content,
-                        key: _secondChildKey,
+                        // key: _secondChildKey,
                         style: TextStyle(
                             color: Colors.black54
                         ),
-                        overflow: mode ? null : TextOverflow.ellipsis,
+                        overflow: TextOverflow.ellipsis,
                         softWrap: true,
-                        maxLines: mode ? null : 3,
+                        maxLines: 3,
                       ),
                     ],
                   ),
@@ -246,7 +214,145 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
               )
             ],
           ),
-        ),
+        ) : Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            color: Color(0xFFF1F1F5),
+          ),
+          child: Column(
+            children: [
+              if (widget.img != null)
+                CachedNetworkImage(
+                  imageUrl: HttpBase.baseUrl + widget.img!,
+                  errorWidget: (context, error, obj) {
+                    return Container(
+                      width: double.infinity,
+                      height: 100,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: getRandomGradientColor(widget.id + 43564745)
+                          )
+                      ),
+                    );
+                  },
+                  width: double.infinity,
+                  height: 100,
+                  fit: BoxFit.cover,
+                )
+              else
+                Container(
+                  width: double.infinity,
+                  height: 100,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: getRandomGradientColor(widget.id + 43564745)
+                      )
+                  ),
+                ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(18, 12, 18, 6),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.to(() => ProfilePage(
+                            pageMode: true,
+                            uid: widget.writerUid,
+                          ));
+                        },
+                        child: Text(
+                          widget.name ?? '탈퇴한 사용자',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF0075FF)
+                          ),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        if (widget.isLike) {
+                          bool? result = await ReviewHttp.unlikeReview(_authController, id: widget.id);
+
+                          if (result == null || !result) {
+                            return;
+                          }
+                          setState(() {
+                            widget.isLike = false;
+                            widget.likeCount -= 1;
+                            widget.onChange(LikeChangeValue(
+                                isLike: widget.isLike,
+                                likeCount: widget.likeCount
+                            ));
+                          });
+                        } else {
+                          bool? result = await ReviewHttp.likeReview(_authController, id: widget.id);
+
+                          if (result == null || !result) {
+                            return;
+                          }
+                          setState(() {
+                            widget.isLike = true;
+                            widget.likeCount += 1;
+                            widget.onChange(LikeChangeValue(
+                                isLike: widget.isLike,
+                                likeCount: widget.likeCount
+                            ));
+                          });
+                        }
+                      },
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.favorite,
+                            color: widget.isLike ?
+                            Color(0xFF0075FF) : Colors.black38,
+                            size: 16,
+                          ),
+                          SizedBox(width: 2,),
+                          Text(
+                            '${widget.likeCount}',
+                            style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 14
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.fromLTRB(18, 0, 18, 0),
+                child: Text(
+                  widget.place,
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(18, 6, 19, 18),
+                child: Text(
+                  widget.content,
+                  style: TextStyle(
+                      color: Colors.black54
+                  ),
+                  softWrap: true,
+                  maxLines: null,
+                ),
+              ),
+            ],
+          ),
+        )
       ),
     );
   }
@@ -290,29 +396,12 @@ class ReviewFullItem extends StatefulWidget {
 class _ReviewFullItemState extends State<ReviewFullItem> {
   late final AuthController _authController;
 
-  final GlobalKey _secondChildKey = GlobalKey();
-  double _secondChildHeight = 0;
-
   bool mode = false;
 
   @override
   void initState() {
     _authController = Get.find<AuthController>();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _afterLayout();
-    });
     super.initState();
-  }
-
-  void _afterLayout() {
-    final RenderBox renderBox = _secondChildKey.currentContext?.findRenderObject() as RenderBox;
-    if (renderBox != null) {
-      final height = renderBox.size.height;
-      print(height);
-      setState(() {
-        _secondChildHeight = height + 120;
-      });
-    }
   }
 
   @override
@@ -322,15 +411,12 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
       child: GestureDetector(
         onTap: () {
           setState(() {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _afterLayout();
-            });
             mode = !mode;
           });
         },
-        child: Container(
+        child: !mode ? Container(
           width: double.infinity,
-          height: _secondChildHeight > 0 ? _secondChildHeight : null,
+          height: 180,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
             color: Colors.white,
@@ -343,7 +429,7 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                   errorWidget: (context, error, obj) {
                     return Container(
                       width: 100,
-                      height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                      height: double.infinity,
                       decoration: BoxDecoration(
                           gradient: LinearGradient(
                               colors: getRandomGradientColor(widget.id + 43564745)
@@ -352,13 +438,13 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                     );
                   },
                   width: 100,
-                  height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                  height: double.infinity,
                   fit: BoxFit.cover,
                 )
               else
                 Container(
                   width: 100,
-                  height: _secondChildHeight > 0 ? _secondChildHeight : null,
+                  height: double.infinity,
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                           colors: getRandomGradientColor(widget.id + 43564745)
@@ -475,13 +561,12 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                       ),
                       Text(
                         widget.content,
-                        key: _secondChildKey,
                         style: TextStyle(
                             color: Colors.black54
                         ),
-                        overflow: mode ? null : TextOverflow.ellipsis,
+                        overflow: TextOverflow.ellipsis,
                         softWrap: true,
-                        maxLines: mode ? null : 3,
+                        maxLines: 3,
                       ),
                       SizedBox(height: 8,),
                       Row(
@@ -515,7 +600,173 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
               )
             ],
           ),
+        ) : Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          color: Colors.white,
         ),
+        child: Column(
+          children: [
+            if (widget.img != null)
+              CachedNetworkImage(
+                imageUrl: HttpBase.baseUrl + widget.img!,
+                errorWidget: (context, error, obj) {
+                  return Container(
+                    width: double.infinity,
+                    height: 100,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: getRandomGradientColor(widget.id + 43564745)
+                        )
+                    ),
+                  );
+                },
+                width: double.infinity,
+                height: 100,
+                fit: BoxFit.cover,
+              )
+            else
+              Container(
+                width: double.infinity,
+                height: 100,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        colors: getRandomGradientColor(widget.id + 43564745)
+                    )
+                ),
+              ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(18, 12, 18, 6),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.to(() => ProfilePage(
+                          pageMode: true,
+                          uid: widget.writerUid,
+                        ));
+                      },
+                      child: Text(
+                        widget.name ?? '탈퇴한 사용자',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF0075FF)
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      if (widget.isLike) {
+                        bool? result = await ReviewHttp.unlikeReview(_authController, id: widget.id);
+
+                        if (result == null || !result) {
+                          return;
+                        }
+                        setState(() {
+                          widget.isLike = false;
+                          widget.likeCount -= 1;
+                          widget.onChange(LikeChangeValue(
+                              isLike: widget.isLike,
+                              likeCount: widget.likeCount
+                          ));
+                        });
+                      } else {
+                        bool? result = await ReviewHttp.likeReview(_authController, id: widget.id);
+
+                        if (result == null || !result) {
+                          return;
+                        }
+                        setState(() {
+                          widget.isLike = true;
+                          widget.likeCount += 1;
+                          widget.onChange(LikeChangeValue(
+                              isLike: widget.isLike,
+                              likeCount: widget.likeCount
+                          ));
+                        });
+                      }
+                    },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.favorite,
+                          color: widget.isLike ?
+                          Color(0xFF0075FF) : Colors.black38,
+                          size: 16,
+                        ),
+                        SizedBox(width: 2,),
+                        Text(
+                          '${widget.likeCount}',
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 14
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.fromLTRB(18, 0, 18, 0),
+              child: Text(
+                widget.place,
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(18, 6, 19, 18),
+              child: Text(
+                widget.content,
+                style: TextStyle(
+                    color: Colors.black54
+                ),
+                softWrap: true,
+                maxLines: null,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(18, 0, 18, 18),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.drone,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      softWrap: false,
+                      style: TextStyle(
+                          height: 1,
+                          fontSize: 14
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8,),
+                  Text(
+                    widget.date,
+                    style: TextStyle(
+                        height: 1,
+                        color: Colors.black54
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
       ),
     );
   }
