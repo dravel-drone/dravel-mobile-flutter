@@ -152,7 +152,8 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
       leading: widget.pageMode ? IconButton(
         icon: Icon(Icons.arrow_back_outlined),
         onPressed: () {
-          // Get.back();
+          if (Get.isSnackbarOpen) Get.back();
+          Get.back();
         },
       ) : null,
       actions: [
@@ -260,13 +261,27 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                             fit: FlexFit.tight,
                             child: GestureDetector(
                               onTap: () {
-                                Get.to(() => FollowListPage(
-                                  mode: FollowListPage.FOLLOWER_MODE
-                                ));
+                                if (!widget.pageMode) {
+                                  Get.to(() => FollowListPage(
+                                      mode: FollowListPage.FOLLOWER_MODE
+                                  ));
+                                } else {
+                                  if (Get.isSnackbarOpen) Get.back();
+                                  Get.showSnackbar(
+                                    GetSnackBar(
+                                      message: "본인만 확인 가능합니다.",
+                                      duration: Duration(seconds: 1),
+                                      backgroundColor: Colors.orange,
+                                    )
+                                  );
+                                }
                               },
-                              child: _createProfileInfoText(
-                                  name: '팔로워',
-                                  value: _profile.followerCount.toString()
+                              child: Container(
+                                color: Colors.transparent,
+                                child: _createProfileInfoText(
+                                    name: '팔로워',
+                                    value: _profile.followerCount.toString()
+                                ),
                               ),
                             )
                         ),
@@ -275,13 +290,27 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                             fit: FlexFit.tight,
                             child: GestureDetector(
                               onTap: () {
-                                Get.to(() => FollowListPage(
-                                    mode: FollowListPage.FOLLOWING_MODE
-                                ));
+                                if (!widget.pageMode) {
+                                  Get.to(() => FollowListPage(
+                                      mode: FollowListPage.FOLLOWING_MODE
+                                  ));
+                                } else {
+                                  if (Get.isSnackbarOpen) Get.back();
+                                  Get.showSnackbar(
+                                      GetSnackBar(
+                                        message: "본인만 확인 가능합니다.",
+                                        duration: Duration(seconds: 1),
+                                        backgroundColor: Colors.orange,
+                                      )
+                                  );
+                                }
                               },
-                              child: _createProfileInfoText(
-                                  name: '팔로잉',
-                                  value: _profile.followingCount.toString()
+                              child: Container(
+                                color: Colors.transparent,
+                                child: _createProfileInfoText(
+                                    name: '팔로잉',
+                                    value: _profile.followingCount.toString()
+                                ),
                               )
                             )
                         ),
