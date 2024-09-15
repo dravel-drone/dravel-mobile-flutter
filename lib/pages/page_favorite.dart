@@ -183,6 +183,7 @@ class _FavoritePageState extends State<FavoritePage> with TickerProviderStateMix
           id: _reviewLikeData[idx].id,
           img: _reviewLikeData[idx].photoUrl,
           name: _reviewLikeData[idx].writer?.name,
+          writerUid: _reviewLikeData[idx].writer?.uid,
           place: _reviewLikeData[idx].placeName,
           content: _reviewLikeData[idx].comment,
           likeCount: _reviewLikeData[idx].likeCount,

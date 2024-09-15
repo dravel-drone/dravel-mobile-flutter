@@ -1,27 +1,20 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:dravel/api/http_base.dart';
 import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/model/model_auth.dart';
-import 'package:dravel/model/model_dronespot.dart';
-import 'package:dravel/model/model_review.dart';
-import 'package:dravel/pages/detail/page_dronespot_detail.dart';
+import 'package:dravel/model/model_profile.dart';
+import 'package:dravel/pages/profile/page_follow_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
-import '../model/model_term.dart';
-
-class ReviewHttp {
-  static Future<DronespotReviewModel?> addReview(
-    AuthController authController,
-    {
-      required int id,
-      required DronespotReviewCreateModel data,
-      String? imagePath
-    }
-  ) async {
-    final url = Uri.https(HttpBase.domain, 'api/v1/review/$id');
+class ProfileHttp {
+  static Future<ProfileModel?> getUserProfile(
+      AuthController authController,
+      {
+        required String uid,
+      }) async {
+    final url = Uri.https(HttpBase.domain, 'api/v1/profile/$uid');
 
     int trial = 0;
     while (trial < 2) {
@@ -31,15 +24,64 @@ class ReviewHttp {
         headers['Authorization'] = 'Bearer $accessKey';
       }
 
-      final request = await http.MultipartRequest('POST', url);
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode != 200) {
+        if (response.statusCode == 401 && trial == 0) {
+          debugPrint("Accesstoken Expired");
+          if (!await authController.refreshAccessToken()) {
+            return null;
+          }
+          trial += 1;
+          continue;
+        } else {
+          debugPrint(utf8.decode(response.bodyBytes));
+          return null;
+        }
+      } else {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        debugPrint(jsonData.toString());
+
+        return ProfileModel.fromJson(jsonData);
+      }
+    }
+    return null;
+  }
+
+  static Future<ProfileModel?> editProfile(
+      AuthController authController,
+      {
+        required String uid,
+        String? imagePath,
+        String? name,
+        String? oneLiner,
+        String? drone,
+      }
+      ) async {
+    final url = Uri.https(HttpBase.domain, 'api/v1/profile/$uid');
+
+    int trial = 0;
+    while (trial < 2) {
+      final accessKey = await HttpBase.getAccessKey();
+      Map<String, String> headers = {};
+      if (accessKey != null) {
+        headers['Authorization'] = 'Bearer $accessKey';
+      }
+
+      final request = await http.MultipartRequest('PATCH', url);
       request.headers.addAll(headers);
 
-      request.fields['comment'] = data.comment;
-      request.fields['drone_type'] = data.droneType;
-      request.fields['date'] = data.date;
-      request.fields['drone'] = data.drone;
-      request.fields['permit_flight'] = '${data.permitFlight}';
-      request.fields['permit_camera'] = '${data.permitCamera}';
+      if (name != null) {
+        request.fields['name'] = name;
+      }
+
+      if (oneLiner != null) {
+        request.fields['one_liner'] = oneLiner;
+      }
+
+      if (drone != null) {
+        request.fields['drone'] = drone;
+      }
 
       if (imagePath != null) {
         request.files.add(await http.MultipartFile.fromPath(
@@ -67,19 +109,154 @@ class ReviewHttp {
         final jsonData = jsonDecode(responseBody);
         debugPrint(jsonData.toString());
 
-        return DronespotReviewModel.fromJson(jsonData);
+        return ProfileModel.fromJson(jsonData);
       }
     }
     return null;
   }
 
-  static Future<bool?> likeReview(
-    AuthController authController,
-    {
-      required int id,
+  static Future<List<FollowModel>?> getFollowList(
+      AuthController authController,
+      bool mode,
+      {
+        int page = 1,
+        int size = 25,
+      }) async {
+    final Map<String, dynamic> queryParameter = {};
+    queryParameter['page'] = page.toString();
+    queryParameter['size'] = size.toString();
+
+    final url;
+    if (mode == FollowListPage.FOLLOWING_MODE) {
+      url = Uri.https(HttpBase.domain, 'api/v1/follow/following', queryParameter);
+    } else {
+      url = Uri.https(HttpBase.domain, 'api/v1/follow/follower', queryParameter);
     }
-  ) async {
-    final url = Uri.https(HttpBase.domain, 'api/v1/like/review/$id');
+
+    int trial = 0;
+    while (trial < 2) {
+      final accessKey = await HttpBase.getAccessKey();
+      Map<String, String> headers = {};
+      if (accessKey != null) {
+        headers['Authorization'] = 'Bearer $accessKey';
+      }
+
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode != 200) {
+        if (response.statusCode == 401 && trial == 0) {
+          debugPrint("Accesstoken Expired");
+          if (!await authController.refreshAccessToken()) {
+            return null;
+          }
+          trial += 1;
+          continue;
+        } else {
+          debugPrint(utf8.decode(response.bodyBytes));
+          return null;
+        }
+      } else {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        debugPrint(jsonData.toString());
+
+        List<FollowModel> data = [];
+        for (var i in jsonData) {
+          data.add(FollowModel.fromJson(i, isFollow: true));
+        }
+
+        return data;
+      }
+    }
+    return null;
+  }
+
+  static Future<bool?> deleteFollower(
+      AuthController authController,
+      {
+        required String uid,
+      }
+      ) async {
+    final url = Uri.https(HttpBase.domain, 'api/v1/follow/follower/$uid');
+
+    int trial = 0;
+    while (trial < 2) {
+      final accessKey = await HttpBase.getAccessKey();
+      Map<String, String> headers = {};
+      if (accessKey != null) {
+        headers['Authorization'] = 'Bearer $accessKey';
+      }
+
+      final response = await http.delete(url, headers: headers);
+
+      if (response.statusCode != 204) {
+        if (response.statusCode == 401 && trial == 0) {
+          debugPrint("Accesstoken Expired");
+          if (!await authController.refreshAccessToken()) {
+            return null;
+          }
+          trial += 1;
+          continue;
+        } else {
+          debugPrint(utf8.decode(response.bodyBytes));
+          return null;
+        }
+      } else {
+        final responseBody = utf8.decode(response.bodyBytes);
+        debugPrint(responseBody);
+
+        return true;
+      }
+    }
+    return null;
+  }
+
+  static Future<bool?> deleteFollowing(
+      AuthController authController,
+      {
+        required String uid,
+      }
+      ) async {
+    final url = Uri.https(HttpBase.domain, 'api/v1/follow/$uid');
+
+    int trial = 0;
+    while (trial < 2) {
+      final accessKey = await HttpBase.getAccessKey();
+      Map<String, String> headers = {};
+      if (accessKey != null) {
+        headers['Authorization'] = 'Bearer $accessKey';
+      }
+
+      final response = await http.delete(url, headers: headers);
+
+      if (response.statusCode != 204) {
+        if (response.statusCode == 401 && trial == 0) {
+          debugPrint("Accesstoken Expired");
+          if (!await authController.refreshAccessToken()) {
+            return null;
+          }
+          trial += 1;
+          continue;
+        } else {
+          debugPrint(utf8.decode(response.bodyBytes));
+          return null;
+        }
+      } else {
+        final responseBody = utf8.decode(response.bodyBytes);
+        debugPrint(responseBody);
+
+        return true;
+      }
+    }
+    return null;
+  }
+
+  static Future<bool?> addFollowing(
+      AuthController authController,
+      {
+        required String uid,
+      }
+      ) async {
+    final url = Uri.https(HttpBase.domain, 'api/v1/follow/$uid');
 
     int trial = 0;
     while (trial < 2) {
@@ -108,178 +285,6 @@ class ReviewHttp {
         debugPrint(responseBody);
 
         return true;
-      }
-    }
-    return null;
-  }
-
-  static Future<bool?> unlikeReview(
-    AuthController authController,
-    {
-      required int id,
-    }
-  ) async {
-    final url = Uri.https(HttpBase.domain, 'api/v1/like/review/$id');
-
-    int trial = 0;
-    while (trial < 2) {
-      final accessKey = await HttpBase.getAccessKey();
-      Map<String, String> headers = {};
-      if (accessKey != null) {
-        headers['Authorization'] = 'Bearer $accessKey';
-      }
-
-      final response = await http.delete(url, headers: headers);
-
-      if (response.statusCode != 200) {
-        if (response.statusCode == 401 && trial == 0) {
-          debugPrint("Accesstoken Expired");
-          if (!await authController.refreshAccessToken()) {
-            return null;
-          }
-          trial += 1;
-          continue;
-        } else {
-          debugPrint(utf8.decode(response.bodyBytes));
-          return null;
-        }
-      } else {
-        final responseBody = utf8.decode(response.bodyBytes);
-        debugPrint(responseBody);
-
-        return true;
-      }
-    }
-    return null;
-  }
-
-  static Future<List<DronespotReviewModel>?> getTrendReview(
-    AuthController authController,
-  ) async {
-    final url = Uri.https(HttpBase.domain, 'api/v1/trend/review');
-
-    int trial = 0;
-    while (trial < 2) {
-      final accessKey = await HttpBase.getAccessKey();
-      Map<String, String> headers = {};
-      if (accessKey != null) {
-        headers['Authorization'] = 'Bearer $accessKey';
-      }
-
-      final response = await http.get(url, headers: headers);
-
-      if (response.statusCode != 200) {
-        if (response.statusCode == 401 && trial == 0) {
-          debugPrint("Accesstoken Expired");
-          if (!await authController.refreshAccessToken()) {
-            return null;
-          }
-          trial += 1;
-          continue;
-        } else {
-          debugPrint(utf8.decode(response.bodyBytes));
-          return null;
-        }
-      } else {
-        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
-        debugPrint(jsonData.toString());
-
-        List<DronespotReviewModel> data = [];
-        for (var i in jsonData) {
-          data.add(DronespotReviewModel.fromJson(i));
-        }
-
-        return data;
-      }
-    }
-    return null;
-  }
-
-  static Future<List<DronespotReviewDetailModel>?> getLikeReview(
-    AuthController authController,
-  ) async {
-
-    int trial = 0;
-    while (trial < 2) {
-      final accessKey = await HttpBase.getAccessKey();
-      Map<String, String> headers = {};
-      if (accessKey != null) {
-        headers['Authorization'] = 'Bearer $accessKey';
-      }
-      final url = Uri.https(HttpBase.domain, 'api/v1/review/like/${authController.userUid.value}');
-
-      final response = await http.get(url, headers: headers);
-
-      if (response.statusCode != 200) {
-        if (response.statusCode == 401 && trial == 0) {
-          debugPrint("Accesstoken Expired");
-          if (!await authController.refreshAccessToken()) {
-            return null;
-          }
-          trial += 1;
-          continue;
-        } else {
-          debugPrint(utf8.decode(response.bodyBytes));
-          return null;
-        }
-      } else {
-        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
-        debugPrint(jsonData.toString());
-
-        List<DronespotReviewDetailModel> data = [];
-        for (var i in jsonData) {
-          data.add(DronespotReviewDetailModel.fromJson(i));
-        }
-
-        return data;
-      }
-    }
-    return null;
-  }
-
-  static Future<List<DronespotReviewDetailModel>?> getUserReview(
-    AuthController authController, {
-      int page = 1,
-      int size = 25,
-      required String uid
-  }) async {
-    final Map<String, dynamic> queryParameter = {};
-    queryParameter['page_num'] = page.toString();
-    queryParameter['size'] = size.toString();
-
-    int trial = 0;
-    while (trial < 2) {
-      final accessKey = await HttpBase.getAccessKey();
-      Map<String, String> headers = {};
-      if (accessKey != null) {
-        headers['Authorization'] = 'Bearer $accessKey';
-      }
-      final url = Uri.https(HttpBase.domain, 'api/v1/userReview/$uid', queryParameter);
-
-      final response = await http.get(url, headers: headers);
-
-      if (response.statusCode != 200) {
-        if (response.statusCode == 401 && trial == 0) {
-          debugPrint("Accesstoken Expired");
-          if (!await authController.refreshAccessToken()) {
-            return null;
-          }
-          trial += 1;
-          continue;
-        } else {
-          debugPrint(utf8.decode(response.bodyBytes));
-          return null;
-        }
-      } else {
-        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
-        debugPrint(jsonData.toString());
-
-        List<DronespotReviewDetailModel> data = [];
-        for (var i in jsonData) {
-          data.add(DronespotReviewDetailModel.fromJson(i));
-        }
-
-        return data;
       }
     }
     return null;

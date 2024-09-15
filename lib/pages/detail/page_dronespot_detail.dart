@@ -4,6 +4,7 @@ import 'package:dravel/api/http_dronespot.dart';
 import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/model/model_dronespot.dart';
 import 'package:dravel/pages/comment/page_comment_write.dart';
+import 'package:dravel/pages/detail/page_course_detail.dart';
 import 'package:dravel/utils/util_ui.dart';
 import 'package:dravel/widgets/appbar/appbar_main.dart';
 import 'package:dravel/widgets/button/button_main.dart';
@@ -266,6 +267,7 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                 id: _data.reviews[idx].id,
                 img: _data.reviews[idx].photoUrl,
                 name: _data.reviews[idx].writer?.name,
+                writerUid: _data.reviews[idx].writer?.uid,
                 place: _data.reviews[idx].placeName,
                 content: _data.reviews[idx].comment,
                 likeCount: _data.reviews[idx].likeCount,
@@ -373,7 +375,12 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                   name: _data.courses[idx].name,
                   distance: _data.courses[idx].distance,
                   duration: _data.courses[idx].duration,
-                  sectionColor: Colors.white
+                  sectionColor: Colors.white,
+                  onTap: () {
+                    Get.to(() => CourseDetailPage(
+                      id: _data.courses[idx].id,
+                    ));
+                  },
                 );
               },
               separatorBuilder: (context, idx) {
