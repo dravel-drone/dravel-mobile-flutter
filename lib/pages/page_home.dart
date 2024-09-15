@@ -299,6 +299,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                   id: _recommendReviewData[idx].id,
                   img: _recommendReviewData[idx].photoUrl,
                   name: _recommendReviewData[idx].writer?.name,
+                  writerUid: _recommendReviewData[idx].writer?.uid,
                   place: _recommendReviewData[idx].placeName,
                   content: _recommendReviewData[idx].comment,
                   likeCount: _recommendReviewData[idx].likeCount,
