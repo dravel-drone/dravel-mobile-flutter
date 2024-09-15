@@ -1,8 +1,11 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dravel/api/http_profile.dart';
+import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/pages/profile/page_follow_list.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../api/http_base.dart';
 import '../../utils/util_ui.dart';
@@ -119,12 +122,15 @@ class FollowerListItem extends StatefulWidget {
     required this.name,
     required this.drone,
     required this.uid,
+    required this.onDelete
   });
 
   String? url;
   String name;
   String drone;
   String uid;
+
+  Function() onDelete;
 
   @override
   State<StatefulWidget> createState() => _FollowerListItemState();
@@ -139,9 +145,7 @@ class _FollowerListItemState extends State<FollowerListItem> {
       drone: widget.drone,
       uid: widget.uid,
       buttonText: '삭제',
-      onTap: () {
-
-      }
+      onTap: widget.onDelete
     );
   }
 }
