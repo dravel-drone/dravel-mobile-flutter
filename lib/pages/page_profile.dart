@@ -424,7 +424,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                 child: Center(
                   child: Text(
                     !widget.pageMode ? '프로필 편집' : (
-                      _profile.isFollowing ? '팔로잉' : '팔로우'
+                      _profile.isFollowing ? '언팔로우' : '팔로우'
                     ),
                     style: TextStyle(
                         color: _profile.isFollowing ? Colors.black54 : (
