@@ -3,6 +3,7 @@ import 'package:dravel/api/http_base.dart';
 import 'package:dravel/api/http_review.dart';
 import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/utils/util_ui.dart';
+import 'package:dravel/widgets/dialog/dialog_report_ask.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -68,6 +69,16 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
           setState(() {
             mode = !mode;
           });
+        },
+        onLongPress: () async {
+          bool? result = await showAskDialog(
+            context: context,
+            message: '\'${widget.name}\'님의 리뷰를 신고하시겠습니까?',
+            title: '리뷰 신고',
+            allowText: '신고'
+          );
+
+          if (result == null || !result) return;
         },
         child: !mode ? Container(
           width: double.infinity,
