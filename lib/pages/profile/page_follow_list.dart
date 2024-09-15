@@ -137,6 +137,48 @@ class _FollowListPageState extends State<FollowListPage> {
             uid: _followingData[idx].uid,
             drone: _followingData[idx].drone ?? '',
             isFollow: _followingData[idx].isFollow,
+              onDelete: () async {
+                Get.dialog(
+                    AlertDialog(
+                      content: Row(
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(width: 24,),
+                          Text(
+                            '팔로잉 삭제중..',
+                            style: TextStyle(
+                                height: 1
+                            ),
+                          )
+                        ],
+                      ),
+                      actionsPadding: EdgeInsets.zero,
+                      contentPadding: EdgeInsets.fromLTRB(24, 18, 24, 18),
+                    ),
+                    barrierDismissible: false
+                );
+
+                final bool? result = await ProfileHttp.deleteFollowing(
+                  Get.find<AuthController>(),
+                  uid: _followingData[idx].uid,
+                );
+
+                bool? isDialogOpen = Get.isDialogOpen;
+                if (isDialogOpen != null && isDialogOpen) Get.back();
+                if (result != null) {
+                  _followingData.clear();
+                  _getData();
+                } else {
+                  if (Get.isSnackbarOpen) Get.back();
+                  Get.showSnackbar(
+                      GetSnackBar(
+                        message: '오류가 발생했습니다. 다시 시도해주세요.',
+                        backgroundColor: Colors.red,
+                        duration: Duration(seconds: 1),
+                      )
+                  );
+                }
+              }
           );
         },
         separatorBuilder: (context, idx) {

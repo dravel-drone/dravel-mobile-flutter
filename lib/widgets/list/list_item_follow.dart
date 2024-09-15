@@ -157,7 +157,8 @@ class FollowingListItem extends StatefulWidget {
     required this.name,
     required this.drone,
     required this.uid,
-    this.isFollow = true
+    this.isFollow = true,
+    required this.onDelete
   });
 
   String? url;
@@ -166,6 +167,8 @@ class FollowingListItem extends StatefulWidget {
   String uid;
 
   bool isFollow;
+
+  Function() onDelete;
 
   @override
   State<StatefulWidget> createState() => _FollowingListItemState();
@@ -182,11 +185,7 @@ class _FollowingListItemState extends State<FollowingListItem> {
       buttonText: widget.isFollow ? '언팔로우' : '팔로우',
       buttonBackgroundColor: widget.isFollow ? Colors.white : Colors.black87,
       buttonTextColor: widget.isFollow ? Colors.black54 : Colors.white,
-      onTap: () {
-        setState(() {
-          widget.isFollow = !widget.isFollow;
-        });
-      }
+      onTap: widget.onDelete
     );
   }
 }
