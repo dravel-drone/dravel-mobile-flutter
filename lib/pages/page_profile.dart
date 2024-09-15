@@ -663,7 +663,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 }
 
 class _SliverAppBarTabDelegate extends SliverPersistentHeaderDelegate {
