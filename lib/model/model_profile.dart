@@ -31,7 +31,7 @@ class ProfileModel {
       followingCount: jsonData['following_count'] ?? 0,
       oneLiner: jsonData['one_liner'],
       drone: jsonData['drone'],
-      isFollowing: jsonData['is_following'] ?? false
+      isFollowing: jsonData['is_following'] != null ? jsonData['is_following'] == 1 : false
     );
   }
 }

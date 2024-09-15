@@ -266,6 +266,7 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                 id: _data.reviews[idx].id,
                 img: _data.reviews[idx].photoUrl,
                 name: _data.reviews[idx].writer?.name,
+                writerUid: _data.reviews[idx].writer?.uid,
                 place: _data.reviews[idx].placeName,
                 content: _data.reviews[idx].comment,
                 likeCount: _data.reviews[idx].likeCount,

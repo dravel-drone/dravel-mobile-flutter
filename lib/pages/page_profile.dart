@@ -425,6 +425,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
             id: _reviewData[idx].id,
             img: _reviewData[idx].photoUrl,
             name: _reviewData[idx].writer?.name,
+            writerUid: _reviewData[idx].writer?.uid,
             place: _reviewData[idx].placeName,
             content: _reviewData[idx].comment,
             likeCount: _reviewData[idx].likeCount,
@@ -484,13 +485,14 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     Widget child;
+    Widget topWidget;
     if (_isProfileLoading != 1) {
       if (_isProfileLoading == -1) {
         child = LoadDataWidget();
       } else {
         child = ErrorDataWidget();
       }
-      return SafeArea(
+      topWidget = SafeArea(
         top: false,
         child: Column(
           children: [
@@ -534,42 +536,51 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
           ],
         ),
       );
+    } else {
+      topWidget = SafeArea(
+          top: false,
+          bottom: false,
+          child: NestedScrollView(
+            controller: _nestedController,
+            headerSliverBuilder: (context, value) {
+              return [
+                _createAppbar(),
+                SliverPersistentHeader(
+                  pinned: false,
+                  delegate: _SliverAppBarTabDelegate(
+                      child: _createProfileSection(),
+                      minHeight: 180,
+                      maxHeight: 180
+                  ),
+                ),
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _SliverAppBarTabDelegate(
+                      child: _createTabbar(),
+                      minHeight: 40,
+                      maxHeight: 40
+                  ),
+                )
+              ];
+            },
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                _createPostList(),
+                _createDroneSpotList()
+              ],
+            ),
+          )
+      );
     }
 
-    return SafeArea(
-      top: false,
-      child: NestedScrollView(
-        controller: _nestedController,
-        headerSliverBuilder: (context, value) {
-            return [
-            _createAppbar(),
-            SliverPersistentHeader(
-              pinned: false,
-              delegate: _SliverAppBarTabDelegate(
-                  child: _createProfileSection(),
-                  minHeight: 180,
-                  maxHeight: 180
-              ),
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _SliverAppBarTabDelegate(
-                  child: _createTabbar(),
-                  minHeight: 40,
-                  maxHeight: 40
-              ),
-            )
-          ];
-        },
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            _createPostList(),
-            _createDroneSpotList()
-          ],
-        ),
-      )
-    );
+    if (widget.pageMode) {
+      return Scaffold(
+        body: topWidget,
+      );
+    } else {
+      return topWidget;
+    }
   }
 
   @override

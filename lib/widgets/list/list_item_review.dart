@@ -6,6 +6,8 @@ import 'package:dravel/utils/util_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../pages/page_profile.dart';
+
 class LikeChangeValue {
   int likeCount;
   bool isLike;
@@ -20,6 +22,7 @@ class ReviewRecommendItem extends StatefulWidget {
   ReviewRecommendItem({
     required this.img,
     required this.name,
+    required this.writerUid,
     required this.place,
     required this.content,
     required this.likeCount,
@@ -32,6 +35,8 @@ class ReviewRecommendItem extends StatefulWidget {
   String? name;
   String place;
   String content;
+
+  String? writerUid;
 
   int likeCount;
   bool isLike;
@@ -133,12 +138,20 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                       Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              widget.name ?? '',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFF0075FF)
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.to(() => ProfilePage(
+                                  pageMode: true,
+                                  uid: widget.writerUid,
+                                ));
+                              },
+                              child: Text(
+                                widget.name ?? '탈퇴한 사용자',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xFF0075FF)
+                                ),
                               ),
                             ),
                           ),
@@ -244,6 +257,7 @@ class ReviewFullItem extends StatefulWidget {
     this.img,
     this.name,
     required this.id,
+    required this.writerUid,
     required this.place,
     required this.content,
     required this.likeCount,
@@ -259,6 +273,8 @@ class ReviewFullItem extends StatefulWidget {
   String content;
   String drone;
   String date;
+
+  String? writerUid;
 
   bool isLike;
 
@@ -359,12 +375,20 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                       Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              widget.name ?? '탈퇴한 사용자',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xFF0075FF)
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.to(() => ProfilePage(
+                                  pageMode: true,
+                                  uid: widget.writerUid,
+                                ));
+                              },
+                              child: Text(
+                                widget.name ?? '탈퇴한 사용자',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xFF0075FF)
+                                ),
                               ),
                             ),
                           ),
