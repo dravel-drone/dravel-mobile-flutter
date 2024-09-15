@@ -11,6 +11,7 @@ import 'package:dravel/widgets/error_data.dart';
 import 'package:dravel/widgets/list/list_item_dronespot.dart';
 import 'package:dravel/widgets/list/list_item_review.dart';
 import 'package:dravel/widgets/load_data.dart';
+import 'package:dravel/widgets/no_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -162,7 +163,9 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
             onPressed: () {
               _authController.logout();
             },
-            child: Text('로그아웃')
+            child: Text('로그아웃', style: TextStyle(
+              color: Color(0xFF0075FF)
+            ),),
           )
       ],
     );
@@ -427,7 +430,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                       _profile.isFollowing ? '언팔로우' : '팔로우'
                     ),
                     style: TextStyle(
-                        color: _profile.isFollowing ? Colors.black54 : (
+                        color: !widget.pageMode ? Colors.black54 : (
                             _profile.isFollowing ? Colors.black54 : Colors.white
                         ),
                         fontSize: 12,
@@ -467,6 +470,18 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   }
 
   Widget _createPostList() {
+    if (_reviewData.isEmpty) {
+      return Container(
+        width: double.infinity,
+        height: double.infinity,
+        child: Center(
+          child: NoDataWidget(
+            backgroundColor: Colors.transparent,
+          ),
+        ),
+      );
+    }
+
     return ListView.separated(
         key: PageStorageKey('review_profile'),
         padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
@@ -498,6 +513,18 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   }
 
   Widget _createDroneSpotList() {
+    if (_dronespotData.isEmpty) {
+      return Container(
+        width: double.infinity,
+        height: double.infinity,
+        child: Center(
+          child: NoDataWidget(
+            backgroundColor: Colors.transparent,
+          ),
+        ),
+      );
+    }
+
     return ListView.separated(
         key: PageStorageKey('drone_profile'),
         padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
