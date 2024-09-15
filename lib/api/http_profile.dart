@@ -249,4 +249,44 @@ class ProfileHttp {
     }
     return null;
   }
+
+  static Future<bool?> addFollowing(
+      AuthController authController,
+      {
+        required String uid,
+      }
+      ) async {
+    final url = Uri.https(HttpBase.domain, 'api/v1/follow/$uid');
+
+    int trial = 0;
+    while (trial < 2) {
+      final accessKey = await HttpBase.getAccessKey();
+      Map<String, String> headers = {};
+      if (accessKey != null) {
+        headers['Authorization'] = 'Bearer $accessKey';
+      }
+
+      final response = await http.post(url, headers: headers);
+
+      if (response.statusCode != 200) {
+        if (response.statusCode == 401 && trial == 0) {
+          debugPrint("Accesstoken Expired");
+          if (!await authController.refreshAccessToken()) {
+            return null;
+          }
+          trial += 1;
+          continue;
+        } else {
+          debugPrint(utf8.decode(response.bodyBytes));
+          return null;
+        }
+      } else {
+        final responseBody = utf8.decode(response.bodyBytes);
+        debugPrint(responseBody);
+
+        return true;
+      }
+    }
+    return null;
+  }
 }

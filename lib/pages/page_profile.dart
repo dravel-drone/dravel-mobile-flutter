@@ -157,17 +157,13 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
         },
       ) : null,
       actions: [
-        widget.pageMode ? IconButton(
-          icon: Icon(Icons.bookmark_border_rounded),
-          onPressed: () {
-            // Get.back();
-          },
-        ) : TextButton(
-          onPressed: () {
-            _authController.logout();
-          },
-          child: Text('로그아웃')
-        )
+        if(!widget.pageMode)
+          TextButton(
+            onPressed: () {
+              _authController.logout();
+            },
+            child: Text('로그아웃')
+          )
       ],
     );
   }
@@ -356,36 +352,92 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
           SizedBox(
             height: 12,
           ),
-          if (!widget.pageMode)
-            GestureDetector(
-              onTap: () {
+          GestureDetector(
+            onTap: () async {
+              if (!widget.pageMode) {
                 Get.to(() => ProfileEditPage(
                   profileModel: _profile,
                 ))!.then((value)  {
                   _initData();
                 });
-              },
-              child: Container(
-                height: 34,
-                decoration: BoxDecoration(
-                    color: Color(0xFFF1F1F5),
-                    borderRadius: BorderRadius.circular(12)
-                ),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(18, 7, 18, 7),
-                  child: Center(
-                    child: Text(
-                      '프로필 편집',
-                      style: TextStyle(
-                          color: Colors.black54,
-                          fontSize: 12,
-                          height: 1
+              } else {
+                Get.dialog(
+                    AlertDialog(
+                      content: Row(
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(width: 24,),
+                          Text(
+                            _profile.isFollowing ? '팔로잉 삭제중..' : '팔로잉 추가중..',
+                            style: TextStyle(
+                                height: 1
+                            ),
+                          )
+                        ],
                       ),
+                      actionsPadding: EdgeInsets.zero,
+                      contentPadding: EdgeInsets.fromLTRB(24, 18, 24, 18),
+                    ),
+                    barrierDismissible: false
+                );
+
+                final bool? result;
+                if (_profile.isFollowing) {
+                  result = await ProfileHttp.deleteFollowing(
+                    _authController,
+                    uid: widget.uid!,
+                  );
+                } else {
+                  result = await ProfileHttp.addFollowing(
+                    _authController,
+                    uid: widget.uid!,
+                  );
+                }
+
+                bool? isDialogOpen = Get.isDialogOpen;
+                if (isDialogOpen != null && isDialogOpen) Get.back();
+                if (result != null) {
+                  _profile.isFollowing = !_profile.isFollowing;
+                  setState(() {});
+                } else {
+                  if (Get.isSnackbarOpen) Get.back();
+                  Get.showSnackbar(
+                      GetSnackBar(
+                        message: '오류가 발생했습니다. 다시 시도해주세요.',
+                        backgroundColor: Colors.red,
+                        duration: Duration(seconds: 1),
+                      )
+                  );
+                }
+              }
+            },
+            child: Container(
+              height: 34,
+              decoration: BoxDecoration(
+                  color: !widget.pageMode ? Color(0xFFF1F1F5) : (
+                    _profile.isFollowing ? Colors.black12 : Colors.black87
+                  ),
+                  borderRadius: BorderRadius.circular(12)
+              ),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(18, 7, 18, 7),
+                child: Center(
+                  child: Text(
+                    !widget.pageMode ? '프로필 편집' : (
+                      _profile.isFollowing ? '팔로잉' : '팔로우'
+                    ),
+                    style: TextStyle(
+                        color: _profile.isFollowing ? Colors.black54 : (
+                            _profile.isFollowing ? Colors.black54 : Colors.white
+                        ),
+                        fontSize: 12,
+                        height: 1
                     ),
                   ),
                 ),
               ),
-            )
+            ),
+          )
         ],
       ),
     );
