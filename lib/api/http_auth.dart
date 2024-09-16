@@ -5,6 +5,8 @@ import 'package:dravel/model/model_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
+import '../controller/controller_auth.dart';
+
 class AuthHttp {
   static String? _extractToken(String input, String tokenType) {
     final regex = RegExp('${tokenType}=([^;]+)');
@@ -82,5 +84,45 @@ class AuthHttp {
     final cookies = response.headers['set-cookie']!;
     final accessToken = _extractToken(cookies, 'access_token');
     return accessToken;
+  }
+
+  static Future<bool?> deleteUser(
+      AuthController authController,
+      {
+        required String uid,
+      }
+      ) async {
+    final url = Uri.https(HttpBase.domain, 'api/v1/user/$uid');
+
+    int trial = 0;
+    while (trial < 2) {
+      final accessKey = await HttpBase.getAccessKey();
+      Map<String, String> headers = {};
+      if (accessKey != null) {
+        headers['Authorization'] = 'Bearer $accessKey';
+      }
+
+      final response = await http.delete(url, headers: headers);
+
+      if (response.statusCode != 200) {
+        if (response.statusCode == 401 && trial == 0) {
+          debugPrint("Accesstoken Expired");
+          if (!await authController.refreshAccessToken()) {
+            return null;
+          }
+          trial += 1;
+          continue;
+        } else {
+          debugPrint(utf8.decode(response.bodyBytes));
+          return null;
+        }
+      } else {
+        final responseBody = utf8.decode(response.bodyBytes);
+        debugPrint(responseBody);
+
+        return true;
+      }
+    }
+    return null;
   }
 }

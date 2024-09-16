@@ -3,6 +3,7 @@ import 'package:dravel/api/http_profile.dart';
 import 'package:dravel/api/http_review.dart';
 import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/model/model_profile.dart';
+import 'package:dravel/pages/account/page_account_setting.dart';
 import 'package:dravel/pages/account/page_login.dart';
 import 'package:dravel/pages/profile/page_follow_list.dart';
 import 'package:dravel/pages/profile/page_profile_edit.dart';
@@ -159,14 +160,20 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
       ) : null,
       actions: [
         if(!widget.pageMode)
-          TextButton(
+          IconButton(
             onPressed: () {
-              _authController.logout();
+              Get.to(() => AccountSettingPage());
             },
-            child: Text('로그아웃', style: TextStyle(
-              color: Color(0xFF0075FF)
-            ),),
+            icon: Icon(Icons.settings_outlined)
           )
+          // TextButton(
+          //   onPressed: () {
+          //     _authController.logout();
+          //   },
+          //   child: Text('로그아웃', style: TextStyle(
+          //     color: Color(0xFF0075FF)
+          //   ),),
+          // )
       ],
     );
   }

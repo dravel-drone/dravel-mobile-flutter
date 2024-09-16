@@ -3,6 +3,7 @@ import 'package:dravel/api/http_base.dart';
 import 'package:dravel/api/http_review.dart';
 import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/utils/util_ui.dart';
+import 'package:dravel/widgets/dialog/dialog_report_ask.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -69,6 +70,70 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
             mode = !mode;
           });
         },
+        onLongPress: () async {
+          bool? result = await showAskDialog(
+            context: context,
+            message: '\'${widget.name}\'님의 리뷰를 신고하시겠습니까?',
+            title: '리뷰 신고',
+            allowText: '신고'
+          );
+
+          if (result == null || !result) return;
+
+          Get.dialog(
+            AlertDialog(
+              content: Row(
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(width: 24,),
+                  Text(
+                    '리뷰 신고중..',
+                    style: TextStyle(
+                        height: 1
+                    ),
+                  )
+                ],
+              ),
+              actionsPadding: EdgeInsets.zero,
+              contentPadding: EdgeInsets.fromLTRB(24, 18, 24, 18),
+            ),
+            barrierDismissible: false
+          );
+
+          int? apiResult = await ReviewHttp.reportReview(_authController, id: widget.id);
+
+          bool? isDialogOpen = Get.isDialogOpen;
+          if (isDialogOpen != null && isDialogOpen) Get.back();
+
+          if (apiResult == null) {
+            if (Get.isSnackbarOpen) Get.back();
+            Get.showSnackbar(
+              GetSnackBar(
+                message: '오류가 발생했습니다. 다시 시도해주세요.',
+                backgroundColor: Colors.red,
+                duration: Duration(seconds: 1),
+              )
+            );
+          } else if (apiResult == 0) {
+            if (Get.isSnackbarOpen) Get.back();
+            Get.showSnackbar(
+                GetSnackBar(
+                  message: '이미 신고한 리뷰입니다.',
+                  backgroundColor: Colors.orange,
+                  duration: Duration(seconds: 1),
+                )
+            );
+          } else {
+            if (Get.isSnackbarOpen) Get.back();
+            Get.showSnackbar(
+                GetSnackBar(
+                  message: '신고가 완료되었습니다.',
+                  backgroundColor: Colors.blue,
+                  duration: Duration(seconds: 1),
+                )
+            );
+          }
+        },
         child: !mode ? Container(
           width: double.infinity,
           height: 150,
@@ -118,6 +183,17 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
+                                if (widget.writerUid == null) {
+                                  if (Get.isSnackbarOpen) Get.back();
+                                  Get.showSnackbar(
+                                    GetSnackBar(
+                                      message: '탈퇴한 사용자입니다.',
+                                      duration: Duration(seconds: 1),
+                                      backgroundColor: Colors.orange,
+                                    )
+                                  );
+                                  return;
+                                }
                                 Get.to(() => ProfilePage(
                                   pageMode: true,
                                   uid: widget.writerUid,
@@ -198,16 +274,18 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                       SizedBox(
                         height: 4,
                       ),
-                      Text(
-                        widget.content,
-                        // key: _secondChildKey,
-                        style: TextStyle(
-                            color: Colors.black54
+                      Expanded(
+                        child: Text(
+                          widget.content,
+                          // key: _secondChildKey,
+                          style: TextStyle(
+                              color: Colors.black54
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                          maxLines: 3,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        maxLines: 3,
-                      ),
+                      )
                     ],
                   ),
                 ),
@@ -257,6 +335,17 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
+                          if (widget.writerUid == null) {
+                            if (Get.isSnackbarOpen) Get.back();
+                            Get.showSnackbar(
+                                GetSnackBar(
+                                  message: '탈퇴한 사용자입니다.',
+                                  duration: Duration(seconds: 1),
+                                  backgroundColor: Colors.orange,
+                                )
+                            );
+                            return;
+                          }
                           Get.to(() => ProfilePage(
                             pageMode: true,
                             uid: widget.writerUid,
@@ -339,8 +428,9 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                   ),
                 ),
               ),
-              Padding(
+              Container(
                 padding: EdgeInsets.fromLTRB(18, 6, 19, 18),
+                width: double.infinity,
                 child: Text(
                   widget.content,
                   style: TextStyle(
@@ -414,6 +504,70 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
             mode = !mode;
           });
         },
+        onLongPress: () async {
+          bool? result = await showAskDialog(
+              context: context,
+              message: '\'${widget.name}\'님의 리뷰를 신고하시겠습니까?',
+              title: '리뷰 신고',
+              allowText: '신고'
+          );
+
+          if (result == null || !result) return;
+
+          Get.dialog(
+              AlertDialog(
+                content: Row(
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(width: 24,),
+                    Text(
+                      '리뷰 신고중..',
+                      style: TextStyle(
+                          height: 1
+                      ),
+                    )
+                  ],
+                ),
+                actionsPadding: EdgeInsets.zero,
+                contentPadding: EdgeInsets.fromLTRB(24, 18, 24, 18),
+              ),
+              barrierDismissible: false
+          );
+
+          int? apiResult = await ReviewHttp.reportReview(_authController, id: widget.id);
+
+          bool? isDialogOpen = Get.isDialogOpen;
+          if (isDialogOpen != null && isDialogOpen) Get.back();
+
+          if (apiResult == null) {
+            if (Get.isSnackbarOpen) Get.back();
+            Get.showSnackbar(
+                GetSnackBar(
+                  message: '오류가 발생했습니다. 다시 시도해주세요.',
+                  backgroundColor: Colors.red,
+                  duration: Duration(seconds: 1),
+                )
+            );
+          } else if (apiResult == 0) {
+            if (Get.isSnackbarOpen) Get.back();
+            Get.showSnackbar(
+                GetSnackBar(
+                  message: '이미 신고한 리뷰입니다.',
+                  backgroundColor: Colors.orange,
+                  duration: Duration(seconds: 1),
+                )
+            );
+          } else {
+            if (Get.isSnackbarOpen) Get.back();
+            Get.showSnackbar(
+                GetSnackBar(
+                  message: '신고가 완료되었습니다.',
+                  backgroundColor: Colors.blue,
+                  duration: Duration(seconds: 1),
+                )
+            );
+          }
+        },
         child: !mode ? Container(
           width: double.infinity,
           height: 180,
@@ -463,6 +617,17 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
+                                if (widget.writerUid == null) {
+                                  if (Get.isSnackbarOpen) Get.back();
+                                  Get.showSnackbar(
+                                      GetSnackBar(
+                                        message: '탈퇴한 사용자입니다.',
+                                        duration: Duration(seconds: 1),
+                                        backgroundColor: Colors.orange,
+                                      )
+                                  );
+                                  return;
+                                }
                                 Get.to(() => ProfilePage(
                                   pageMode: true,
                                   uid: widget.writerUid,
@@ -559,14 +724,19 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                       SizedBox(
                         height: 4,
                       ),
-                      Text(
-                        widget.content,
-                        style: TextStyle(
-                            color: Colors.black54
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            widget.content,
+                            style: TextStyle(
+                                color: Colors.black54
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            maxLines: 3,
+                          ),
                         ),
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        maxLines: 3,
                       ),
                       SizedBox(height: 8,),
                       Row(
@@ -643,6 +813,17 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
+                        if (widget.writerUid == null) {
+                          if (Get.isSnackbarOpen) Get.back();
+                          Get.showSnackbar(
+                              GetSnackBar(
+                                message: '탈퇴한 사용자입니다.',
+                                duration: Duration(seconds: 1),
+                                backgroundColor: Colors.orange,
+                              )
+                          );
+                          return;
+                        }
                         Get.to(() => ProfilePage(
                           pageMode: true,
                           uid: widget.writerUid,
@@ -725,12 +906,13 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                 ),
               ),
             ),
-            Padding(
+            Container(
               padding: EdgeInsets.fromLTRB(18, 6, 19, 18),
+              width: double.infinity,
               child: Text(
                 widget.content,
                 style: TextStyle(
-                    color: Colors.black54
+                  color: Colors.black54
                 ),
                 softWrap: true,
                 maxLines: null,

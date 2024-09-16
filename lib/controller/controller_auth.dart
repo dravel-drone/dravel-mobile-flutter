@@ -95,6 +95,42 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> deleteUser() async {
+    Get.dialog(
+      const AlertDialog(
+        content: Row(
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(width: 12,),
+            Text('유저 탈퇴 처리중..')
+          ],
+        ),
+        buttonPadding: EdgeInsets.zero,
+        contentPadding: EdgeInsets.fromLTRB(18, 24, 18, 24),
+      ),
+      barrierDismissible: false
+    );
+
+    bool? result = await AuthHttp.deleteUser(
+      this, uid: userUid.value!
+    );
+
+    await _secureStorage.delete(key: 'access');
+    await _secureStorage.delete(key: 'refresh');
+    await _secureStorage.delete(key: 'uid');
+    Get.offAll(() => LoginPage());
+
+    if (result == null || !result) {
+      Get.showSnackbar(
+          const GetSnackBar(
+            message: "탈퇴 오류",
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 1),
+          )
+      );
+    }
+  }
+
   Future<bool> refreshAccessToken() async {
     String? refreshToken = await _secureStorage.read(key: 'refresh');
     if (refreshToken == null) {

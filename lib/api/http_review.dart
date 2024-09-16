@@ -153,6 +153,48 @@ class ReviewHttp {
     return null;
   }
 
+  static Future<int?> reportReview(
+    AuthController authController,
+    {
+      required int id,
+    }
+  ) async {
+    final url = Uri.https(HttpBase.domain, 'api/v1/review/report/$id');
+
+    int trial = 0;
+    while (trial < 2) {
+      final accessKey = await HttpBase.getAccessKey();
+      Map<String, String> headers = {};
+      if (accessKey != null) {
+        headers['Authorization'] = 'Bearer $accessKey';
+      }
+
+      final response = await http.post(url, headers: headers);
+
+      if (response.statusCode != 204) {
+        if (response.statusCode == 401 && trial == 0) {
+          debugPrint("Accesstoken Expired");
+          if (!await authController.refreshAccessToken()) {
+            return null;
+          }
+          trial += 1;
+          continue;
+        } else if (response.statusCode == 400) {
+          return 0;
+        } else {
+          debugPrint(utf8.decode(response.bodyBytes));
+          return null;
+        }
+      } else {
+        final responseBody = utf8.decode(response.bodyBytes);
+        debugPrint(responseBody);
+
+        return 1;
+      }
+    }
+    return null;
+  }
+
   static Future<List<DronespotReviewModel>?> getTrendReview(
     AuthController authController,
   ) async {

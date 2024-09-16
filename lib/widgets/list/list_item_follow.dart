@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../api/http_base.dart';
+import '../../pages/page_profile.dart';
 import '../../utils/util_ui.dart';
 
 class _FollowListItem extends StatelessWidget {
@@ -34,16 +35,39 @@ class _FollowListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(200),
-          child: url != null ? CachedNetworkImage(
-            width: 48,
-            height: 48,
-            errorWidget: (context, error, obj) {
-              return Container(
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => ProfilePage(
+          pageMode: true,
+          uid: uid,
+        ));
+      },
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.transparent
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(200),
+              child: url != null ? CachedNetworkImage(
+                width: 48,
+                height: 48,
+                errorWidget: (context, error, obj) {
+                  return Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: getRandomGradientColor(uid.hashCode)
+                        )
+                    ),
+                  );
+                },
+                fit: BoxFit.cover,
+                imageUrl: HttpBase.baseUrl +  url!,
+              ) : Container(
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
@@ -51,67 +75,57 @@ class _FollowListItem extends StatelessWidget {
                         colors: getRandomGradientColor(uid.hashCode)
                     )
                 ),
-              );
-            },
-            fit: BoxFit.cover,
-            imageUrl: HttpBase.baseUrl +  url!,
-          ) : Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: getRandomGradientColor(uid.hashCode)
-                )
-            ),
-          ),
-        ),
-        SizedBox(width: 12,),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600
-                ),
-              ),
-              SizedBox(height: 2,),
-              Text(
-                drone,
-                style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 14,
-                    height: 1
-                ),
-              ),
-            ],
-          ),
-        ),
-        Ink(
-          decoration: BoxDecoration(
-              color: buttonBackgroundColor,
-              borderRadius: BorderRadius.circular(10)
-          ),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(10),
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(14, 8, 14, 8),
-              child: Text(
-                buttonText,
-                style: TextStyle(
-                    fontSize: 12,
-                    color: buttonTextColor,
-                    height: 1
-                ),
               ),
             ),
-          ),
-        )
-      ],
-    );;
+            SizedBox(width: 12,),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600
+                    ),
+                  ),
+                  SizedBox(height: 2,),
+                  Text(
+                    drone,
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 14,
+                        height: 1
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Ink(
+              decoration: BoxDecoration(
+                  color: buttonBackgroundColor,
+                  borderRadius: BorderRadius.circular(10)
+              ),
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(10),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(14, 8, 14, 8),
+                  child: Text(
+                    buttonText,
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: buttonTextColor,
+                        height: 1
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
 
