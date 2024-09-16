@@ -131,18 +131,18 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-            InkWell(
-              onTap: () {
-
-              },
-              child: Text(
-                '아이디/비밀번호 찾기',
-                style: TextStyle(
-                  color: Colors.black54,
-                  height: 1
-                ),
-              ),
-            ),
+            // InkWell(
+            //   onTap: () {
+            //
+            //   },
+            //   child: Text(
+            //     '아이디/비밀번호 찾기',
+            //     style: TextStyle(
+            //       color: Colors.black54,
+            //       height: 1
+            //     ),
+            //   ),
+            // ),
           ],
         )
       ],
