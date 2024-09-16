@@ -5,5 +5,6 @@
 -keep class io.flutter.view.**  { *; }
 -keep class io.flutter.**  { *; }
 -keep class io.flutter.plugins.**  { *; }
--keep class com.kakao.** { *; }
+-keep class com.kakao.vectormap.** { *; }
+-keep interface com.kakao.vectormap.**
 -dontwarn io.flutter.embedding.**

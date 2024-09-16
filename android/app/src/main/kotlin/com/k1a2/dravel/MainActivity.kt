@@ -3,6 +3,7 @@ package com.k1a2.dravel
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.os.Bundle
 import android.util.Log
 import com.kakao.vectormap.KakaoMapSdk
 import io.flutter.embedding.android.FlutterActivity
@@ -14,8 +15,8 @@ import io.flutter.plugin.platform.PlatformViewFactory
 import java.io.Console
 
 class MainActivity: FlutterActivity() {
-    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
-        super.configureFlutterEngine(flutterEngine)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         val ai: ApplicationInfo = context.packageManager
             .getApplicationInfo(context.packageName, PackageManager.GET_META_DATA)
@@ -24,7 +25,11 @@ class MainActivity: FlutterActivity() {
         Log.d("kakaoKey", ak)
 
         KakaoMapSdk.init(this, ak)
+        Log.d("init", "init kakaomap")
+    }
 
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
         flutterEngine
             .platformViewsController
             .registry

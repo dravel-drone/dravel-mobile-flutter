@@ -26,14 +26,11 @@ import com.kakao.vectormap.label.LabelManager
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
-import io.flutter.embedding.android.FlutterActivity
-import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.platform.PlatformView
-import java.util.Objects
 
 
 class KakaoMapActivity(
@@ -71,7 +68,8 @@ class KakaoMapActivity(
             }
 
             override fun onMapError(error: Exception) {
-                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출됨
+                Log.d("Map Callback", "error ${error.message.toString()}")
+                error.printStackTrace()
             }
         }, object : KakaoMapReadyCallback() {
             override fun onMapReady(map: KakaoMap) {
@@ -118,13 +116,12 @@ class KakaoMapActivity(
 //                    }
 //                }
 
-                kakaoMap!!.setOnLabelClickListener(object : OnLabelClickListener {
-                    override fun onLabelClicked(p0: KakaoMap?, p1: LabelLayer?, p2: Label?) {
-                        val tagId = p2!!.tag as Int
-                        Log.d("Tag Clicked", "$tagId")
-                        methodChannel.invokeMethod("onLabelTabbed", mapOf<String, Any>("id" to tagId))
-                    }
-                })
+                kakaoMap!!.setOnLabelClickListener { p0, p1, p2 ->
+                    val tagId = p2!!.tag as Int
+                    Log.d("Tag Clicked", "$tagId")
+                    methodChannel.invokeMethod("onLabelTabbed", mapOf<String, Any>("id" to tagId))
+                    true
+                }
 
                 kakaoMap!!.setOnCameraMoveEndListener(object : OnCameraMoveEndListener {
                     override fun onCameraMoveEnd(
