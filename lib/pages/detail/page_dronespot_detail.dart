@@ -242,18 +242,18 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
-
-              },
-              child: Text(
-                '더보기 >',
-                style: TextStyle(
-                  color: Colors.black38,
-                  height: 1
-                ),
-              ),
-            )
+            // GestureDetector(
+            //   onTap: () {
+            //
+            //   },
+            //   child: Text(
+            //     '더보기 >',
+            //     style: TextStyle(
+            //       color: Colors.black38,
+            //       height: 1
+            //     ),
+            //   ),
+            // )
           ],
         ),
         SizedBox(height: 12,),
