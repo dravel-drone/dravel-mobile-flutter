@@ -88,6 +88,25 @@ class _AccountSettingPageState extends State<AccountSettingPage> {
                 _authController.logout();
               }
             ),
+            _settingItem(
+              icon: Icon(
+                Icons.no_accounts_rounded,
+                color: Colors.red,
+              ),
+              text: '회원탈퇴',
+              onTap: () async {
+                bool? result = await showAskDialog(
+                  context: context,
+                  message: '탈퇴 하시겠습니까? 모든 계정 정보는 복구할 수 없습니다.',
+                  title: '회원탈퇴',
+                  allowText: '탈퇴',
+                );
+
+                if (result == null || !result) return;
+
+                _authController.deleteUser();
+              }
+            ),
             SizedBox(
               height: getBottomPaddingWithSafeHeight(context, 24),
             )
