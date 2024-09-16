@@ -62,6 +62,7 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Pretendard'
       ),
