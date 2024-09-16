@@ -79,6 +79,60 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
           );
 
           if (result == null || !result) return;
+
+          Get.dialog(
+            AlertDialog(
+              content: Row(
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(width: 24,),
+                  Text(
+                    '리뷰 신고중..',
+                    style: TextStyle(
+                        height: 1
+                    ),
+                  )
+                ],
+              ),
+              actionsPadding: EdgeInsets.zero,
+              contentPadding: EdgeInsets.fromLTRB(24, 18, 24, 18),
+            ),
+            barrierDismissible: false
+          );
+
+          int? apiResult = await ReviewHttp.reportReview(_authController, id: widget.id);
+
+          bool? isDialogOpen = Get.isDialogOpen;
+          if (isDialogOpen != null && isDialogOpen) Get.back();
+
+          if (apiResult == null) {
+            if (Get.isSnackbarOpen) Get.back();
+            Get.showSnackbar(
+              GetSnackBar(
+                message: '오류가 발생했습니다. 다시 시도해주세요.',
+                backgroundColor: Colors.red,
+                duration: Duration(seconds: 1),
+              )
+            );
+          } else if (apiResult == 0) {
+            if (Get.isSnackbarOpen) Get.back();
+            Get.showSnackbar(
+                GetSnackBar(
+                  message: '이미 신고한 리뷰입니다.',
+                  backgroundColor: Colors.orange,
+                  duration: Duration(seconds: 1),
+                )
+            );
+          } else {
+            if (Get.isSnackbarOpen) Get.back();
+            Get.showSnackbar(
+                GetSnackBar(
+                  message: '신고가 완료되었습니다.',
+                  backgroundColor: Colors.blue,
+                  duration: Duration(seconds: 1),
+                )
+            );
+          }
         },
         child: !mode ? Container(
           width: double.infinity,
