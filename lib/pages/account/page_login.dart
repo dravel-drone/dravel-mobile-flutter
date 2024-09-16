@@ -229,7 +229,7 @@ class _LoginPageState extends State<LoginPage> {
                       await _secureStorage.delete(key: 'email');
                     }
 
-                    Get.to(() => MainNavigationPage());
+                    Get.offAll(() => MainNavigationPage());
                   },
                   childText: '로그인',
                 ),
