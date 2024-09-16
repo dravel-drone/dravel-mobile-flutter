@@ -183,6 +183,17 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
+                                if (widget.writerUid == null) {
+                                  if (Get.isSnackbarOpen) Get.back();
+                                  Get.showSnackbar(
+                                    GetSnackBar(
+                                      message: '탈퇴한 사용자입니다.',
+                                      duration: Duration(seconds: 1),
+                                      backgroundColor: Colors.orange,
+                                    )
+                                  );
+                                  return;
+                                }
                                 Get.to(() => ProfilePage(
                                   pageMode: true,
                                   uid: widget.writerUid,
@@ -324,6 +335,17 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
+                          if (widget.writerUid == null) {
+                            if (Get.isSnackbarOpen) Get.back();
+                            Get.showSnackbar(
+                                GetSnackBar(
+                                  message: '탈퇴한 사용자입니다.',
+                                  duration: Duration(seconds: 1),
+                                  backgroundColor: Colors.orange,
+                                )
+                            );
+                            return;
+                          }
                           Get.to(() => ProfilePage(
                             pageMode: true,
                             uid: widget.writerUid,
@@ -595,6 +617,17 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
+                                if (widget.writerUid == null) {
+                                  if (Get.isSnackbarOpen) Get.back();
+                                  Get.showSnackbar(
+                                      GetSnackBar(
+                                        message: '탈퇴한 사용자입니다.',
+                                        duration: Duration(seconds: 1),
+                                        backgroundColor: Colors.orange,
+                                      )
+                                  );
+                                  return;
+                                }
                                 Get.to(() => ProfilePage(
                                   pageMode: true,
                                   uid: widget.writerUid,
@@ -780,6 +813,17 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
+                        if (widget.writerUid == null) {
+                          if (Get.isSnackbarOpen) Get.back();
+                          Get.showSnackbar(
+                              GetSnackBar(
+                                message: '탈퇴한 사용자입니다.',
+                                duration: Duration(seconds: 1),
+                                backgroundColor: Colors.orange,
+                              )
+                          );
+                          return;
+                        }
                         Get.to(() => ProfilePage(
                           pageMode: true,
                           uid: widget.writerUid,
