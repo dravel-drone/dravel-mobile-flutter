@@ -263,16 +263,18 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                       SizedBox(
                         height: 4,
                       ),
-                      Text(
-                        widget.content,
-                        // key: _secondChildKey,
-                        style: TextStyle(
-                            color: Colors.black54
+                      Expanded(
+                        child: Text(
+                          widget.content,
+                          // key: _secondChildKey,
+                          style: TextStyle(
+                              color: Colors.black54
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                          maxLines: 3,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        maxLines: 3,
-                      ),
+                      )
                     ],
                   ),
                 ),
@@ -404,8 +406,9 @@ class _ReviewRecommendItemState extends State<ReviewRecommendItem> {
                   ),
                 ),
               ),
-              Padding(
+              Container(
                 padding: EdgeInsets.fromLTRB(18, 6, 19, 18),
+                width: double.infinity,
                 child: Text(
                   widget.content,
                   style: TextStyle(
@@ -688,14 +691,19 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                       SizedBox(
                         height: 4,
                       ),
-                      Text(
-                        widget.content,
-                        style: TextStyle(
-                            color: Colors.black54
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            widget.content,
+                            style: TextStyle(
+                                color: Colors.black54
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            maxLines: 3,
+                          ),
                         ),
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        maxLines: 3,
                       ),
                       SizedBox(height: 8,),
                       Row(
@@ -854,12 +862,13 @@ class _ReviewFullItemState extends State<ReviewFullItem> {
                 ),
               ),
             ),
-            Padding(
+            Container(
               padding: EdgeInsets.fromLTRB(18, 6, 19, 18),
+              width: double.infinity,
               child: Text(
                 widget.content,
                 style: TextStyle(
-                    color: Colors.black54
+                  color: Colors.black54
                 ),
                 softWrap: true,
                 maxLines: null,
