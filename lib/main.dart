@@ -14,7 +14,7 @@ import 'utils/util_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final storage = FlutterSecureStorage();
+  const storage = FlutterSecureStorage();
   // await storage.delete(key: 'access');
   // await storage.delete(key: 'refresh');
 
