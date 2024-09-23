@@ -171,12 +171,24 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                   )
                 ],
               ),
-              Text(
-                '사전합의구역',
-                style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.transparent
+                ),
+                child: GestureDetector(
+                  onTap: () {
+                    debugPrint('ssdsd');
+                  },
+                  child: Text(
+                    _data.area[0].name +
+                        (_data.area.length > 1 ? '외 ${_data.area.length - 1}개' : ''),
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600
+                    ),
+                  ),
                 ),
               ),
               getFlyPermitWidget(_data.permit.flight,
