@@ -12,24 +12,13 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
+import io.flutter.plugins.GeneratedPluginRegistrant
 import java.io.Console
 
 class MainActivity: FlutterActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val ai: ApplicationInfo = context.packageManager
-            .getApplicationInfo(context.packageName, PackageManager.GET_META_DATA)
-        val ak: String = ai.metaData.getString("kakaoKey")!!
-
-        Log.d("kakaoKey", ak)
-
-        KakaoMapSdk.init(this, ak)
-        Log.d("init", "init kakaomap")
-    }
-
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        GeneratedPluginRegistrant.registerWith(flutterEngine)
         flutterEngine
             .platformViewsController
             .registry

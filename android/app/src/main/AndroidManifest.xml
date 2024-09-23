@@ -7,7 +7,7 @@
     <application
         android:requestLegacyExternalStorage="true"
         android:label="dravel"
-        android:name="${applicationName}"
+        android:name=".MyApplication"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
         <activity

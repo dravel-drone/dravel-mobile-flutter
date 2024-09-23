@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.kakao.vectormap.GestureType
 import com.kakao.vectormap.KakaoMap
@@ -26,6 +27,7 @@ import com.kakao.vectormap.label.LabelManager
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.label.LabelTextBuilder
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -38,7 +40,7 @@ class KakaoMapActivity(
     creationParams: Map<String?, Any?>?,
     messenger: BinaryMessenger,
     id: Int,
-) : PlatformView, DefaultLifecycleObserver, MethodCallHandler {
+) : PlatformView, MethodCallHandler, DefaultLifecycleObserver {
     private val methodChannel: MethodChannel = MethodChannel(messenger, "map-kakao/$id")
 
     private val nativeView: View?
@@ -58,13 +60,21 @@ class KakaoMapActivity(
         this.creationParams = creationParams
     }
 
-    override fun getView(): View? {
-        if (nativeView == null) return null
+    override fun onFlutterViewAttached(flutterView: View) {
+        if (nativeView == null) return
 
         mapView = nativeView.findViewById<MapView>(R.id.map_kakao)
         mapView!!.start(object : MapLifeCycleCallback() {
             override fun onMapDestroy() {
                 // 지도 API 가 정상적으로 종료될 때 호출됨
+            }
+
+            override fun onMapPaused() {
+                Log.d("Map Callback", "Map Paused")
+            }
+
+            override fun onMapResumed() {
+                Log.d("Map Callback", "Map Resume")
             }
 
             override fun onMapError(error: Exception) {
@@ -136,7 +146,9 @@ class KakaoMapActivity(
                 methodChannel.invokeMethod("onMapInit", null)
             }
         })
+    }
 
+    override fun getView(): View? {
         return nativeView
     }
 
@@ -182,23 +194,25 @@ class KakaoMapActivity(
         lng: Double,
         id: Int
     ) {
+        Log.d("Map Label", "add label")
         // 라벨 옵션 지정
         val options = LabelOptions.from(LatLng.from(lat, lng))
             .setStyles(labelStyles)
             .setClickable(true)
-            .setTexts(name)
+            .setTexts(LabelTextBuilder().setTexts(name))
             .setTag(id)
 
         // 라벨 추가
         val layer = kakaoMap!!.labelManager!!.layer
         layer!!.addLabel(options)
+        Log.d("Map Label", "add label2")
     }
 
     private fun removeAllSpotLabel() {
-        print("deleted1")
+        Log.d("Map Label", "deleted1")
         val layer = kakaoMap!!.labelManager!!.layer
         layer!!.removeAll()
-        print("deleted2")
+        Log.d("Map Label", "deleted2")
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
