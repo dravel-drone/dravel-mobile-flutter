@@ -1,5 +1,7 @@
 import 'package:dravel/channel/channel_kakao_map.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -41,7 +43,6 @@ class KakaoMapView extends StatelessWidget {
         creationParams: creationParams,
         onPlatformViewCreated: _onPlatformViewCreated,
         creationParamsCodec: const StandardMessageCodec(),
-        // onPlatformViewCreated: _onPlatformViewCreated,
       );
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
       return UiKitView(
@@ -50,7 +51,6 @@ class KakaoMapView extends StatelessWidget {
         creationParams: creationParams,
         onPlatformViewCreated: _onPlatformViewCreated,
         creationParamsCodec: const StandardMessageCodec(),
-        // onPlatformViewCreated: _onPlatformViewCreated,
       );
     }
     return Text('Unsupported platform');

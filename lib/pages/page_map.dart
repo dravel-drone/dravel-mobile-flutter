@@ -22,7 +22,7 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
-  KakaoMapChannel _kakaoMapChannel = KakaoMapChannel();
+  final KakaoMapChannel _kakaoMapChannel = KakaoMapChannel();
   late final AuthController _authController;
   late final ScrollController _bottomSheetContentController;
   late final SnappingSheetController _snappingSheetController;
@@ -54,8 +54,8 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
     List<dynamic> labels = [];
 
     // await _kakaoMapChannel.removeAllSpotLabel();
-    //
-    // debugPrint(_droneSpotData.length.toString());
+
+    debugPrint(_droneSpotData.length.toString());
     for (var i in _droneSpotData) {
       debugPrint(i.name);
       labels.add({

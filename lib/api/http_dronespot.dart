@@ -91,7 +91,7 @@ class DroneSpotHttp {
         }
       } else {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
-        debugPrint(jsonData.toString());
+        debugPrint('all ' + jsonData.toString());
 
         List<DroneSpotModel> data = [];
         for (var i in jsonData) {

@@ -86,6 +86,39 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
       );
     }
 
+    String whether = '날씨정보 없음';
+    if (_data.whether != null) {
+      whether = '${_data.whether!.temp}도 / ';
+      if (_data.whether!.pty != 0) {
+        switch (_data.whether!.pty) {
+          case 1:
+            whether += '비';
+            break;
+          case 2:
+            whether += '비/눈';
+            break;
+          case 3:
+            whether += '눈';
+            break;
+          case 4:
+            whether += '소나기';
+            break;
+        }
+      } else {
+        switch (_data.whether!.sky) {
+          case 1:
+            whether += '맑음';
+            break;
+          case 3:
+            whether += '구름많음';
+            break;
+          case 4:
+            whether += '흐림';
+            break;
+        }
+      }
+    }
+
     return Row(
       children: [
         ClipRRect(
@@ -171,12 +204,24 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                   )
                 ],
               ),
-              Text(
-                '사전합의구역',
-                style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.transparent
+                ),
+                child: GestureDetector(
+                  onTap: () {
+                    debugPrint('ssdsd');
+                  },
+                  child: Text(
+                    _data.area[0].name +
+                        (_data.area.length > 1 ? '외 ${_data.area.length - 1}개' : ''),
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600
+                    ),
+                  ),
                 ),
               ),
               getFlyPermitWidget(_data.permit.flight,
@@ -210,7 +255,7 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                   ],
                 ),
               Text(
-                '현재 12도 / 맑음',
+                whether,
                 style: TextStyle(
                     color: Colors.black54,
                     fontSize: 14,
