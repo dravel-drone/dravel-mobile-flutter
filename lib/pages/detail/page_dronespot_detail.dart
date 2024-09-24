@@ -86,6 +86,39 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
       );
     }
 
+    String whether = '날씨정보 없음';
+    if (_data.whether != null) {
+      whether = '${_data.whether!.temp}도 / ';
+      if (_data.whether!.pty != 0) {
+        switch (_data.whether!.pty) {
+          case 1:
+            whether += '비';
+            break;
+          case 2:
+            whether += '비/눈';
+            break;
+          case 3:
+            whether += '눈';
+            break;
+          case 4:
+            whether += '소나기';
+            break;
+        }
+      } else {
+        switch (_data.whether!.sky) {
+          case 1:
+            whether += '맑음';
+            break;
+          case 3:
+            whether += '구름많음';
+            break;
+          case 4:
+            whether += '흐림';
+            break;
+        }
+      }
+    }
+
     return Row(
       children: [
         ClipRRect(
@@ -222,9 +255,7 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                   ],
                 ),
               Text(
-                _data.whether != null ?
-                  '${_data.whether!.temp}도 / 맑음' :
-                  '날씨정보 없음',
+                whether,
                 style: TextStyle(
                     color: Colors.black54,
                     fontSize: 14,
