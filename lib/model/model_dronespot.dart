@@ -65,6 +65,7 @@ class DronespotDetailModel extends DroneSpotModel {
   List<DronespotReviewDetailModel> reviews;
   DronespotPlaceModel places;
   List<CourseModel> courses;
+  WhetherModel? whether;
 
   DronespotDetailModel({
     required super.id,
@@ -80,6 +81,7 @@ class DronespotDetailModel extends DroneSpotModel {
 
     this.reviews = const [],
     this.courses = const [],
+    this.whether,
     required this.places,
   });
 
@@ -135,9 +137,15 @@ class DronespotDetailModel extends DroneSpotModel {
       );
     });
 
+    WhetherModel? whether;
+    if (jsonData['whether'] != null) {
+      whether = WhetherModel.fromJson(jsonData['whether']);
+    }
+
     return DronespotDetailModel(
       id: jsonData['id'],
       name: jsonData['name'],
+      whether: whether,
       isLike: jsonData['is_like'] == 1,
       likeCount: jsonData['likes_count'] ?? 0,
       reviewCount: jsonData['reviews_count'] ?? 0,

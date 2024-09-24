@@ -222,7 +222,9 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                   ],
                 ),
               Text(
-                '현재 12도 / 맑음',
+                _data.whether != null ?
+                  '${_data.whether!.temp}도 / 맑음' :
+                  '날씨정보 없음',
                 style: TextStyle(
                     color: Colors.black54,
                     fontSize: 14,
