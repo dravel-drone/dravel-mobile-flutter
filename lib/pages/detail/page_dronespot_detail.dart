@@ -138,7 +138,8 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                       style: TextStyle(
                         color: Colors.black54,
                         fontSize: 14,
-                        fontWeight: FontWeight.w600
+                        fontWeight: FontWeight.w600,
+                        height: 1
                       ),
                     ),
                   ),
@@ -224,15 +225,23 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 2,
+              ),
               getFlyPermitWidget(_data.permit.flight,
               style: TextStyle(
-                color: Colors.black54
+                color: Colors.black54,
+                height: 1
               )),
-              SizedBox(height: 2,),
+              SizedBox(height: 4,),
               getPicturePermitWidget(_data.permit.camera,
               style: TextStyle(
-                  color: Colors.black54
+                color: Colors.black54,
+                height: 1
               )),
+              SizedBox(
+                height: 2,
+              ),
               if (_data.location.address != null)
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
