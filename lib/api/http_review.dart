@@ -238,8 +238,14 @@ class ReviewHttp {
   }
 
   static Future<List<DronespotReviewDetailModel>?> getLikeReview(
-    AuthController authController,
+    AuthController authController, {
+      int page = 1,
+      int size = 25,
+    }
   ) async {
+    final Map<String, dynamic> queryParameter = {};
+    queryParameter['page_num'] = page.toString();
+    queryParameter['size'] = size.toString();
 
     int trial = 0;
     while (trial < 2) {
@@ -248,7 +254,7 @@ class ReviewHttp {
       if (accessKey != null) {
         headers['Authorization'] = 'Bearer $accessKey';
       }
-      final url = Uri.https(HttpBase.domain, 'api/v1/review/like/${authController.userUid.value}');
+      final url = Uri.https(HttpBase.domain, 'api/v1/review/like/${authController.userUid.value}', queryParameter);
 
       final response = await http.get(url, headers: headers);
 

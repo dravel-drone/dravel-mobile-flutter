@@ -60,7 +60,7 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
     final result = await ReviewHttp.getDronespotReview(
       _authController,
       id: widget.id,
-      page: pageKey,
+      page: pageKey ~/_pageSize + 1,
       size: _pageSize
     );
 
