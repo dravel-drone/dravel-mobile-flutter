@@ -103,8 +103,15 @@ class DroneSpotHttp {
     return null;
   }
 
-  static Future<List<DroneSpotModel>?> getLikedDronespot(AuthController authController) async {
-    // final url = Uri.http(HttpBase.debugUrl, 'api/v1/dronespot/popular');
+  static Future<List<DroneSpotModel>?> getLikedDronespot(
+      AuthController authController, {
+        int page = 1,
+        int size = 25,
+      }
+  ) async {
+    final Map<String, dynamic> queryParameter = {};
+    queryParameter['page_num'] = page.toString();
+    queryParameter['size'] = size.toString();
 
     int trial = 0;
     while (trial < 2) {
@@ -114,7 +121,7 @@ class DroneSpotHttp {
         headers['Authorization'] = 'Bearer $accessKey';
       }
       debugPrint(authController.userUid.value);
-      final url = Uri.https(HttpBase.domain, 'api/v1/dronespot/like/${authController.userUid.value}');
+      final url = Uri.https(HttpBase.domain, 'api/v1/dronespot/like/${authController.userUid.value}', queryParameter);
 
       // debugPrint(url.);
       final response = await http.get(url, headers: headers);

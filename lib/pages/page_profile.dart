@@ -17,6 +17,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../api/http_base.dart';
 import '../api/http_dronespot.dart';
@@ -40,20 +41,21 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late final TabController _tabController;
-  late final ScrollController _droneSpotController;
-  late final ScrollController _reviewController;
+
+  final PagingController<int, DronespotReviewDetailModel> _reviewPagingController = PagingController(firstPageKey: 1);
+  final PagingController<int, DroneSpotModel> _dronespotPagingController = PagingController(firstPageKey: 1);
+
   late final ScrollController _nestedController;
 
   late final AuthController _authController;
-
-  List<DronespotReviewDetailModel> _reviewData = [];
-  List<DroneSpotModel> _dronespotData = [];
 
   late ProfileModel _profile;
 
   int _isProfileLoading = -1;
   int _isReviewLoading = -1;
   int _isDronespotLoading = -1;
+
+  int _pageSize = 25;
 
   Future<bool> _getProfile() async {
     _isProfileLoading = -1;
@@ -73,37 +75,53 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
     return result != null;
   }
 
-  Future<void> _getReview() async {
-    _isReviewLoading = -1;
-    if (mounted) setState(() {});
+  Future<void> _getReview(int pageKey) async {
+    // _isReviewLoading = -1;
+    // if (mounted) setState(() {});
 
     List<DronespotReviewDetailModel>? result = await ReviewHttp.getUserReview(
-        _authController, uid: widget.uid ?? _authController.userUid.value!
+        _authController, uid: widget.uid ?? _authController.userUid.value!,
+        page: pageKey ~/_pageSize + 1,
+        size: _pageSize
     );
 
     if (result == null) {
       _isReviewLoading = 0;
     } else {
       _isReviewLoading = 1;
-      _reviewData = result;
+      final isLastPage = result.length < _pageSize;
+      if (isLastPage) {
+        _reviewPagingController.appendLastPage(result);
+      } else {
+        final nextPageKey = pageKey + result.length;
+        _reviewPagingController.appendPage(result, nextPageKey);
+      }
     }
 
     if (mounted) setState(() {});
   }
 
-  Future<void> _getDronespot() async {
-    _isDronespotLoading = -1;
-    if (mounted) setState(() {});
+  Future<void> _getDronespot(int pageKey) async {
+    // _isDronespotLoading = -1;
+    // if (mounted) setState(() {});
 
     List<DroneSpotModel>? result = await DroneSpotHttp.getUserDronespot(
-        _authController, uid: widget.uid ?? _authController.userUid.value!
+        _authController, uid: widget.uid ?? _authController.userUid.value!,
+        page: pageKey ~/_pageSize + 1,
+        size: _pageSize
     );
 
     if (result == null) {
       _isDronespotLoading = 0;
     } else {
       _isDronespotLoading = 1;
-      _dronespotData = result;
+      final isLastPage = result.length < _pageSize;
+      if (isLastPage) {
+        _dronespotPagingController.appendLastPage(result);
+      } else {
+        final nextPageKey = pageKey + result.length;
+        _dronespotPagingController.appendPage(result, nextPageKey);
+      }
     }
 
     if (mounted) setState(() {});
@@ -113,16 +131,19 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
     bool result = await _getProfile();
     if (!result) return;
 
-    await _getReview();
-    await _getDronespot();
+    _reviewPagingController.addPageRequestListener((pageKey) {
+      _getReview(pageKey);
+    });
+    _dronespotPagingController.addPageRequestListener((pageKey) {
+      _getDronespot(pageKey);
+    });
   }
 
   @override
   void initState() {
     _authController = Get.find<AuthController>();
     _tabController = TabController(length: 2, vsync: this);
-    _reviewController = ScrollController();
-    _droneSpotController = ScrollController();
+
     _nestedController = ScrollController();
 
     _initData();
@@ -132,8 +153,8 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   @override
   void dispose() {
     _tabController.dispose();
-    _reviewController.dispose();
-    _droneSpotController.dispose();
+    _reviewPagingController.dispose();
+    _dronespotPagingController.dispose();
     _nestedController.dispose();
     super.dispose();
   }
@@ -477,94 +498,90 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   }
 
   Widget _createPostList() {
-    if (_reviewData.isEmpty) {
-      return Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: Center(
-          child: NoDataWidget(
-            backgroundColor: Colors.transparent,
-          ),
-        ),
-      );
-    }
+    // if (_reviewPagingController.itemList == null || _reviewPagingController.itemList!.isEmpty) {
+    //   return Container(
+    //     width: double.infinity,
+    //     height: double.infinity,
+    //     child: Center(
+    //       child: NoDataWidget(
+    //         backgroundColor: Colors.transparent,
+    //       ),
+    //     ),
+    //   );
+    // }
 
-    return ListView.separated(
+    return PagedListView<int, DronespotReviewDetailModel>.separated(
         key: PageStorageKey('review_profile'),
         padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
-        physics: ClampingScrollPhysics(),
-        // controller: _reviewController,
-        itemBuilder: (context, idx) {
-          return ReviewFullItem(
-            id: _reviewData[idx].id,
-            img: _reviewData[idx].photoUrl,
-            name: _reviewData[idx].writer?.name,
-            writerUid: _reviewData[idx].writer?.uid,
-            place: _reviewData[idx].placeName,
-            content: _reviewData[idx].comment,
-            likeCount: _reviewData[idx].likeCount,
-            drone: _reviewData[idx].drone,
-            date: _reviewData[idx].date,
-            isLike: _reviewData[idx].isLike,
+        pagingController: _reviewPagingController,
+        builderDelegate: PagedChildBuilderDelegate<DronespotReviewDetailModel>(
+          itemBuilder: (context, item, idx) => ReviewFullItem(
+            id: item.id,
+            img: item.photoUrl,
+            name: item.writer?.name,
+            writerUid: item.writer?.uid,
+            place: item.placeName,
+            content: item.comment,
+            likeCount: item.likeCount,
+            drone: item.drone,
+            date: item.date,
+            isLike: item.isLike,
             onChange: (value) {
-              _reviewData[idx].isLike = value.isLike;
-              _reviewData[idx].likeCount = value.likeCount;
+              item.isLike = value.isLike;
+              item.likeCount = value.likeCount;
             },
-          );
-        },
+          ),
+        ),
         separatorBuilder: (context, idx) {
           return SizedBox(height: 12,);
         },
-        itemCount: _reviewData.length
     );
   }
 
   Widget _createDroneSpotList() {
-    if (_dronespotData.isEmpty) {
-      return Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: Center(
-          child: NoDataWidget(
-            backgroundColor: Colors.transparent,
-          ),
-        ),
-      );
-    }
+    // if (_dronespotPagingController.itemList != null || _dronespotPagingController.itemList!.isEmpty) {
+    //   return Container(
+    //     width: double.infinity,
+    //     height: double.infinity,
+    //     child: Center(
+    //       child: NoDataWidget(
+    //         backgroundColor: Colors.transparent,
+    //       ),
+    //     ),
+    //   );
+    // }
 
-    return ListView.separated(
+    return PagedListView<int, DroneSpotModel>.separated(
         key: PageStorageKey('drone_profile'),
         padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
-        physics: ClampingScrollPhysics(),
-        // controller: _droneSpotController,
-        itemBuilder: (context, idx) {
-          return DroneSpotItem(
-              id: _dronespotData[idx].id,
-              name: _dronespotData[idx].name,
-              imageUrl: _dronespotData[idx].imageUrl,
-              address: _dronespotData[idx].location.address!,
-              like_count: _dronespotData[idx].likeCount,
-              review_count: _dronespotData[idx].reviewCount,
-              camera_level: _dronespotData[idx].permit.camera,
-              fly_level: _dronespotData[idx].permit.flight,
-              isLike: _dronespotData[idx].isLike,
+        pagingController: _dronespotPagingController,
+        builderDelegate: PagedChildBuilderDelegate<DroneSpotModel>(
+          itemBuilder: (context, item, idx) => DroneSpotItem(
+              id: item.id,
+              name: item.name,
+              imageUrl: item.imageUrl,
+              address: item.location.address!,
+              like_count: item.likeCount,
+              review_count: item.reviewCount,
+              camera_level: item.permit.camera,
+              fly_level: item.permit.flight,
+              isLike: item.isLike,
               onTap: () {
                 Get.to(() => DroneSpotDetailPage(
-                  id: _dronespotData[idx].id,
+                  id: item.id,
                 ));
               },
               onChange: (value) {
                 setState(() {
-                  _dronespotData[idx].isLike = value.isLike;
-                  _dronespotData[idx].likeCount = value.likeCount;
+                  item.isLike = value.isLike;
+                  item.likeCount = value.likeCount;
                 });
               }
-          );
-        },
+          ),
+        ),
         separatorBuilder: (context, idx) {
           return SizedBox(height: 12,);
         },
-        itemCount: _dronespotData.length
     );
   }
 

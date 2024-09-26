@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dravel/api/http_base.dart';
 import 'package:dravel/api/http_dronespot.dart';
+import 'package:dravel/api/http_review.dart';
 import 'package:dravel/controller/controller_auth.dart';
 import 'package:dravel/model/model_dronespot.dart';
+import 'package:dravel/model/model_review.dart';
 import 'package:dravel/pages/comment/page_comment_write.dart';
 import 'package:dravel/pages/detail/page_course_detail.dart';
 import 'package:dravel/utils/util_ui.dart';
@@ -16,6 +18,7 @@ import 'package:dravel/widgets/list/list_item_review.dart';
 import 'package:dravel/widgets/load_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class DroneSpotDetailPage extends StatefulWidget {
   DroneSpotDetailPage({
@@ -29,12 +32,15 @@ class DroneSpotDetailPage extends StatefulWidget {
 }
 
 class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
+  late PagingController<int, DronespotReviewDetailModel> _pagingController;
   
   late DronespotDetailModel _data;
   late final AuthController _authController;
 
   int _selectedPlaceMode = 0;
   int _loadDronespot = -1;
+
+  int _pageSize = 25;
 
 
   Future<void> _getSpotData() async {
@@ -48,6 +54,29 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
       _loadDronespot = 0;
     }
     if (mounted) setState(() {});
+  }
+
+  Future<void> _getReviewData(int pageKey) async {
+    final result = await ReviewHttp.getDronespotReview(
+      _authController,
+      id: widget.id,
+      page: pageKey ~/_pageSize + 1,
+      size: _pageSize
+    );
+
+    if (result != null) {
+      final isLastPage = result.length < _pageSize;
+      if (isLastPage) {
+        _pagingController.appendLastPage(result);
+      } else {
+        final nextPageKey = pageKey + result.length;
+        _pagingController.appendPage(result, nextPageKey);
+      }
+    } else {
+      // _loadDronespot = 0;
+      // _pagingController.error = error;
+    }
+    // if (mounted) setState(() {});
   }
 
   @override
@@ -134,7 +163,7 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                 children: [
                   Expanded(
                     child: Text(
-                      '센서드론',
+                      _data.type == 0 ? '센서드론' : 'fpv',
                       style: TextStyle(
                         color: Colors.black54,
                         fontSize: 14,
@@ -278,6 +307,92 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
     );
   }
 
+  void _requestListener(pageKey) {
+    _getReviewData(pageKey);
+  }
+  
+  void _showReviewBottomSheet() {
+    double topHeight = getTopPaddingWithHeight(context, 0);
+    _pagingController = PagingController(firstPageKey: 1);
+    _pagingController.addPageRequestListener(_requestListener);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      // useSafeArea: true,
+      builder: (BuildContext context) {
+        return Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            color: Color(0xFFF1F1F5),
+            // borderRadius: BorderRadius.only(
+            //   topLeft: Radius.circular(24),
+            //   topRight: Radius.circular(24),
+            // )
+          ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: topHeight
+              ),
+              CustomAppbar(
+                title: '리뷰',
+                backgroundColor: Colors.transparent,
+                textColor: Colors.black,
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  SizedBox(
+                    width: 12,
+                  ),
+                ],
+              ),
+              Expanded(
+                child: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                    return PagedListView<int, DronespotReviewDetailModel>.separated(
+                      pagingController: _pagingController,
+                      padding: EdgeInsets.fromLTRB(24, 0, 24, getBottomPaddingWithSafeHeight(context, 24)),
+                      builderDelegate: PagedChildBuilderDelegate<DronespotReviewDetailModel>(
+                        itemBuilder: (context, item, idx) => ReviewFullItem(
+                          id: item.id,
+                          img: item.photoUrl,
+                          name: item.writer?.name,
+                          writerUid: item.writer?.uid,
+                          place: item.placeName,
+                          content: item.comment,
+                          likeCount: item.likeCount,
+                          drone: item.drone,
+                          date: item.date,
+                          isLike: item.isLike,
+                          onChange: (value) {
+                            item.isLike = value.isLike;
+                            item.likeCount = value.likeCount;
+                          },
+                        ),
+                      ),
+                      separatorBuilder: (context, idx) {
+                        return SizedBox(height: 12,);
+                      },
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
+        );
+      }
+    ).then((v) {
+      _pagingController.removePageRequestListener(_requestListener);
+      _pagingController.dispose();
+    });
+  }
+
   Widget _createReviewSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,18 +411,18 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                 ),
               ),
             ),
-            // GestureDetector(
-            //   onTap: () {
-            //
-            //   },
-            //   child: Text(
-            //     '더보기 >',
-            //     style: TextStyle(
-            //       color: Colors.black38,
-            //       height: 1
-            //     ),
-            //   ),
-            // )
+            GestureDetector(
+              onTap: () {
+                _showReviewBottomSheet();
+              },
+              child: Text(
+                '더보기 >',
+                style: TextStyle(
+                  color: Colors.black38,
+                  height: 1
+                ),
+              ),
+            )
           ],
         ),
         SizedBox(height: 12,),
