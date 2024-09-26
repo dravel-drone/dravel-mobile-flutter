@@ -134,7 +134,7 @@ class _DroneSpotDetailPageState extends State<DroneSpotDetailPage> {
                 children: [
                   Expanded(
                     child: Text(
-                      '센서드론',
+                      _data.type == 0 ? '센서드론' : 'fpv',
                       style: TextStyle(
                         color: Colors.black54,
                         fontSize: 14,

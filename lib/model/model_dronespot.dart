@@ -62,6 +62,8 @@ class DroneSpotModel {
 }
 
 class DronespotDetailModel extends DroneSpotModel {
+  int type;
+
   List<DronespotReviewDetailModel> reviews;
   DronespotPlaceModel places;
   List<CourseModel> courses;
@@ -83,6 +85,7 @@ class DronespotDetailModel extends DroneSpotModel {
     this.courses = const [],
     this.whether,
     required this.places,
+    required this.type
   });
 
   factory DronespotDetailModel.fromJson(Map<String, dynamic> jsonData) {
@@ -145,6 +148,7 @@ class DronespotDetailModel extends DroneSpotModel {
     return DronespotDetailModel(
       id: jsonData['id'],
       name: jsonData['name'],
+      type: jsonData['type'],
       whether: whether,
       isLike: jsonData['is_like'] == 1,
       likeCount: jsonData['likes_count'] ?? 0,
