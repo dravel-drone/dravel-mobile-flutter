@@ -32,7 +32,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
   late final ScrollController _sliverScrollController;
 
   CourseDetailModel? _courseData;
-  List<String?> _images = [];
+  List<Map<String, String?>?> _images = [];
 
   int _selectedIdx = 0;
   bool _isShrink = false;
@@ -50,9 +50,15 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
       _images.clear();
       for (var place in _courseData!.places) {
         if (place is PlaceModel) {
-          _images.add(place.photoUrl);
+          _images.add({
+            'type': '0',
+            'img': place.photoUrl
+          });
         } else if (place is DroneSpotModel) {
-          _images.add(place.imageUrl);
+          _images.add({
+            'type': '1',
+            'img': place.imageUrl
+          });
         } else {
           _images.add(null);
         }
@@ -93,9 +99,11 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
               width: constraints.maxWidth,
               child: CarouselSlider(
                 items: List.generate(_images.length, (idx) {
-                  if (_images[idx] != null) {
+                  if (_images[idx] != null && _images[idx]!['img'] != null) {
                     return CachedNetworkImage(
-                      imageUrl: HttpBase.baseUrl + _images[idx]!,
+                      imageUrl: _images[idx]!['type'] == '1' ?
+                        HttpBase.baseUrl + _images[idx]!['img']! :
+                      _images[idx]!['img']!,
                       fit: BoxFit.cover,
                       height: constraints.maxHeight,
                       width: constraints.maxWidth,
